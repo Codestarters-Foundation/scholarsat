@@ -1,5 +1,6 @@
 "use client";
 import { Rich } from "./Rich";
+import { ICheckCircle, IXCircle } from "./icons";
 import type { Question } from "@/lib/types";
 
 type PQ = Omit<Question, "answer" | "explanation">;
@@ -54,9 +55,11 @@ export function Choices({
   struck?: Set<string>;
   /** When provided, an eliminate button is shown beside each choice. */
   onStrike?: (l: string) => void;
-  reveal?: { answer: string } | null;
+  /** `dist` = how many people picked each choice, shown as a crowd breakdown under every option. */
+  reveal?: { answer: string; dist?: Record<string, number> } | null;
   disabled?: boolean;
 }) {
+  const total = reveal?.dist ? Object.values(reveal.dist).reduce((a, b) => a + b, 0) : 0;
   return (
     <fieldset className="grid gap-3">
       <legend className="sr-only">Answer choices</legend>
@@ -72,10 +75,11 @@ export function Choices({
             ? "border-bad bg-bad-50"
             : isSel
               ? "border-red bg-red-50"
-              : "border-line-strong bg-white hover:border-ink/40";
+              : "border-line-strong bg-white hover:bg-surface";
         return (
           <div key={l} className="flex items-stretch gap-2">
-            <label className={`flex min-h-[64px] flex-1 items-center gap-4 rounded-xl border-2 px-4 py-3 transition-colors ${tone} ${disabled ? "cursor-default" : "cursor-pointer"}`}>
+            <div className="min-w-0 flex-1">
+            <label className={`relative flex min-h-[64px] items-center gap-4 rounded-xl border-2 px-4 py-3 transition-colors duration-200 ease-out ${tone} ${wrongSel ? "shake-x" : ""} ${disabled ? "cursor-default" : "cursor-pointer"}`}>
               <input type="radio" name={`q-${q.id}`} className="sr-only" checked={isSel} disabled={disabled} onChange={() => onSelect(l)} />
               <span
                 className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 text-sm font-medium transition-colors ${
@@ -85,7 +89,21 @@ export function Choices({
                 {l}
               </span>
               <Rich text={c} className={`min-w-0 flex-1 text-[16px] ${isStruck ? "text-faint line-through decoration-2" : ""}`} />
+              {isAns && <ICheckCircle className="pop-big h-6 w-6 shrink-0 text-ok-500" />}
+              {wrongSel && <IXCircle className="pop-big h-6 w-6 shrink-0 text-bad" />}
             </label>
+            {reveal?.dist && total > 0 && (() => {
+              const n = reveal.dist[l] ?? 0;
+              const pct = Math.round((n / total) * 100);
+              return (
+                <div className="mt-1.5 flex items-center gap-2" aria-label={`${pct} percent of ${total} people chose ${l}`}>
+                  <div className="h-5 overflow-hidden rounded-md bg-surface-2" style={{ width: `${Math.max(pct, 12)}%`, minWidth: 72 }}>
+                    <div className={`pct-fill flex h-full w-full items-center px-2 text-[11px] font-medium tabular-nums ${isAns ? "bg-ok-500 text-white" : wrongSel ? "bg-bad text-white" : "bg-line-strong/70 text-ink-2"}`}>{pct}% ({n.toLocaleString()})</div>
+                  </div>
+                </div>
+              );
+            })()}
+            </div>
             {onStrike && !reveal && (
               <button
                 type="button"

@@ -59,6 +59,14 @@ function open() {
       score_rw INTEGER,
       score_math INTEGER
     );
+    CREATE TABLE IF NOT EXISTS daily_votes (
+      day INTEGER NOT NULL,
+      section TEXT NOT NULL,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      choice TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      PRIMARY KEY (day, section, user_id)
+    );
     CREATE TABLE IF NOT EXISTS vocab_progress (
       user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       word TEXT NOT NULL,

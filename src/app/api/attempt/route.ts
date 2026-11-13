@@ -17,5 +17,12 @@ export async function POST(req: Request) {
       user.id, q.id, response, correct ? 1 : 0, Number.isFinite(t) ? Math.min(Math.max(0, Math.round(t)), 3_600_000) : null, Date.now(),
     );
   }
-  return json({ correct, answer: q.answer, explanation: q.explanation, saved: !!user });
+  // How everyone answered this multiple-choice question (real attempts only; the count includes this one when signed in).
+  let dist: Record<string, number> | undefined;
+  if (q.type === "mcq") {
+    dist = { A: 0, B: 0, C: 0, D: 0 };
+    const rows = db.prepare("SELECT response, COUNT(*) n FROM attempts WHERE question_id = ? GROUP BY response").all(q.id) as { response: string; n: number }[];
+    for (const r of rows) if (r.response in dist) dist[r.response] = r.n;
+  }
+  return json({ correct, answer: q.answer, explanation: q.explanation, saved: !!user, dist });
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getUser } from "@/lib/auth";
 import { QUESTIONS } from "@/lib/bank";
-import { statusSets, userStats } from "@/lib/stats";
+import { userStats } from "@/lib/stats";
 import type { Difficulty } from "@/lib/types";
 import { PracticeFilters, type SkillInfo } from "@/components/PracticeFilters";
 
@@ -10,7 +10,6 @@ export const metadata: Metadata = { title: "Question Bank" };
 export default async function PracticePage({ searchParams }: { searchParams: Promise<{ section?: string }> }) {
   const sp = await searchParams;
   const user = await getUser();
-  const st = user ? statusSets(user.id) : null;
   const stats = user ? userStats(user.id) : null;
 
   const skills: Record<string, SkillInfo> = {};
@@ -29,11 +28,6 @@ export default async function PracticePage({ searchParams }: { searchParams: Pro
   }
 
   return (
-    <PracticeFilters
-      initialSection={sp.section === "rw" ? "rw" : "math"}
-      skills={skills}
-      signedIn={!!user}
-      statusCounts={st ? { incorrect: st.incorrect.size, bookmarks: st.bookmarks.size } : undefined}
-    />
+    <PracticeFilters initialSection={sp.section === "rw" ? "rw" : "math"} skills={skills} />
   );
 }

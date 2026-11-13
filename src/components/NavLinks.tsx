@@ -7,7 +7,7 @@ import { Logo } from "./Logo";
 
 const LINKS = [
   { href: "/dashboard", label: "Home", Icon: IHome },
-  { href: "/practice", label: "Question Bank", Icon: IBook, tag: "FREE" },
+  { href: "/practice", label: "Question Bank", Icon: IBook },
   { href: "/tests", label: "Practice Tests", Icon: IExam },
   { href: "/review", label: "Review", Icon: IRefresh },
   { href: "/vocab", label: "Vocab", Icon: ICards },
@@ -18,7 +18,7 @@ export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const path = usePathname();
   return (
     <ul className="grid gap-1">
-      {LINKS.map(({ href, label, Icon, tag }) => {
+      {LINKS.map(({ href, label, Icon }) => {
         const active = path === href || path.startsWith(href + "/");
         return (
           <li key={href}>
@@ -32,7 +32,6 @@ export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             >
               <Icon className="h-[20px] w-[20px] shrink-0" />
               {label}
-              {tag && <span className="rounded-full bg-gold px-1.5 py-px text-[10px] font-medium tracking-[0.06em] text-white">{tag}</span>}
             </Link>
           </li>
         );

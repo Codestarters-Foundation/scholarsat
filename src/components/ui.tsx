@@ -13,10 +13,10 @@ const sizes: Record<Size, string> = {
   lg: "px-6 py-3 text-[15px]",
 };
 const variants: Record<Variant, string> = {
-  primary: "btn-3d bg-red text-white border-b-red-700",
-  gold: "btn-3d bg-gold text-white border-b-gold-700",
-  success: "btn-3d bg-ok-500 text-white border-b-ok-700",
-  dark: "btn-3d bg-ink text-white border-b-black",
+  primary: "btn-3d btn-gloss bg-red text-white border-b-red-700",
+  gold: "btn-3d btn-gloss bg-gold text-white border-b-gold-700",
+  success: "btn-3d btn-gloss bg-ok-500 text-white border-b-ok-700",
+  dark: "btn-3d btn-gloss bg-ink text-white border-b-black",
   secondary: "btn-3d border border-line-strong border-b-line-strong bg-white text-ink hover:bg-surface",
   ghost: "text-muted hover:bg-surface-2 hover:text-ink transition-colors",
 };
@@ -113,7 +113,7 @@ export function Progress({ value, tone = "red", className = "h-2" }: { value: nu
   const c = { red: "bg-red", gold: "bg-gold", ok: "bg-ok-500" }[tone];
   return (
     <div className={`w-full overflow-hidden rounded-full bg-surface-2 ${className}`} role="progressbar" aria-valuenow={Math.round(value * 100)} aria-valuemin={0} aria-valuemax={100}>
-      <div className={`h-full rounded-full ${c} transition-[width] duration-500`} style={{ width: `${Math.max(0, Math.min(1, value)) * 100}%` }} />
+      <div className={`h-full rounded-full ${value > 0 ? "bar-fill" : ""} ${c}`} style={{ width: `${Math.max(0, Math.min(1, value)) * 100}%` }} />
     </div>
   );
 }
@@ -130,7 +130,7 @@ export function Ring({ value, size = 64, stroke = 7, label, tone = "red" }: { va
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--surface-2)" strokeWidth={stroke} />
         {v > 0 && <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - v)} />}
       </svg>
-      <span className="absolute text-[15px] font-medium tabular-nums" style={{ color: value === null ? "var(--faint)" : color }}>
+      <span className="absolute font-medium tabular-nums" style={{ color: value === null ? "var(--faint)" : color, fontSize: Math.max(11, Math.round(size * 0.23)) }}>
         {label ?? (value === null ? "–" : `${Math.round(v * 100)}%`)}
       </span>
     </div>

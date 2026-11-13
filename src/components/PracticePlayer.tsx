@@ -11,7 +11,7 @@ import { Button, DiffBadge, EmptyState, LinkButton } from "./ui";
 import { IArrowL, IArrowR, IBookmark, ICalc, ICheckCircle, IFormula, IList, IStrike, IX, IXCircle } from "./icons";
 
 type PQ = Omit<Question, "answer" | "explanation">;
-type Result = { correct: boolean; answer: string; explanation: string; saved: boolean };
+type Result = { correct: boolean; answer: string; explanation: string; saved: boolean; dist?: Record<string, number> };
 type Item = { id: string; difficulty: Difficulty };
 
 export function PracticePlayer({ items, signedIn, title, backHref = "/practice" }: { items: Item[]; signedIn: boolean; title: string; backHref?: string }) {
@@ -194,7 +194,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
                   onSelect={setResp}
                   struck={struck}
                   onStrike={strikeMode ? (l) => setStruck((s) => { const x = new Set(s); x.has(l) ? x.delete(l) : x.add(l); return x; }) : undefined}
-                  reveal={result ? { answer: result.answer } : null}
+                  reveal={result ? { answer: result.answer, dist: result.dist } : null}
                   disabled={!!result}
                 />
               ) : (
@@ -233,7 +233,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
                 <LinkButton href={backHref} variant="success">Finish set</LinkButton>
               )
             ) : (
-              <Button onClick={check} disabled={!resp || busy || !q}>{busy ? "Checking…" : "Check answer"}</Button>
+              <Button variant="success" onClick={check} disabled={!resp || busy || !q}>{busy ? "Checking…" : "Check"}</Button>
             )}
           </div>
         </footer>

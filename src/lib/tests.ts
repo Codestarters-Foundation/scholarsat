@@ -140,3 +140,11 @@ export function submitModule(userId: number, id: number): TestState | null {
   tx();
   return s;
 }
+
+/** Correct / total per module (RW1, RW2, Math1, Math2) for the score cards. */
+export function moduleCorrect(s: TestState) {
+  return s.modules.map((m) => ({
+    total: m.ids.length,
+    correct: m.ids.filter((id) => s.answers[id] !== undefined && isCorrect(BY_ID.get(id)!, s.answers[id])).length,
+  }));
+}

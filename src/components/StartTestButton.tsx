@@ -4,12 +4,14 @@ import { useState } from "react";
 import { Button } from "./ui";
 import { IArrowR } from "./icons";
 
-export function StartTestButton() {
+export function StartTestButton({ label = "Start a new test", size = "lg", className = "", variant = "primary" }: { label?: string; size?: "sm" | "md" | "lg"; className?: string; variant?: "primary" | "secondary" | "dark" }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   return (
     <Button
-      size="lg"
+      size={size}
+      variant={variant}
+      className={className}
       disabled={busy}
       onClick={async () => {
         setBusy(true);
@@ -18,7 +20,7 @@ export function StartTestButton() {
         else setBusy(false);
       }}
     >
-      {busy ? "Preparing your test…" : <>Start a new test <IArrowR className="h-4 w-4" /></>}
+      {busy ? "Preparing…" : <>{label} <IArrowR className="h-4 w-4" /></>}
     </Button>
   );
 }

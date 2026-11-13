@@ -6,29 +6,17 @@ import { Button, Progress, Ring, SubjectArt } from "./ui";
 import { ICheck, ICheckCircle, IPlay, IXCircle } from "./icons";
 
 export type SkillInfo = { total: number; byDiff: Record<Difficulty, number>; answered: number; correct: number; wrong: number };
-type Status = "all" | "unanswered" | "incorrect" | "bookmarked";
-
-const DIFFS: [Difficulty, string][] = [["E", "Easy"], ["M", "Medium"], ["H", "Hard"]];
-const chip = (on: boolean) =>
-  `rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors ${on ? "bg-red text-white" : "bg-surface-2 text-muted hover:text-ink"}`;
 
 export function PracticeFilters({
   initialSection,
   skills,
-  signedIn,
-  statusCounts,
 }: {
   initialSection: Section;
   skills: Record<string, SkillInfo>;
-  signedIn: boolean;
-  statusCounts?: { incorrect: number; bookmarks: number };
 }) {
   const router = useRouter();
   const [section, setSection] = useState<Section>(initialSection);
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [diff, setDiff] = useState<Set<Difficulty>>(new Set(["E", "M", "H"]));
-  const [status, setStatus] = useState<Status>("all");
-  const [limit, setLimit] = useState(20);
 
   const sectionTotals = useMemo(() => {
     const out = {} as Record<Section, { total: number; answered: number }>;
@@ -40,8 +28,7 @@ export function PracticeFilters({
   }, [skills]);
 
   const go = (p: Record<string, string>) => {
-    const q = new URLSearchParams({ section, status, limit: String(limit), ...p });
-    if (diff.size < 3) q.set("difficulty", [...diff].join(""));
+    const q = new URLSearchParams({ section, status: "all", limit: "20", ...p });
     router.push(`/practice/play?${q}`);
   };
 
@@ -52,7 +39,7 @@ export function PracticeFilters({
     return n;
   };
 
-  const selectedCount = [...selected].reduce((a, k) => a + [...diff].reduce((b, d) => b + (skills[k]?.byDiff[d] ?? 0), 0), 0);
+  const selectedCount = [...selected].reduce((a, k) => a + (skills[k]?.total ?? 0), 0);
 
   return (
     <div className="animate-rise pb-24">
@@ -89,31 +76,6 @@ export function PracticeFilters({
             </button>
           );
         })}
-      </div>
-
-      {/* Session settings */}
-      <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 rounded-2xl border border-line bg-white px-5 py-4 shadow-card">
-        <div className="flex items-center gap-2">
-          <span className="eyebrow text-muted">Difficulty</span>
-          {DIFFS.map(([k, l]) => (
-            <button key={k} type="button" aria-pressed={diff.has(k)} onClick={() => setDiff(toggle(diff, k))} className={chip(diff.has(k))}>{l}</button>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="eyebrow text-muted">Length</span>
-          {[10, 20, 40, 0].map((n) => (
-            <button key={n} type="button" aria-pressed={limit === n} onClick={() => setLimit(n)} className={chip(limit === n)}>{n || "All"}</button>
-          ))}
-        </div>
-        <label className="flex items-center gap-2">
-          <span className="eyebrow text-muted">Show</span>
-          <select value={status} onChange={(e) => setStatus(e.target.value as Status)} disabled={!signedIn} className="rounded-lg border border-line bg-white px-2.5 py-1.5 text-[13px] disabled:opacity-60" title={signedIn ? undefined : "Log in to filter by your history"}>
-            <option value="all">All questions</option>
-            <option value="unanswered">Not yet answered</option>
-            <option value="incorrect">Previously missed{statusCounts ? ` (${statusCounts.incorrect})` : ""}</option>
-            <option value="bookmarked">Saved{statusCounts ? ` (${statusCounts.bookmarks})` : ""}</option>
-          </select>
-        </label>
       </div>
 
       {/* Domains */}

@@ -3,10 +3,12 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { userStats } from "@/lib/stats";
-import { counts, dailyQuestion, QUESTIONS } from "@/lib/bank";
+import { counts, QUESTIONS, utcDay } from "@/lib/bank";
+import { getDailyPoll } from "@/lib/daily";
+import { DailyPoll } from "@/components/DailyPoll";
 import { db } from "@/lib/db";
 import { TAXONOMY, SECTION_LABEL, type Section } from "@/lib/types";
-import { Badge, Card, HeaderCard, LinkButton, Progress, Ring, SubjectArt } from "@/components/ui";
+import { Badge, Card, HeaderCard, LinkButton, Progress, Ring } from "@/components/ui";
 import { Owl } from "@/components/Owl";
 import { IArrowR, IChevR, IFireSolid, ITarget } from "@/components/icons";
 import { questionsPerDay } from "@/lib/onboarding";
@@ -21,10 +23,9 @@ export default async function Dashboard() {
   const DAILY_GOAL = user.study_minutes ? questionsPerDay(user.study_minutes) : DEFAULT_DAILY_GOAL;
   const s = userStats(user.id);
   const c = counts();
-  const dq = { math: dailyQuestion("math"), rw: dailyQuestion("rw") };
-  const dayNo = Math.floor(Date.now() / 86400000) - 20400; // stable, human-sized daily number
+  const polls = { math: getDailyPoll("math", user.id), rw: getDailyPoll("rw", user.id) };
+  const dayNo = utcDay() - 20400; // stable, human-sized daily number
   const tests = db.prepare("SELECT id, finished_at, score_rw, score_math FROM tests WHERE user_id = ? ORDER BY id DESC LIMIT 3").all(user.id) as { id: number; finished_at: number | null; score_rw: number | null; score_math: number | null }[];
-  const lastTest = tests.find((t) => t.finished_at);
   const openTest = tests.find((t) => !t.finished_at);
   const daysLeft = user.test_date ? Math.ceil((new Date(user.test_date + "T00:00:00").getTime() - Date.now()) / 86400000) : null;
   const today = s.activity[s.activity.length - 1]?.count ?? 0;
@@ -55,29 +56,13 @@ export default async function Dashboard() {
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         {/* Left column */}
-        <div className="grid content-start gap-6">
+        <div className="grid grid-cols-[minmax(0,1fr)] content-start gap-6">
           <HeaderCard
             title={<span className="flex items-center gap-2.5">Daily Questions <span className="rounded-md bg-white/20 px-2 py-0.5 text-[13px]">#{dayNo}</span></span>}
             right={<span>{dateLabel}</span>}
-            bodyClassName="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-1"
+            bodyClassName=""
           >
-            {(["math", "rw"] as Section[]).map((sec) => (
-              <Link
-                key={sec}
-                href={`/practice/play?ids=${dq[sec].id}&title=${encodeURIComponent(`Daily #${dayNo} · ${SECTION_LABEL[sec]}`)}`}
-                className={`group relative flex h-40 flex-col justify-between overflow-hidden rounded-xl p-5 transition-transform hover:-translate-y-0.5 ${sec === "math" ? "bg-red-50 text-red" : "bg-gold-50 text-gold-600"}`}
-              >
-                <SubjectArt kind={sec} className="pointer-events-none absolute -right-6 -top-8 h-56 w-56 transition-transform duration-500 group-hover:rotate-3 group-hover:scale-105" />
-                <div className="relative">
-                  <p className="eyebrow opacity-80">Daily #{dayNo}</p>
-                  <p className="mt-1 text-[20px] font-medium text-ink">{SECTION_LABEL[sec]}</p>
-                </div>
-                <div className="relative flex items-end justify-between text-sm">
-                  <span className="font-medium text-ink">{dq[sec].skill.length > 34 ? dq[sec].domain : dq[sec].skill}</span>
-                  <span className="inline-flex items-center gap-1 font-medium">Solve <IChevR className="h-4 w-4 transition-transform group-hover:translate-x-0.5" /></span>
-                </div>
-              </Link>
-            ))}
+            <DailyPoll polls={polls} />
           </HeaderCard>
 
           <HeaderCard title="Pick up where you left off" tone="ok" bodyClassName="p-5">
@@ -132,11 +117,11 @@ export default async function Dashboard() {
         </div>
 
         {/* Right column */}
-        <div className="grid content-start gap-6">
+        <div className="grid grid-cols-[minmax(0,1fr)] content-start gap-6">
           <div className="grid grid-cols-3 gap-4">
             <Card className="flex flex-col items-center justify-center py-6 text-center">
               <span className="flex items-center gap-1.5">
-                <IFireSolid className={`h-8 w-8 ${s.streak ? "" : "opacity-40 grayscale"}`} />
+                <IFireSolid className={`h-8 w-8 ${s.streak ? "flame" : "opacity-40 grayscale"}`} />
                 <span className={`text-[32px] leading-none font-medium tabular-nums ${s.streak ? "text-ink" : "text-faint"}`}>{s.streak}</span>
               </span>
               <span className="mt-2 text-sm text-muted">day streak</span>
@@ -179,28 +164,54 @@ export default async function Dashboard() {
           </Card>
 
           <HeaderCard title="Your Progress" right={<Link href="/tests" className="hover:underline">Practice tests →</Link>} bodyClassName="p-5">
-            <div className="flex items-center gap-5 rounded-xl bg-surface p-4">
-              {s.predicted ? (
-                <>
-                  <div>
-                    <p className="text-xs text-muted">Predicted score</p>
-                    <p className="text-[40px] leading-none font-medium text-red tabular-nums">{s.predicted.total}</p>
-                  </div>
-                  <div className="grid gap-1 border-l border-line pl-5 text-sm">
-                    <p><span className="text-muted">Reading &amp; Writing</span> <span className="ml-2 font-medium tabular-nums">{s.predicted.rw}</span></p>
-                    <p><span className="text-muted">Math</span> <span className="ml-2 font-medium tabular-nums">{s.predicted.math}</span></p>
-                    {lastTest && <p><span className="text-muted">Last test</span> <span className="ml-2 font-medium tabular-nums">{(lastTest.score_rw ?? 0) + (lastTest.score_math ?? 0)}</span></p>}
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-center gap-4">
-                  <Owl size={52} />
-                  <p className="text-sm text-muted">Answer 10+ questions in each section to unlock your predicted score. You&apos;ve answered {s.unique.toLocaleString()} of {c.total.toLocaleString()}.</p>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-xl bg-surface p-4">
+                <p className="text-xs text-muted">Predicted score</p>
+                {s.predicted ? (
+                  <>
+                    <p className="mt-1 text-[34px] leading-none font-medium text-red tabular-nums">{s.predicted.total}</p>
+                    <p className="mt-1.5 text-xs text-muted tabular-nums">R&amp;W {s.predicted.rw} · Math {s.predicted.math}</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="mt-1 text-[34px] leading-none font-medium text-faint">–</p>
+                    <p className="mt-1.5 text-xs text-muted">Unlocks after 10 questions in each section</p>
+                  </>
+                )}
+              </div>
+              <div className="flex items-center gap-3 rounded-xl bg-surface p-4">
+                <Ring value={s.unique ? s.correct / s.unique : null} size={64} stroke={7} tone="ok" />
+                <div>
+                  <p className="text-xs text-muted">Accuracy</p>
+                  <p className="mt-0.5 text-sm font-medium tabular-nums">{s.correct} of {s.unique} correct</p>
                 </div>
-              )}
+              </div>
+              <div className="rounded-xl bg-surface p-4">
+                <p className="text-xs text-muted">Answered</p>
+                <p className="mt-1 text-[34px] leading-none font-medium tabular-nums">{s.unique.toLocaleString()}</p>
+                <p className="mt-1.5 text-xs text-muted tabular-nums">of {c.total.toLocaleString()} in the bank</p>
+              </div>
             </div>
-            <div className="mt-5 grid gap-6 sm:grid-cols-2">
-              {(["rw", "math"] as Section[]).map((sec) => (
+
+            {!s.predicted && (
+              <div className="mt-4 flex items-center gap-4 rounded-xl border border-dashed border-line-strong p-4">
+                <Owl size={44} />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium">Unlock your predicted score</p>
+                  <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                    {(["rw", "math"] as Section[]).map((sec) => (
+                      <div key={sec}>
+                        <div className="mb-1 flex justify-between text-xs text-muted"><span>{SECTION_LABEL[sec]}</span><span className="tabular-nums">{Math.min(10, s.bySection[sec].seen)}/10</span></div>
+                        <Progress value={Math.min(1, s.bySection[sec].seen / 10)} tone="gold" className="h-1.5" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-6 grid gap-6">
+              {(["math", "rw"] as Section[]).map((sec) => (
                 <div key={sec}>
                   <p className="eyebrow mb-3 text-gold-600">{SECTION_LABEL[sec]}</p>
                   <ul className="grid gap-3.5">
@@ -211,9 +222,9 @@ export default async function Dashboard() {
                       const acc = seen ? corr / seen : 0;
                       return (
                         <li key={d.domain}>
-                          <div className="mb-1.5 flex justify-between gap-2 text-sm">
-                            <Link href={`/practice/play?section=${sec}&domain=${encodeURIComponent(d.domain)}`} className="truncate hover:text-red">{d.domain}</Link>
-                            <span className="tabular-nums text-muted">{seen ? `${Math.round(acc * 100)}%` : "–"}</span>
+                          <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
+                            <Link href={`/practice/play?section=${sec}&domain=${encodeURIComponent(d.domain)}`} className="min-w-0 flex-1 truncate hover:text-red">{d.domain}</Link>
+                            <span className="shrink-0 tabular-nums text-muted">{seen ? <><span className="font-medium text-ink">{Math.round(acc * 100)}%</span> · {seen} answered</> : "Not started"}</span>
                           </div>
                           <Progress value={acc} tone={seen && acc >= 0.7 ? "ok" : seen && acc < 0.5 ? "red" : "gold"} />
                         </li>
@@ -222,10 +233,6 @@ export default async function Dashboard() {
                   </ul>
                 </div>
               ))}
-            </div>
-            <div className="mt-5 flex items-center gap-4 border-t border-line pt-4">
-              <Ring value={s.unique ? s.correct / s.unique : null} size={56} stroke={6} tone="ok" />
-              <p className="text-sm text-muted"><span className="font-medium text-ink">{s.unique.toLocaleString()}</span> questions answered · {s.unique ? `${Math.round((s.correct / s.unique) * 100)}% correct overall` : "start with any skill"}</p>
             </div>
           </HeaderCard>
         </div>
