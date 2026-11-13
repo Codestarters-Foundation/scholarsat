@@ -80,3 +80,15 @@
     transition: none !important;
   }
 }
+
+/* Page-wide type and depth */
+.lp-root { letter-spacing: 0; }
+.lp-card {
+  box-shadow: 0 1px 2px rgb(38 37 30 / 0.05), 0 14px 32px -18px rgb(38 37 30 / 0.2);
+}
+.lp-chip {
+  box-shadow: 0 1px 2px rgb(38 37 30 / 0.06), 0 8px 18px -10px rgb(38 37 30 / 0.18);
+}
+@media (hover: hover) and (pointer: fine) {
+  .lp-card.lp-lift:hover { box-shadow: 0 1px 2px rgb(38 37 30 / 0.06), 0 22px 44px -18px rgb(38 37 30 / 0.28); }
+}

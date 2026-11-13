@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { IBook, ICards, IExam } from "./icons";
+import { IBook, IHome, IRefresh } from "./icons";
 
 const TABS = [
-  { id: "bank", label: "Question bank", path: "practice", src: "/landing/bank.webp", alt: "The ScholarSAT question bank, with math skills listed by domain and a practice button on each", Icon: IBook },
-  { id: "tests", label: "Practice tests", path: "tests", src: "/landing/tests.webp", alt: "The practice tests page, showing a full-length mock exam of 2 hours 14 minutes and 98 questions", Icon: IExam },
-  { id: "vocab", label: "Vocabulary", path: "vocab", src: "/landing/vocab.webp", alt: "A vocabulary flashcard with buttons for still learning and I know it", Icon: ICards },
+  { id: "dashboard", label: "Dashboard", path: "dashboard", src: "/landing/dashboard.webp", alt: "A student's dashboard: a 4-day streak, a daily goal at 14 of 18 questions, a predicted score of 1270 and accuracy by skill", Icon: IHome },
+  { id: "bank", label: "Question bank", path: "practice", src: "/landing/bank.webp", alt: "The question bank, with an accuracy ring and a practice button on every math skill", Icon: IBook },
+  { id: "review", label: "Mistake review", path: "review", src: "/landing/review.webp", alt: "The review page listing 45 missed questions by skill and difficulty, each ready to retry", Icon: IRefresh },
 ] as const;
 
 /** Tabbed screenshots of the real app, framed like a browser window. */
@@ -55,8 +55,8 @@ export function LandingShowcase() {
                 src={t.src}
                 alt={i === active ? t.alt : ""}
                 aria-hidden={i !== active}
-                width={2040}
-                height={1275}
+                width={2200}
+                height={1375}
                 priority={i === 0}
                 sizes="(min-width: 1200px) 1120px, 100vw"
                 className={`absolute inset-x-0 top-0 h-auto w-full transition-opacity duration-300 ${i === active ? "opacity-100" : "opacity-0"}`}

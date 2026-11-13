@@ -79,7 +79,7 @@ function SectionHead({ tag, title, children, actions }: { tag: string; title: Re
       <div>
         <Tag>{tag}</Tag>
         <h2 className={`${H2} max-w-[20ch]`}>{title}</h2>
-        {children && <p className="mt-5 max-w-[56ch] text-[17px] leading-[1.55] text-muted">{children}</p>}
+        {children && <p className="mt-5 max-w-[56ch] text-[18px] leading-[1.55] text-ink-2">{children}</p>}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-3">{actions}</div>}
     </Reveal>
@@ -89,8 +89,8 @@ function SectionHead({ tag, title, children, actions }: { tag: string; title: Re
 /** Bento tile: a product visual on a tinted stage, with a title and one line under it. */
 function Tile({ title, children, visual, className = "", i = 0 }: { title: string; children: ReactNode; visual: ReactNode; className?: string; i?: number }) {
   return (
-    <div style={idx(i)} className={`lp-stagger lp-lift flex flex-col overflow-hidden rounded-2xl border border-line bg-surface ${className}`}>
-      <div className="flex min-h-[240px] flex-1 items-center justify-center p-6 sm:p-8">{visual}</div>
+    <div style={idx(i)} className={`lp-stagger lp-lift lp-card flex flex-col overflow-hidden rounded-2xl border border-line bg-surface ${className}`}>
+      <div className="flex min-h-[260px] flex-1 items-center justify-center p-6 sm:p-10">{visual}</div>
       <div className="border-t border-line bg-white p-6">
         <h3 className="text-[18px] font-medium tracking-[-0.01em] text-ink">{title}</h3>
         <p className="mt-1.5 text-[15px] leading-relaxed text-muted">{children}</p>
@@ -116,19 +116,19 @@ export default async function Landing() {
   const primaryLabel = user ? "Open dashboard" : "Create free account";
 
   return (
-    <div className="bg-white text-[15px]">
+    <div className="lp-root bg-white text-[15px]">
       <LandingNav signedIn={Boolean(user)} repo={REPO} />
       <div aria-hidden="true" className="h-[60px]" />
 
       <main>
         {/* Hero */}
         <section className={`${WRAP} pt-8 sm:pt-10`}>
-          <div className="grid items-end gap-x-12 gap-y-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-            <h1 className="lp-in text-[44px] leading-[1.02] font-medium tracking-[-0.04em] text-ink sm:text-[64px] lg:text-[68px]">
+          <div className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
+            <h1 className="lp-in text-[52px] leading-[0.98] font-medium tracking-[-0.045em] text-ink sm:text-[80px]">
               <span className="lp-line text-red">Free</span> SAT prep.
             </h1>
-            <div className="lp-in lg:pb-3" style={delay(150)}>
-              <div className="flex flex-wrap items-center gap-3 lg:justify-end">
+            <div className="lp-in xl:pb-3" style={delay(150)}>
+              <div className="flex flex-wrap items-center gap-3 xl:justify-end">
                 <LinkButton href={primaryHref} size="lg">{primaryLabel} <IArrowR className="h-4 w-4" /></LinkButton>
                 <LinkButton href="/practice" variant="secondary" size="lg">Practice without an account</LinkButton>
               </div>
@@ -140,7 +140,8 @@ export default async function Landing() {
         </section>
 
         {/* Numbers, counted from the bank */}
-        <section className={`${WRAP} py-16 sm:py-20`}>
+        <section className="mt-20 bg-ink text-white sm:mt-28">
+          <div className={`${WRAP} py-16 sm:py-24`}>
           <Reveal stagger>
           <dl className="grid grid-cols-2 gap-y-10 lg:grid-cols-4">
             {[
@@ -149,13 +150,14 @@ export default async function Landing() {
               [testQuestions, `questions in every mock test, timed at ${testLength}`],
               ["$0", "for all of it, with no trial and no paid plan"],
             ].map(([n, l], i) => (
-              <div key={l} style={idx(i)} className={`lp-stagger flex flex-col-reverse gap-3 px-5 sm:px-8 ${i % 2 ? "border-l border-line" : ""} ${i === 2 ? "lg:border-l lg:border-line" : ""} ${i === 0 ? "pl-0 sm:pl-0" : ""} ${i === 2 ? "pl-0 sm:pl-0 lg:pl-8" : ""}`}>
-                <dt className="max-w-[24ch] text-[14px] leading-snug text-muted">{l}</dt>
-                <dd className={`text-[52px] leading-none font-medium tracking-[-0.04em] tabular-nums sm:text-[72px] ${i === 3 ? "text-red" : "text-ink"}`}>{typeof n === "number" ? <CountUp to={n} /> : n}</dd>
+              <div key={l} style={idx(i)} className={`lp-stagger flex flex-col-reverse gap-3 px-5 sm:px-8 ${i % 2 ? "border-l border-white/15" : ""} ${i === 2 ? "lg:border-l lg:border-white/15" : ""} ${i === 0 ? "pl-0 sm:pl-0" : ""} ${i === 2 ? "pl-0 sm:pl-0 lg:pl-8" : ""}`}>
+                <dt className="max-w-[24ch] text-[15px] leading-snug text-white/65">{l}</dt>
+                <dd className={`text-[52px] leading-none font-medium tracking-[-0.04em] tabular-nums sm:text-[72px] ${i === 3 ? "text-gold" : "text-white"}`}>{typeof n === "number" ? <CountUp to={n} /> : n}</dd>
               </div>
             ))}
           </dl>
           </Reveal>
+          </div>
         </section>
 
         {/* Question bank */}
@@ -173,7 +175,7 @@ export default async function Landing() {
               {(["math", "rw"] as Section[]).map((sec, si) => {
                 const max = Math.max(...TAXONOMY[sec].map((d) => c.byDomain[d.domain] ?? 0), 1);
                 return (
-                  <div key={sec} style={idx(si)} className="lp-stagger lp-lift rounded-2xl border border-line bg-surface p-6 sm:p-7">
+                  <div key={sec} style={idx(si)} className="lp-stagger lp-lift lp-card rounded-2xl border border-line bg-surface p-6 sm:p-7">
                     <div className="flex items-baseline justify-between gap-4">
                       <h3 className="text-[18px] font-medium tracking-[-0.01em] text-ink">{SECTION_LABEL[sec]}</h3>
                       <p className="shrink-0 whitespace-nowrap text-[14px] text-muted tabular-nums">{c.bySection[sec].toLocaleString()} questions</p>
@@ -200,7 +202,7 @@ export default async function Landing() {
               })}
 
               <div style={idx(2)} className="lp-stagger grid gap-4">
-                <div className="lp-lift rounded-2xl border border-line bg-surface p-6 sm:p-7">
+                <div className="lp-lift lp-card rounded-2xl border border-line bg-surface p-6 sm:p-7">
                   <h3 className="text-[18px] font-medium tracking-[-0.01em] text-ink">Three difficulty levels</h3>
                   <div className="mt-6 flex h-28 items-end gap-3">
                     {(["E", "M", "H"] as Difficulty[]).map((d) => (
@@ -242,7 +244,7 @@ export default async function Landing() {
               <Reveal>
                 <Tag>Live question</Tag>
                 <h2 className={`${H2} max-w-[14ch]`}>Answer one <Hl>right now</Hl></h2>
-                <p className="mt-5 max-w-[46ch] text-[17px] leading-[1.55] text-muted">
+                <p className="mt-5 max-w-[46ch] text-[18px] leading-[1.55] text-ink-2">
                   These three come straight from the bank. Pick an answer and you get what every question gives you:
                 </p>
                 <ul className="mt-6 grid max-w-[46ch] gap-3 text-[16px] text-ink">
@@ -272,11 +274,11 @@ export default async function Landing() {
             <Reveal stagger className="mt-12 rounded-2xl border border-line bg-surface p-4 sm:p-6">
               <ol className="grid gap-2 md:flex">
                 {MODULES.map((m, i) => (
-                  <li key={i} style={{ flexGrow: m.minutes, ...idx(i) }} className={`lp-stagger rounded-xl border bg-white p-5 md:basis-0 ${m.section === "rw" ? "border-gold-100" : "border-red-100"}`}>
+                  <li key={i} style={{ flexGrow: m.minutes, ...idx(i) }} className={`lp-stagger lp-chip rounded-xl border p-5 md:basis-0 ${m.section === "rw" ? "border-gold-100 bg-gold-50" : "border-red-100 bg-red-50"}`}>
                     <div className={`h-1.5 w-10 rounded-full ${m.section === "rw" ? "bg-gold" : "bg-red"}`} />
                     <p className="mt-4 text-[13px] text-muted">{SECTION_LABEL[m.section]}</p>
                     <p className="text-[20px] font-medium tracking-[-0.01em] text-ink">Module {(i % 2) + 1}</p>
-                    <p className="mt-8 font-mono text-[28px] leading-none text-ink tabular-nums">{m.minutes}:00</p>
+                    <p className="mt-10 font-mono text-[40px] leading-none text-ink tabular-nums">{m.minutes}:00</p>
                     <p className="mt-2 text-[14px] text-muted tabular-nums">{m.n} questions{i % 2 ? ", adaptive" : ""}</p>
                   </li>
                 ))}
@@ -316,9 +318,9 @@ export default async function Landing() {
                 visual={
                   <ul className="grid w-full max-w-md grid-cols-[minmax(0,1fr)] gap-2">
                     {missed.map((s) => (
-                      <li key={s} className="flex items-center gap-3 rounded-xl border border-line bg-white px-4 py-3 shadow-card">
+                      <li key={s} className="flex items-center gap-3 rounded-xl border border-line bg-white px-5 py-4 lp-chip">
                         <IXCircle className="h-5 w-5 shrink-0 text-bad" />
-                        <span className="min-w-0 flex-1 truncate text-[14px] text-ink">{s}</span>
+                        <span className="min-w-0 flex-1 truncate text-[15px] text-ink">{s}</span>
                         <span className="shrink-0 rounded-lg bg-red-50 px-2.5 py-1 text-[13px] font-medium text-red">Retry</span>
                       </li>
                     ))}
@@ -332,11 +334,11 @@ export default async function Landing() {
                 title="Predicted score"
                 i={1}
                 visual={
-                  <div className="flex w-full max-w-xs items-center gap-6 rounded-2xl border border-line bg-white p-5 shadow-card">
-                    <Ring value={0.72} size={92} stroke={9} label="1380" />
+                  <div className="flex w-full max-w-sm items-center gap-7 rounded-2xl border border-line bg-white p-6 lp-chip">
+                    <Ring value={0.725} size={112} stroke={10} label="1270" />
                     <div className="min-w-0 flex-1">
                       <p className="text-[13px] text-muted">Example estimate</p>
-                      {[["Math", 0.76, "bg-red"], ["Reading and Writing", 0.68, "bg-gold"]].map(([l, v, cls]) => (
+                      {[["Math, 650", 0.81, "bg-red"], ["Reading and Writing, 620", 0.775, "bg-gold"]].map(([l, v, cls]) => (
                         <div key={l as string} className="mt-3">
                           <p className="truncate text-[13px] text-ink">{l}</p>
                           <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2"><div className={`lp-bar h-full rounded-full ${cls}`} style={{ width: `${(v as number) * 100}%` }} /></div>
@@ -356,10 +358,10 @@ export default async function Landing() {
                 visual={
                   <div className="relative w-full max-w-sm">
                     <div className="absolute inset-x-4 -bottom-2 h-full rounded-2xl border border-line bg-white" aria-hidden="true" />
-                    <div className="relative rounded-2xl border border-line bg-white p-6 text-center shadow-card">
-                      <p className="text-[28px] font-medium tracking-[-0.02em] text-ink">{word.word}</p>
+                    <div className="relative rounded-2xl border border-line bg-white p-6 text-center lp-chip">
+                      <p className="text-[36px] font-medium tracking-[-0.03em] text-ink">{word.word}</p>
                       <p className="mt-0.5 text-[13px] italic text-muted">{word.pos}</p>
-                      <p className="mt-4 border-t border-line pt-4 text-[15px] text-ink-2">{word.def}</p>
+                      <p className="mt-5 border-t border-line pt-5 text-[16px] text-ink-2">{word.def}</p>
                     </div>
                   </div>
                 }
@@ -382,7 +384,7 @@ export default async function Landing() {
                         <span className="shrink-0 text-[13px] font-medium text-ink">Solve</span>
                       </div>
                     ))}
-                    <div className="mt-1 flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-3 shadow-card">
+                    <div className="mt-1 flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-3 lp-chip">
                       <span className="text-gold"><IFireSolid className="h-5 w-5" /></span>
                       <span className="mr-auto text-[14px] text-ink">Your streak</span>
                       {[1, 1, 1, 1, 1, 0, 0].map((on, i) => <span key={i} className={`h-2.5 w-2.5 rounded-full ${on ? "bg-gold" : "bg-surface-2"}`} />)}
@@ -454,7 +456,7 @@ export default async function Landing() {
               </div>
             </div>
             <div className="relative hidden min-h-[380px] lg:block" aria-hidden="true">
-              <Image src="/landing/tests.webp" alt="" width={2040} height={1275} sizes="900px" className="absolute left-0 top-14 w-[900px] max-w-none rounded-tl-xl border border-black/20 shadow-[0_-8px_60px_rgb(0_0_0/0.28)]" />
+              <Image src="/landing/dashboard.webp" alt="" width={2200} height={1375} sizes="900px" className="absolute left-0 top-14 w-[900px] max-w-none rounded-tl-xl border border-black/20 shadow-[0_-8px_60px_rgb(0_0_0/0.28)]" />
             </div>
           </Reveal>
         </section>
