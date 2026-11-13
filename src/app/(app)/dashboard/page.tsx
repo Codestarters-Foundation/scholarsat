@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { userStats } from "@/lib/stats";
 import { counts, dailyQuestion, QUESTIONS } from "@/lib/bank";
@@ -8,13 +9,16 @@ import { TAXONOMY, SECTION_LABEL, type Section } from "@/lib/types";
 import { Badge, Card, HeaderCard, LinkButton, Progress, Ring, SubjectArt } from "@/components/ui";
 import { Owl } from "@/components/Owl";
 import { IArrowR, IChevR, IFireSolid, ITarget } from "@/components/icons";
+import { questionsPerDay } from "@/lib/onboarding";
 
 export const metadata: Metadata = { title: "Home" };
 
-const DAILY_GOAL = 20;
+const DEFAULT_DAILY_GOAL = 20;
 
 export default async function Dashboard() {
   const user = await requireUser();
+  if (!user.onboarded_at) redirect("/onboarding");
+  const DAILY_GOAL = user.study_minutes ? questionsPerDay(user.study_minutes) : DEFAULT_DAILY_GOAL;
   const s = userStats(user.id);
   const c = counts();
   const dq = { math: dailyQuestion("math"), rw: dailyQuestion("rw") };

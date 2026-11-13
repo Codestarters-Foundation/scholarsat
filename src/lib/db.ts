@@ -68,13 +68,24 @@ function open() {
   `);
   // Migrations
   const userCols = new Set((db.prepare("PRAGMA table_info(users)").all() as { name: string }[]).map((c) => c.name));
-  if (!userCols.has("google_sub")) {
+  const addColumn = (name: string, ddl: string) => {
+    if (userCols.has(name)) return;
     try {
-      db.exec("ALTER TABLE users ADD COLUMN google_sub TEXT");
+      db.exec(`ALTER TABLE users ADD COLUMN ${name} ${ddl}`);
     } catch (e) {
       // Another process added it between our check and the ALTER.
       if (!String(e).includes("duplicate column")) throw e;
     }
+  };
+  addColumn("google_sub", "TEXT");
+  addColumn("grad_class", "TEXT");
+  addColumn("current_score", "INTEGER");
+  addColumn("study_minutes", "INTEGER");
+  addColumn("focus", "TEXT");
+  if (!userCols.has("onboarded_at")) {
+    addColumn("onboarded_at", "INTEGER");
+    // Accounts that existed before onboarding shipped don't get sent through it.
+    db.exec("UPDATE users SET onboarded_at = created_at WHERE onboarded_at IS NULL");
   }
   db.exec("CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub ON users(google_sub) WHERE google_sub IS NOT NULL");
   return db;

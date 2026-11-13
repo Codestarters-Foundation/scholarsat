@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -15,6 +16,13 @@ export default async function Settings({ searchParams }: { searchParams: Promise
     <div className="animate-rise">
       <PageTitle title="Settings" sub="Your goal, your account, your data." />
       {sp.google === "in_use" && <p role="alert" className="mb-5 rounded-xl border border-bad-100 bg-bad-50 px-4 py-3 text-sm text-bad">That Google account is already connected to a different ScholarSAT account.</p>}
+      <Link href="/onboarding" className="group mb-5 flex items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 shadow-card transition-colors hover:border-red-200">
+        <span>
+          <span className="block text-[15px] font-medium">Redo your study plan</span>
+          <span className="text-sm text-muted">Update your goal, test date, and daily time with a quick walkthrough.</span>
+        </span>
+        <span className="shrink-0 text-sm font-medium text-red group-hover:underline">Start →</span>
+      </Link>
       <SettingsForms
         user={{ name: user.name, email: user.email, target_score: user.target_score, test_date: user.test_date }}
         hasPassword={!!row.password_hash}
