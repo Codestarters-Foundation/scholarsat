@@ -15,9 +15,16 @@ export async function POST(req: Request) {
   }
   if (b.action === "password") {
     const row = db.prepare("SELECT password_hash FROM users WHERE id = ?").get(user.id) as { password_hash: string };
-    if (!(await verifyPassword(String(b.current ?? ""), row.password_hash))) return bad("Current password is incorrect.");
+    // Google-only accounts have no password yet and can set one directly.
+    if (row.password_hash && !(await verifyPassword(String(b.current ?? ""), row.password_hash))) return bad("Current password is incorrect.");
     if (String(b.next ?? "").length < 8) return bad("New password must be at least 8 characters.");
     db.prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(await hashPassword(String(b.next)), user.id);
+    return json({ ok: true });
+  }
+  if (b.action === "unlink_google") {
+    const row = db.prepare("SELECT password_hash FROM users WHERE id = ?").get(user.id) as { password_hash: string };
+    if (!row.password_hash) return bad("Set a password first so you can still log in.");
+    db.prepare("UPDATE users SET google_sub = NULL WHERE id = ?").run(user.id);
     return json({ ok: true });
   }
   if (b.action === "reset") {
@@ -27,7 +34,11 @@ export async function POST(req: Request) {
   }
   if (b.action === "delete") {
     const row = db.prepare("SELECT password_hash FROM users WHERE id = ?").get(user.id) as { password_hash: string };
-    if (!(await verifyPassword(String(b.password ?? ""), row.password_hash))) return bad("Password is incorrect.");
+    if (row.password_hash) {
+      if (!(await verifyPassword(String(b.password ?? ""), row.password_hash))) return bad("Password is incorrect.");
+    } else if (String(b.password ?? "").trim().toLowerCase() !== user.email.toLowerCase()) {
+      return bad("Type your email address exactly to confirm.");
+    }
     await destroySession();
     db.prepare("DELETE FROM users WHERE id = ?").run(user.id);
     return json({ ok: true });

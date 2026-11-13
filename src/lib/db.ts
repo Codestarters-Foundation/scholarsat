@@ -63,6 +63,10 @@ function open() {
       PRIMARY KEY (user_id, word)
     );
   `);
+  // Migrations
+  const userCols = new Set((db.prepare("PRAGMA table_info(users)").all() as { name: string }[]).map((c) => c.name));
+  if (!userCols.has("google_sub")) db.exec("ALTER TABLE users ADD COLUMN google_sub TEXT");
+  db.exec("CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub ON users(google_sub) WHERE google_sub IS NOT NULL");
   return db;
 }
 

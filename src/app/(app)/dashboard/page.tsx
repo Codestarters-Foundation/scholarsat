@@ -2,142 +2,230 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth";
 import { userStats } from "@/lib/stats";
-import { counts, dailyQuestion } from "@/lib/bank";
+import { counts, dailyQuestion, QUESTIONS } from "@/lib/bank";
 import { db } from "@/lib/db";
 import { TAXONOMY, SECTION_LABEL, type Section } from "@/lib/types";
-import { Badge, Card, LinkButton, PageTitle, Progress } from "@/components/ui";
-import { IArrowR, IFire, ITarget } from "@/components/icons";
+import { Badge, Card, HeaderCard, LinkButton, Progress, Ring, SubjectArt } from "@/components/ui";
+import { Owl } from "@/components/Owl";
+import { IArrowR, IChevR, IFireSolid, ITarget } from "@/components/icons";
 
-export const metadata: Metadata = { title: "Dashboard" };
+export const metadata: Metadata = { title: "Home" };
+
+const DAILY_GOAL = 20;
 
 export default async function Dashboard() {
   const user = await requireUser();
   const s = userStats(user.id);
   const c = counts();
-  const dq = { rw: dailyQuestion("rw"), math: dailyQuestion("math") };
+  const dq = { math: dailyQuestion("math"), rw: dailyQuestion("rw") };
+  const dayNo = Math.floor(Date.now() / 86400000) - 20400; // stable, human-sized daily number
   const tests = db.prepare("SELECT id, finished_at, score_rw, score_math FROM tests WHERE user_id = ? ORDER BY id DESC LIMIT 3").all(user.id) as { id: number; finished_at: number | null; score_rw: number | null; score_math: number | null }[];
   const lastTest = tests.find((t) => t.finished_at);
+  const openTest = tests.find((t) => !t.finished_at);
   const daysLeft = user.test_date ? Math.ceil((new Date(user.test_date + "T00:00:00").getTime() - Date.now()) / 86400000) : null;
+  const today = s.activity[s.activity.length - 1]?.count ?? 0;
   const maxAct = Math.max(1, ...s.activity.map((a) => a.count));
   const first = user.name.split(" ")[0];
+  const lastQ = db.prepare("SELECT question_id FROM attempts WHERE user_id = ? ORDER BY id DESC LIMIT 1").get(user.id) as { question_id: string } | undefined;
+  const lastSkill = lastQ ? QUESTIONS.find((q) => q.id === lastQ.question_id) : undefined;
 
-  // weakest skills (need at least 3 answered)
   const weak = Object.entries(s.bySkill)
     .filter(([, v]) => v.seen >= 3)
     .map(([k, v]) => ({ skill: k, ...v, acc: v.correct / v.seen }))
     .sort((a, b) => a.acc - b.acc)
     .slice(0, 3);
 
-  return (
-    <>
-      <PageTitle title={`Welcome back, ${first}`} sub={daysLeft !== null && daysLeft >= 0 ? `${daysLeft} day${daysLeft === 1 ? "" : "s"} until your SAT.` : "Every question you practice moves you forward."} action={<LinkButton href="/practice">Start practicing <IArrowR className="h-4 w-4" /></LinkButton>} />
+  const dateLabel = new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Card>
-          <p className="text-sm text-muted">Predicted score</p>
-          {s.predicted ? (
-            <>
-              <p className="mt-1 font-display text-4xl font-semibold text-red">{s.predicted.total}</p>
-              <p className="mt-1 text-xs text-muted">R&amp;W {s.predicted.rw} · Math {s.predicted.math}</p>
-            </>
-          ) : (
-            <>
-              <p className="mt-1 font-display text-4xl font-semibold text-line">—</p>
-              <p className="mt-1 text-xs text-muted">Answer 10+ questions in each section to unlock.</p>
-            </>
-          )}
-        </Card>
-        <Card>
-          <p className="text-sm text-muted">Questions answered</p>
-          <p className="mt-1 font-display text-4xl font-semibold">{s.unique.toLocaleString()}</p>
-          <p className="mt-1 text-xs text-muted">{s.unique ? `${Math.round((s.correct / s.unique) * 100)}% correct` : `of ${c.total.toLocaleString()} in the bank`}</p>
-        </Card>
-        <Card>
-          <p className="flex items-center gap-1.5 text-sm text-muted"><IFire className="h-4 w-4 text-gold" /> Daily streak</p>
-          <p className="mt-1 font-display text-4xl font-semibold">{s.streak}<span className="ml-1 text-base font-normal text-muted">day{s.streak === 1 ? "" : "s"}</span></p>
-          <div className="mt-2 flex h-8 items-end gap-1" aria-label="Activity over the last 14 days">
-            {s.activity.map((a) => (
-              <div key={a.day} className={`flex-1 rounded-sm ${a.count ? "bg-gold" : "bg-surface"}`} style={{ height: `${a.count ? 20 + (a.count / maxAct) * 80 : 15}%` }} title={`${a.count} answered`} />
-            ))}
-          </div>
-        </Card>
-        <Card>
-          <p className="flex items-center gap-1.5 text-sm text-muted"><ITarget className="h-4 w-4 text-red" /> Target score</p>
-          <p className="mt-1 font-display text-4xl font-semibold">{user.target_score ?? "—"}</p>
-          <Link href="/settings" className="mt-1 inline-block text-xs font-semibold text-red hover:underline">{user.target_score ? "Change goal" : "Set a goal"}</Link>
-        </Card>
+  return (
+    <div className="animate-rise">
+      <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-[30px] leading-tight font-medium tracking-[-0.01em]">Welcome back, {first}</h1>
+          <p className="mt-1 text-[15px] text-muted">
+            {daysLeft !== null && daysLeft >= 0 ? `${daysLeft} day${daysLeft === 1 ? "" : "s"} until your SAT. Let's make them count.` : "Every question you practice moves you forward."}
+          </p>
+        </div>
+        <LinkButton href="/practice">Start practicing <IArrowR className="h-4 w-4" /></LinkButton>
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <h2 className="font-display text-xl font-semibold">Skill breakdown</h2>
-          <p className="text-sm text-muted">Accuracy on each domain, based on your latest answer to each question.</p>
-          <div className="mt-5 grid gap-6 md:grid-cols-2">
-            {(["rw", "math"] as Section[]).map((sec) => (
-              <div key={sec}>
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gold-600">{SECTION_LABEL[sec]}</h3>
-                <ul className="grid gap-3">
-                  {TAXONOMY[sec].map((d) => {
-                    const skills = d.skills.map((k) => s.bySkill[k]).filter(Boolean);
-                    const seen = skills.reduce((a, b) => a + b.seen, 0);
-                    const corr = skills.reduce((a, b) => a + b.correct, 0);
-                    return (
-                      <li key={d.domain}>
-                        <div className="mb-1 flex justify-between text-sm">
-                          <Link href={`/practice/play?section=${sec}&domain=${encodeURIComponent(d.domain)}`} className="font-medium hover:text-red">{d.domain}</Link>
-                          <span className="tabular-nums text-muted">{seen ? `${Math.round((corr / seen) * 100)}%` : "—"}</span>
-                        </div>
-                        <Progress value={seen ? corr / seen : 0} tone={seen && corr / seen >= 0.7 ? "ok" : seen && corr / seen < 0.5 ? "red" : "gold"} />
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        {/* Left column */}
+        <div className="grid content-start gap-6">
+          <HeaderCard
+            title={<span className="flex items-center gap-2.5">Daily Questions <span className="rounded-md bg-white/20 px-2 py-0.5 text-[13px]">#{dayNo}</span></span>}
+            right={<span>{dateLabel}</span>}
+            bodyClassName="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-1"
+          >
+            {(["math", "rw"] as Section[]).map((sec) => (
+              <Link
+                key={sec}
+                href={`/practice/play?ids=${dq[sec].id}&title=${encodeURIComponent(`Daily #${dayNo} · ${SECTION_LABEL[sec]}`)}`}
+                className={`group relative flex h-40 flex-col justify-between overflow-hidden rounded-xl p-5 transition-transform hover:-translate-y-0.5 ${sec === "math" ? "bg-red-50 text-red" : "bg-gold-50 text-gold-600"}`}
+              >
+                <SubjectArt kind={sec} className="pointer-events-none absolute -right-6 -top-8 h-56 w-56 transition-transform duration-500 group-hover:rotate-3 group-hover:scale-105" />
+                <div className="relative">
+                  <p className="eyebrow opacity-80">Daily #{dayNo}</p>
+                  <p className="mt-1 text-[20px] font-medium text-ink">{SECTION_LABEL[sec]}</p>
+                </div>
+                <div className="relative flex items-end justify-between text-sm">
+                  <span className="font-medium text-ink">{dq[sec].skill.length > 34 ? dq[sec].domain : dq[sec].skill}</span>
+                  <span className="inline-flex items-center gap-1 font-medium">Solve <IChevR className="h-4 w-4 transition-transform group-hover:translate-x-0.5" /></span>
+                </div>
+              </Link>
             ))}
-          </div>
-        </Card>
+          </HeaderCard>
 
-        <div className="grid gap-6">
-          <Card className="border-gold-100 bg-gradient-to-br from-white to-gold-50">
-            <h2 className="font-display text-xl font-semibold">Questions of the day</h2>
-            <p className="text-sm text-muted">Same two questions for everyone, every day.</p>
-            <div className="mt-4 grid gap-2">
-              {(["rw", "math"] as Section[]).map((sec) => (
-                <Link key={sec} href={`/practice/play?ids=${dq[sec].id}&title=${encodeURIComponent("Question of the day")}`} className="flex items-center justify-between rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold hover:border-red/40">
-                  <span>{SECTION_LABEL[sec]}</span>
-                  <span className="flex items-center gap-2 text-xs font-medium text-muted">{dq[sec].skill.split(":")[0]} <IArrowR className="h-4 w-4" /></span>
-                </Link>
-              ))}
-            </div>
-          </Card>
+          <HeaderCard title="Pick up where you left off" tone="ok" bodyClassName="p-5">
+            {openTest ? (
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p className="font-medium">Practice test #{openTest.id} is in progress</p>
+                  <p className="text-sm text-muted">Your answers and timer are saved.</p>
+                </div>
+                <LinkButton href={`/tests/${openTest.id}`} variant="success">Resume test</LinkButton>
+              </div>
+            ) : lastSkill ? (
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-sm text-muted">Last practiced</p>
+                  <p className="truncate font-medium">{lastSkill.skill}</p>
+                </div>
+                <LinkButton href={`/practice/play?section=${lastSkill.section}&skill=${encodeURIComponent(lastSkill.skill)}&status=unanswered`} variant="success">Continue</LinkButton>
+              </div>
+            ) : (
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <p className="max-w-sm text-sm text-muted">Your most recent practice shows up here so you can jump straight back in.</p>
+                <LinkButton href="/practice" variant="success">Begin</LinkButton>
+              </div>
+            )}
+          </HeaderCard>
+
           <Card>
-            <h2 className="font-display text-xl font-semibold">Focus next</h2>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-[17px] font-medium">Focus next</h2>
+              <span className="text-xs text-muted">Your weakest skills</span>
+            </div>
             {weak.length ? (
               <ul className="mt-3 grid gap-2">
                 {weak.map((w) => (
                   <li key={w.skill}>
-                    <Link href={`/practice/play?section=${w.section}&skill=${encodeURIComponent(w.skill)}`} className="flex items-center justify-between gap-3 rounded-xl px-1 py-1.5 text-sm hover:text-red">
-                      <span className="min-w-0 truncate">{w.skill}</span>
-                      <Badge tone={w.acc < 0.5 ? "red" : "gold"}>{Math.round(w.acc * 100)}%</Badge>
+                    <Link href={`/practice/play?section=${w.section}&skill=${encodeURIComponent(w.skill)}`} className="group flex items-center gap-3 rounded-xl border border-line px-3.5 py-3 text-sm transition-colors hover:border-red-200 hover:bg-red-50/50">
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate font-medium">{w.skill}</span>
+                        <span className="text-xs text-muted">{w.domain}</span>
+                      </span>
+                      <Badge tone={w.acc < 0.5 ? "bad" : "warn"}>{Math.round(w.acc * 100)}%</Badge>
+                      <IChevR className="h-4 w-4 text-muted transition-transform group-hover:translate-x-0.5" />
                     </Link>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="mt-2 text-sm text-muted">Answer a few questions and we&apos;ll point out the skills that need the most work.</p>
+              <p className="mt-2 text-sm text-muted">Answer a few questions in a skill and the ones that need the most work show up here.</p>
             )}
-          </Card>
-          <Card>
-            <h2 className="font-display text-xl font-semibold">Practice tests</h2>
-            {lastTest ? (
-              <p className="mt-2 text-sm">Last score: <span className="font-semibold text-red">{(lastTest.score_rw ?? 0) + (lastTest.score_math ?? 0)}</span></p>
-            ) : (
-              <p className="mt-2 text-sm text-muted">Take a full-length, adaptive mock test to get a baseline.</p>
-            )}
-            <LinkButton href="/tests" variant="secondary" className="mt-3 w-full">Go to practice tests</LinkButton>
           </Card>
         </div>
+
+        {/* Right column */}
+        <div className="grid content-start gap-6">
+          <div className="grid grid-cols-3 gap-4">
+            <Card className="flex flex-col items-center justify-center py-6 text-center">
+              <span className="flex items-center gap-1.5">
+                <IFireSolid className={`h-8 w-8 ${s.streak ? "" : "opacity-40 grayscale"}`} />
+                <span className={`text-[32px] leading-none font-medium tabular-nums ${s.streak ? "text-ink" : "text-faint"}`}>{s.streak}</span>
+              </span>
+              <span className="mt-2 text-sm text-muted">day streak</span>
+            </Card>
+            <Card className="flex flex-col items-center justify-center py-6 text-center">
+              <p className="text-sm font-medium">Next SAT</p>
+              {daysLeft !== null && daysLeft >= 0 ? (
+                <>
+                  <p className="mt-1 text-[28px] leading-none font-medium text-red tabular-nums">{daysLeft}</p>
+                  <p className="mt-1 text-xs text-muted">days to go</p>
+                </>
+              ) : (
+                <Link href="/settings" className="mt-2 rounded-lg bg-surface-2 px-3 py-1.5 text-xs font-medium text-muted hover:text-ink">Set test date</Link>
+              )}
+            </Card>
+            <Card className="flex flex-col items-center justify-center py-6 text-center">
+              <p className="flex items-center gap-1 text-sm font-medium"><ITarget className="h-4 w-4 text-red" /> Goal</p>
+              {user.target_score ? (
+                <p className="mt-1 text-[28px] leading-none font-medium tabular-nums">{user.target_score}</p>
+              ) : (
+                <Link href="/settings" className="mt-2 rounded-lg bg-surface-2 px-3 py-1.5 text-xs font-medium text-muted hover:text-ink">Set a goal</Link>
+              )}
+            </Card>
+          </div>
+
+          <Card>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-[17px] font-medium">Daily goal</h2>
+              {today >= DAILY_GOAL && <Badge tone="ok">Done for today</Badge>}
+            </div>
+            <div className="mt-4"><Progress value={today / DAILY_GOAL} tone={today >= DAILY_GOAL ? "ok" : "gold"} className="h-9 rounded-xl" /></div>
+            <div className="mt-3 flex items-end justify-between gap-4">
+              <p className="text-sm text-muted"><span className="font-medium text-ink tabular-nums">{Math.min(today, DAILY_GOAL)}</span> / {DAILY_GOAL} questions today</p>
+              <div className="flex h-8 w-40 items-end gap-[3px]" aria-label="Questions answered over the last 14 days">
+                {s.activity.map((a) => (
+                  <div key={a.day} className={`flex-1 rounded-[3px] ${a.count ? "bg-gold" : "bg-surface-2"}`} style={{ height: `${a.count ? 25 + (a.count / maxAct) * 75 : 18}%` }} title={`${a.count} answered`} />
+                ))}
+              </div>
+            </div>
+          </Card>
+
+          <HeaderCard title="Your Progress" right={<Link href="/tests" className="hover:underline">Practice tests →</Link>} bodyClassName="p-5">
+            <div className="flex items-center gap-5 rounded-xl bg-surface p-4">
+              {s.predicted ? (
+                <>
+                  <div>
+                    <p className="text-xs text-muted">Predicted score</p>
+                    <p className="text-[40px] leading-none font-medium text-red tabular-nums">{s.predicted.total}</p>
+                  </div>
+                  <div className="grid gap-1 border-l border-line pl-5 text-sm">
+                    <p><span className="text-muted">Reading &amp; Writing</span> <span className="ml-2 font-medium tabular-nums">{s.predicted.rw}</span></p>
+                    <p><span className="text-muted">Math</span> <span className="ml-2 font-medium tabular-nums">{s.predicted.math}</span></p>
+                    {lastTest && <p><span className="text-muted">Last test</span> <span className="ml-2 font-medium tabular-nums">{(lastTest.score_rw ?? 0) + (lastTest.score_math ?? 0)}</span></p>}
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <Owl size={52} />
+                  <p className="text-sm text-muted">Answer 10+ questions in each section to unlock your predicted score. You&apos;ve answered {s.unique.toLocaleString()} of {c.total.toLocaleString()}.</p>
+                </div>
+              )}
+            </div>
+            <div className="mt-5 grid gap-6 sm:grid-cols-2">
+              {(["rw", "math"] as Section[]).map((sec) => (
+                <div key={sec}>
+                  <p className="eyebrow mb-3 text-gold-600">{SECTION_LABEL[sec]}</p>
+                  <ul className="grid gap-3.5">
+                    {TAXONOMY[sec].map((d) => {
+                      const skills = d.skills.map((k) => s.bySkill[k]).filter(Boolean);
+                      const seen = skills.reduce((a, b) => a + b.seen, 0);
+                      const corr = skills.reduce((a, b) => a + b.correct, 0);
+                      const acc = seen ? corr / seen : 0;
+                      return (
+                        <li key={d.domain}>
+                          <div className="mb-1.5 flex justify-between gap-2 text-sm">
+                            <Link href={`/practice/play?section=${sec}&domain=${encodeURIComponent(d.domain)}`} className="truncate hover:text-red">{d.domain}</Link>
+                            <span className="tabular-nums text-muted">{seen ? `${Math.round(acc * 100)}%` : "–"}</span>
+                          </div>
+                          <Progress value={acc} tone={seen && acc >= 0.7 ? "ok" : seen && acc < 0.5 ? "red" : "gold"} />
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 flex items-center gap-4 border-t border-line pt-4">
+              <Ring value={s.unique ? s.correct / s.unique : null} size={56} stroke={6} tone="ok" />
+              <p className="text-sm text-muted"><span className="font-medium text-ink">{s.unique.toLocaleString()}</span> questions answered · {s.unique ? `${Math.round((s.correct / s.unique) * 100)}% correct overall` : "start with any skill"}</p>
+            </div>
+          </HeaderCard>
+        </div>
       </div>
-    </>
+    </div>
   );
 }

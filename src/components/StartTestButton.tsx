@@ -2,12 +2,14 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "./ui";
+import { IArrowR } from "./icons";
 
 export function StartTestButton() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   return (
     <Button
+      size="lg"
       disabled={busy}
       onClick={async () => {
         setBusy(true);
@@ -16,7 +18,7 @@ export function StartTestButton() {
         else setBusy(false);
       }}
     >
-      {busy ? "Preparing your test…" : "Start a new test"}
+      {busy ? "Preparing your test…" : <>Start a new test <IArrowR className="h-4 w-4" /></>}
     </Button>
   );
 }

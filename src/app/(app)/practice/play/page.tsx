@@ -41,5 +41,7 @@ export default async function Play({ searchParams }: { searchParams: Promise<SP>
     title = sp.skill ?? sp.domain ?? (skills?.length === 1 ? skills[0] : `${SECTION_LABEL[section]} practice`);
   }
 
-  return <PracticePlayer ids={ids} signedIn={!!user} title={title} />;
+  const items = ids.map((id) => ({ id, difficulty: BY_ID.get(id)!.difficulty }));
+  const backHref = sp.section === "rw" ? "/practice?section=rw" : "/practice";
+  return <PracticePlayer items={items} signedIn={!!user} title={title} backHref={backHref} />;
 }

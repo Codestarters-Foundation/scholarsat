@@ -1,22 +1,39 @@
 import type { Metadata } from "next";
 import { getUser } from "@/lib/auth";
 import { QUESTIONS } from "@/lib/bank";
-import { statusSets } from "@/lib/stats";
+import { statusSets, userStats } from "@/lib/stats";
 import type { Difficulty } from "@/lib/types";
-import { PageTitle } from "@/components/ui";
-import { PracticeFilters } from "@/components/PracticeFilters";
+import { PracticeFilters, type SkillInfo } from "@/components/PracticeFilters";
 
 export const metadata: Metadata = { title: "Question Bank" };
 
-export default async function PracticePage() {
+export default async function PracticePage({ searchParams }: { searchParams: Promise<{ section?: string }> }) {
+  const sp = await searchParams;
   const user = await getUser();
-  const counts: Record<string, Record<Difficulty, number>> = {};
-  for (const q of QUESTIONS) (counts[q.skill] ??= { E: 0, M: 0, H: 0 })[q.difficulty]++;
   const st = user ? statusSets(user.id) : null;
+  const stats = user ? userStats(user.id) : null;
+
+  const skills: Record<string, SkillInfo> = {};
+  for (const q of QUESTIONS) {
+    const s = (skills[q.skill] ??= { total: 0, byDiff: { E: 0, M: 0, H: 0 } as Record<Difficulty, number>, answered: 0, correct: 0, wrong: 0 });
+    s.total++;
+    s.byDiff[q.difficulty]++;
+  }
+  if (stats) {
+    for (const [k, v] of Object.entries(stats.bySkill)) {
+      if (!skills[k]) continue;
+      skills[k].answered = v.seen;
+      skills[k].correct = v.correct;
+      skills[k].wrong = v.seen - v.correct;
+    }
+  }
+
   return (
-    <>
-      <PageTitle title="Question Bank" sub={`${QUESTIONS.length.toLocaleString()} free questions with full explanations. Pick skills, set difficulty, and go.`} />
-      <PracticeFilters counts={counts} signedIn={!!user} statusCounts={st ? { incorrect: st.incorrect.size, bookmarks: st.bookmarks.size } : undefined} />
-    </>
+    <PracticeFilters
+      initialSection={sp.section === "rw" ? "rw" : "math"}
+      skills={skills}
+      signedIn={!!user}
+      statusCounts={st ? { incorrect: st.incorrect.size, bookmarks: st.bookmarks.size } : undefined}
+    />
   );
 }

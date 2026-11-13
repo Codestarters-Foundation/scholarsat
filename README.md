@@ -34,6 +34,10 @@ npm run dev        # builds the question bank, then http://localhost:3000
 
 Data is stored in `./data/scholarsat.db` (override with `DATA_DIR`).
 
+**Google sign-in (optional):** create an OAuth client ID (Web application) in Google Cloud Console, add `http://localhost:3000/api/auth/google/callback` and `https://YOUR_DOMAIN/api/auth/google/callback` as authorized redirect URIs, and set `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` (in `.env.local` for dev, `.env` on the server). The "Continue with Google" button appears once both are set.
+
+**Fonts:** the UI uses the CursorGothic + Berkeley Mono pairing, falling back to Inter and the system monospace. Drop the licensed `CursorGothic-Regular.woff2`, `CursorGothic-Medium.woff2`, and `BerkeleyMono-Regular.woff2` into `public/fonts/` and they load automatically at the next build.
+
 ## Deploy (single VPS)
 
 1. Point an A record for your domain at the server.

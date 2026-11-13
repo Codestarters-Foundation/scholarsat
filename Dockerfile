@@ -8,7 +8,8 @@ RUN npm ci
 # ---- build ----
 FROM node:22-bookworm-slim AS build
 WORKDIR /app
-ENV NEXT_TELEMETRY_DISABLED=1
+ARG NEXT_PUBLIC_DESMOS_API_KEY
+ENV NEXT_TELEMETRY_DISABLED=1 NEXT_PUBLIC_DESMOS_API_KEY=$NEXT_PUBLIC_DESMOS_API_KEY
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # builds src/data/questions.json from the original generators, then the Next.js app

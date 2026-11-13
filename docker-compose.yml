@@ -1,6 +1,9 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_DESMOS_API_KEY: ${NEXT_PUBLIC_DESMOS_API_KEY:-}
     image: scholarsat:latest
     restart: unless-stopped
     env_file: .env
