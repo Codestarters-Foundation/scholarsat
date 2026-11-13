@@ -9,7 +9,7 @@
     "lint": "eslint",
     "bank": "tsx scripts/build-bank.ts",
     "prebuild": "tsx scripts/build-bank.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsx scripts/build-bank.ts > /dev/null && tsc --noEmit"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
