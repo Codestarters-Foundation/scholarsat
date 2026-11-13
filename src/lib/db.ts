@@ -12,6 +12,9 @@ declare global {
 function open() {
   mkdirSync(DATA_DIR, { recursive: true });
   const db = new Database(path.join(DATA_DIR, "scholarsat.db"));
+  // Several processes can open a fresh database at once (parallel `next build` workers, restarts).
+  // Wait for locks instead of failing with SQLITE_BUSY.
+  db.pragma("busy_timeout = 10000");
   db.pragma("journal_mode = WAL");
   db.pragma("foreign_keys = ON");
   db.exec(`
@@ -65,9 +68,30 @@ function open() {
   `);
   // Migrations
   const userCols = new Set((db.prepare("PRAGMA table_info(users)").all() as { name: string }[]).map((c) => c.name));
-  if (!userCols.has("google_sub")) db.exec("ALTER TABLE users ADD COLUMN google_sub TEXT");
+  if (!userCols.has("google_sub")) {
+    try {
+      db.exec("ALTER TABLE users ADD COLUMN google_sub TEXT");
+    } catch (e) {
+      // Another process added it between our check and the ALTER.
+      if (!String(e).includes("duplicate column")) throw e;
+    }
+  }
   db.exec("CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub ON users(google_sub) WHERE google_sub IS NOT NULL");
   return db;
 }
 
-export const db: Database.Database = globalThis.__db ?? (globalThis.__db = open());
+/**
+ * Opened lazily on first use, so importing this module (e.g. while `next build` collects page data
+ * in parallel workers) never touches the database file.
+ */
+function get() {
+  return (globalThis.__db ??= open());
+}
+
+export const db: Database.Database = new Proxy({} as Database.Database, {
+  get(_t, prop) {
+    const d = get();
+    const v = Reflect.get(d, prop, d);
+    return typeof v === "function" ? v.bind(d) : v;
+  },
+});
