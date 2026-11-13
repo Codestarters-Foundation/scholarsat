@@ -1,26 +1,86 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #ffffff;
+  --surface: #fbf8f4;
+  --ink: #1b1416;
+  --muted: #6b5f62;
+  --line: #ece4dc;
+  --red: #a50c26;
+  --red-600: #8c0a20;
+  --red-50: #fcf1f2;
+  --red-100: #f8dde1;
+  --gold: #c1912f;
+  --gold-600: #9c7323;
+  --gold-50: #fbf5e8;
+  --gold-100: #f4e6c6;
+  --ok: #1f7a4d;
+  --ok-50: #ecf7f0;
+  --bad: #b42318;
+  --bad-50: #fdf0ef;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-red: var(--red);
+  --color-red-600: var(--red-600);
+  --color-red-50: var(--red-50);
+  --color-red-100: var(--red-100);
+  --color-gold: var(--gold);
+  --color-gold-600: var(--gold-600);
+  --color-gold-50: var(--gold-50);
+  --color-gold-100: var(--gold-100);
+  --color-ok: var(--ok);
+  --color-ok-50: var(--ok-50);
+  --color-bad: var(--bad);
+  --color-bad-50: var(--bad-50);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
 }
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--gold-100);
+}
+
+:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.blank {
+  display: inline-block;
+  width: 4.5rem;
+  border-bottom: 2px solid var(--ink);
+  margin: 0 0.15rem;
+  transform: translateY(-0.2rem);
+}
+
+.qtext {
+  line-height: 1.7;
+}
+.qtext .katex {
+  font-size: 1.05em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
