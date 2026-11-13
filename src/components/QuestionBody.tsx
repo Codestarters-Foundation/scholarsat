@@ -55,8 +55,8 @@ export function Choices({
   struck?: Set<string>;
   /** When provided, an eliminate button is shown beside each choice. */
   onStrike?: (l: string) => void;
-  /** `dist` = how many people picked each choice, shown as a crowd breakdown under every option. */
-  reveal?: { answer: string; dist?: Record<string, number> } | null;
+  /** `dist` = how many people picked each choice, shown as a crowd breakdown under every option. `answer: null` shows the crowd only: nothing is marked right or wrong (daily poll). */
+  reveal?: { answer: string | null; dist?: Record<string, number> } | null;
   disabled?: boolean;
 }) {
   const total = reveal?.dist ? Object.values(reveal.dist).reduce((a, b) => a + b, 0) : 0;
@@ -67,8 +67,8 @@ export function Choices({
         const l = L[i];
         const isSel = selected === l;
         const isStruck = struck?.has(l);
-        const isAns = reveal?.answer === l;
-        const wrongSel = reveal && isSel && !isAns;
+        const isAns = reveal?.answer != null && reveal.answer === l;
+        const wrongSel = !!reveal && reveal.answer !== null && isSel && !isAns;
         const tone = isAns
           ? "border-ok-500 bg-ok-50"
           : wrongSel
@@ -98,7 +98,7 @@ export function Choices({
               return (
                 <div className="mt-1.5 flex items-center gap-2" aria-label={`${pct} percent of ${total} people chose ${l}`}>
                   <div className="h-5 overflow-hidden rounded-md bg-surface-2" style={{ width: `${Math.max(pct, 12)}%`, minWidth: 72 }}>
-                    <div className={`pct-fill flex h-full w-full items-center px-2 text-[11px] font-medium tabular-nums ${isAns ? "bg-ok-500 text-white" : wrongSel ? "bg-bad text-white" : "bg-line-strong/70 text-ink-2"}`}>{pct}% ({n.toLocaleString()})</div>
+                    <div className={`pct-fill flex h-full w-full items-center px-2 text-[11px] font-medium tabular-nums ${isAns ? "bg-ok-500 text-white" : wrongSel ? "bg-bad text-white" : isSel ? "bg-red text-white" : "bg-line-strong/70 text-ink-2"}`}>{pct}% ({n.toLocaleString()})</div>
                   </div>
                 </div>
               );
