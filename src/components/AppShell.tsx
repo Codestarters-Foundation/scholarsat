@@ -6,7 +6,7 @@ import { UserMenu } from "./UserMenu";
 import { LinkButton } from "./ui";
 import { IGithub } from "./icons";
 
-const REPO = process.env.NEXT_PUBLIC_REPO_URL ?? "https://github.com/smaranz/scholarsat";
+const REPO = process.env.NEXT_PUBLIC_REPO_URL ?? "https://github.com/Codestarters-Foundation/scholarsat";
 
 export function AppShell({ user, answered = 0, children }: { user: User | null; answered?: number; children: ReactNode }) {
   const account = user ? (

@@ -11,6 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # reference/ holds large PDFs that the build never reads.
+          sparse-checkout: |
+            /*
+            !/reference/
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -29,16 +35,25 @@ jobs:
         env:
           SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           HOST: ${{ secrets.DEPLOY_HOST }}
+          REPO: ${{ github.repository }}
           KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          NEXT_PUBLIC_DESMOS_API_KEY: ${{ secrets.NEXT_PUBLIC_DESMOS_API_KEY }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
           echo "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          # Point the server at this repository, and skip the PDFs in reference/ (large, never used at runtime).
+          ssh deploy@"$HOST" "set -e; cd /opt/scholarsat; git remote set-url origin https://github.com/$REPO.git; git config remote.origin.promisor true; git config remote.origin.partialclonefilter blob:none; git config core.sparseCheckout true; printf '/*\n!/reference/\n' > .git/info/sparse-checkout"
           # Keep Google sign-in credentials in the server's .env (replaces any previous values).
           if [ -n "$GOOGLE_CLIENT_ID" ] && [ -n "$GOOGLE_CLIENT_SECRET" ]; then
             printf 'GOOGLE_CLIENT_ID=%s\nGOOGLE_CLIENT_SECRET=%s\n' "$GOOGLE_CLIENT_ID" "$GOOGLE_CLIENT_SECRET" |
               ssh deploy@"$HOST" 'set -e; cd /opt/scholarsat; umask 077; touch .env; (grep -v "^GOOGLE_CLIENT_" .env || true) > .env.new; cat >> .env.new; mv .env.new .env'
+          fi
+          # Keep the Desmos calculator key in the server's .env; docker compose passes it to the build.
+          if [ -n "$NEXT_PUBLIC_DESMOS_API_KEY" ]; then
+            printf 'NEXT_PUBLIC_DESMOS_API_KEY=%s\n' "$NEXT_PUBLIC_DESMOS_API_KEY" |
+              ssh deploy@"$HOST" 'set -e; cd /opt/scholarsat; umask 077; touch .env; (grep -v "^NEXT_PUBLIC_DESMOS_API_KEY=" .env || true) > .env.new; cat >> .env.new; mv .env.new .env'
           fi
           ssh deploy@"$HOST" 'cd /opt/scholarsat && ./deploy/deploy.sh'

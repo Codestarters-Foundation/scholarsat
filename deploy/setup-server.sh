@@ -4,7 +4,7 @@
 # Idempotent: safe to re-run. Does not reinstall the OS or touch existing data.
 set -euo pipefail
 DEPLOY_USER=deploy
-REPO=${REPO:-https://github.com/smaranz/scholarsat.git}
+REPO=${REPO:-https://github.com/Codestarters-Foundation/scholarsat.git}
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -q

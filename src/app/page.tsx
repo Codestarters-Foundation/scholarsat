@@ -18,7 +18,7 @@ import { btn, LinkButton, Ring } from "@/components/ui";
 import { IArrowR, ICheckCircle, IFireSolid, IXCircle } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
-const REPO = process.env.NEXT_PUBLIC_REPO_URL ?? "https://github.com/smaranz/scholarsat";
+const REPO = process.env.NEXT_PUBLIC_REPO_URL ?? "https://github.com/Codestarters-Foundation/scholarsat";
 const CODESTARTERS = "https://codestarters.org";
 
 /** CSS custom properties read by landing.css: entrance delay and stagger index. */
