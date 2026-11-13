@@ -1,0 +1,82 @@
+/* Landing page motion. Kept out of globals.css; everything here is disabled under prefers-reduced-motion. */
+
+@keyframes lp-rise {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes lp-pop {
+  from { opacity: 0; transform: translateY(48px) scale(0.965); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes lp-line {
+  from { background-size: 0% 6px; }
+  to { background-size: 100% 6px; }
+}
+
+/* Hero entrance: plays on load, no JavaScript needed. */
+.lp-in {
+  animation: lp-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+.lp-pop {
+  animation: lp-pop 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+.lp-line {
+  background-image: linear-gradient(var(--gold), var(--gold));
+  background-repeat: no-repeat;
+  background-position: 0 96%;
+  background-size: 100% 6px;
+  padding-bottom: 0.04em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  animation: lp-line 900ms cubic-bezier(0.16, 1, 0.3, 1) 1000ms both;
+}
+
+/* Scroll reveal (see components/Reveal.tsx). Content is visible by default; it is only hidden once
+   the component has armed itself in the browser, so a failed script never leaves the page blank. */
+.lp-reveal[data-armed="true"]:not([data-in="true"]),
+.lp-group[data-armed="true"]:not([data-in="true"]) .lp-stagger {
+  opacity: 0;
+}
+.lp-reveal[data-in="true"] {
+  animation: lp-rise 800ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms) backwards;
+}
+.lp-group[data-in="true"] .lp-stagger {
+  animation: lp-rise 750ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i, 0) * 90ms) backwards;
+}
+
+/* Bars grow from the left once their block scrolls into view. */
+.lp-bar {
+  transform-origin: left center;
+  transition: transform 1200ms cubic-bezier(0.16, 1, 0.3, 1) calc(300ms + var(--i, 0) * 90ms);
+}
+.lp-reveal[data-armed="true"]:not([data-in="true"]) .lp-bar,
+.lp-group[data-armed="true"]:not([data-in="true"]) .lp-bar {
+  transform: scaleX(0);
+}
+
+/* Cards lift under a mouse; touch screens skip it. */
+.lp-lift {
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .lp-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-pop);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-in,
+  .lp-pop,
+  .lp-line,
+  .lp-reveal[data-in="true"],
+  .lp-group[data-in="true"] .lp-stagger {
+    animation: none !important;
+  }
+  .lp-bar,
+  .lp-lift {
+    transition: none !important;
+  }
+}

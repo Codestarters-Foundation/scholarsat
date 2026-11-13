@@ -1,21 +1,29 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { getUser } from "@/lib/auth";
 import { counts, dailyQuestion, QUESTIONS } from "@/lib/bank";
 import { rich } from "@/lib/render";
 import { MODULES } from "@/lib/tests";
 import { DIFFICULTY_LABEL, SECTION_LABEL, TAXONOMY, type Difficulty, type Section } from "@/lib/types";
 import { VOCAB } from "@/data/vocab";
+import "@/components/landing.css";
 import { Logo } from "@/components/Logo";
 import { Owl } from "@/components/Owl";
 import { LandingQuestion, type LandingItem } from "@/components/LandingQuestion";
+import { LandingNav } from "@/components/LandingNav";
 import { LandingShowcase } from "@/components/LandingShowcase";
-import { LinkButton, Ring } from "@/components/ui";
-import { IArrowR, ICheckCircle, IFireSolid, IGithub, IXCircle } from "@/components/icons";
+import { CountUp, Reveal } from "@/components/Reveal";
+import { btn, LinkButton, Ring } from "@/components/ui";
+import { IArrowR, ICheckCircle, IFireSolid, IXCircle } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
 const REPO = process.env.NEXT_PUBLIC_REPO_URL ?? "https://github.com/smaranz/scholarsat";
+const CODESTARTERS = "https://codestarters.org";
+
+/** CSS custom properties read by landing.css: entrance delay and stagger index. */
+const delay = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
+const idx = (i: number) => ({ "--i": i }) as CSSProperties;
 
 const FAQ = [
   ["Is ScholarSAT really free?", "Yes. Every question, every practice test, and every feature is free, with no trial and no premium tier. The project is open source, so anyone can read the code and run their own copy."],
@@ -23,7 +31,7 @@ const FAQ = [
   ["How are the math answers checked?", "Every math question is built from parameters, and its answer is computed by the program rather than typed by hand. Type-in answers accept any equivalent form, so 0.5, .5, and 1/2 are all marked correct."],
   ["How accurate is the predicted score?", "It's an estimate based on your accuracy across ScholarSAT questions and mock tests, weighted by difficulty. Use it to track direction and progress, and use official Bluebook tests for the most realistic benchmark."],
   ["Do I need an account?", "No. You can practice from the question bank right away. A free account adds progress tracking, saved questions, mistake review, and full-length practice tests."],
-  ["Who runs ScholarSAT?", "ScholarSAT is an independent open-source project built on the belief that high-quality test prep shouldn't cost hundreds of dollars. Contributions are welcome on GitHub."],
+  ["Who runs ScholarSAT?", "ScholarSAT is a CodeStarters tool, made by CodeStarters (codestarters.org), a student-led nonprofit that makes computer science and AI accessible to every young student. It is open source, built on the belief that high-quality test prep shouldn't cost hundreds of dollars, and contributions are welcome on GitHub."],
 ];
 
 /** Real questions from the bank, shown in the "try one" section. Short enough to answer in a few seconds. */
@@ -67,21 +75,21 @@ function Tag({ children }: { children: ReactNode }) {
 /** Section header: tag, headline and intro on the left, actions on the right. */
 function SectionHead({ tag, title, children, actions }: { tag: string; title: ReactNode; children?: ReactNode; actions?: ReactNode }) {
   return (
-    <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+    <Reveal className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
       <div>
         <Tag>{tag}</Tag>
         <h2 className={`${H2} max-w-[20ch]`}>{title}</h2>
         {children && <p className="mt-5 max-w-[56ch] text-[17px] leading-[1.55] text-muted">{children}</p>}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-3">{actions}</div>}
-    </div>
+    </Reveal>
   );
 }
 
 /** Bento tile: a product visual on a tinted stage, with a title and one line under it. */
-function Tile({ title, children, visual, className = "" }: { title: string; children: ReactNode; visual: ReactNode; className?: string }) {
+function Tile({ title, children, visual, className = "", i = 0 }: { title: string; children: ReactNode; visual: ReactNode; className?: string; i?: number }) {
   return (
-    <div className={`flex flex-col overflow-hidden rounded-2xl border border-line bg-surface ${className}`}>
+    <div style={idx(i)} className={`lp-stagger lp-lift flex flex-col overflow-hidden rounded-2xl border border-line bg-surface ${className}`}>
       <div className="flex min-h-[240px] flex-1 items-center justify-center p-6 sm:p-8">{visual}</div>
       <div className="border-t border-line bg-white p-6">
         <h3 className="text-[18px] font-medium tracking-[-0.01em] text-ink">{title}</h3>
@@ -109,67 +117,45 @@ export default async function Landing() {
 
   return (
     <div className="bg-white text-[15px]">
-      <header className="sticky top-0 z-40 border-b border-line bg-white/90 backdrop-blur">
-        <div className={`${WRAP} flex items-center justify-between gap-4 py-3`}>
-          <Logo size={34} />
-          <nav className="hidden items-center gap-7 text-sm text-muted md:flex" aria-label="Site">
-            <a href="#bank" className="hover:text-ink">Question bank</a>
-            <a href="#tests" className="hover:text-ink">Mock tests</a>
-            <a href="#tools" className="hover:text-ink">Tools</a>
-            <a href="#faq" className="hover:text-ink">FAQ</a>
-            <a href={REPO} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-ink"><IGithub className="h-4 w-4" /> GitHub</a>
-          </nav>
-          <div className="flex items-center gap-2">
-            {user ? (
-              <LinkButton href="/dashboard" size="sm">Open dashboard</LinkButton>
-            ) : (
-              <>
-                <Link href="/login" className="hidden rounded-xl px-3 py-2 text-sm font-medium text-muted hover:text-ink sm:inline-block">Log in</Link>
-                <LinkButton href="/signup" size="sm">Create free account</LinkButton>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <LandingNav signedIn={Boolean(user)} repo={REPO} />
+      <div aria-hidden="true" className="h-[60px]" />
 
       <main>
         {/* Hero */}
         <section className={`${WRAP} pt-8 sm:pt-10`}>
           <div className="grid items-end gap-x-12 gap-y-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-            <h1 className="text-[44px] leading-[1.02] font-medium tracking-[-0.04em] text-ink sm:text-[64px] lg:text-[68px]">
-              Free SAT prep,<br />
-              <span className="text-red underline decoration-gold decoration-[5px] underline-offset-[10px]">forever.</span>
+            <h1 className="lp-in text-[44px] leading-[1.02] font-medium tracking-[-0.04em] text-ink sm:text-[64px] lg:text-[68px]">
+              <span className="lp-line text-red">Free</span> SAT prep.
             </h1>
-            <div className="lg:pb-3">
-              <p className="max-w-[44ch] text-[17px] leading-[1.55] text-muted">
-                {c.total.toLocaleString()} practice questions and full-length mock tests, each answer explained step by step. No trial, and nothing to pay for later.
-              </p>
-              <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="lp-in lg:pb-3" style={delay(150)}>
+              <div className="flex flex-wrap items-center gap-3 lg:justify-end">
                 <LinkButton href={primaryHref} size="lg">{primaryLabel} <IArrowR className="h-4 w-4" /></LinkButton>
                 <LinkButton href="/practice" variant="secondary" size="lg">Practice without an account</LinkButton>
               </div>
             </div>
           </div>
-          <div className="mt-12 sm:mt-16">
+          <div className="lp-pop mt-12 sm:mt-16" style={delay(300)}>
             <LandingShowcase />
           </div>
         </section>
 
         {/* Numbers, counted from the bank */}
         <section className={`${WRAP} py-16 sm:py-20`}>
+          <Reveal stagger>
           <dl className="grid grid-cols-2 gap-y-10 lg:grid-cols-4">
             {[
-              [c.total.toLocaleString(), "practice questions, each with a worked explanation"],
-              [String(skillCount), "skills covered, the same ones the digital SAT tests"],
-              [String(testQuestions), `questions in every mock test, timed at ${testLength}`],
+              [c.total, "practice questions, each with a worked explanation"],
+              [skillCount, "skills covered, the same ones the digital SAT tests"],
+              [testQuestions, `questions in every mock test, timed at ${testLength}`],
               ["$0", "for all of it, with no trial and no paid plan"],
             ].map(([n, l], i) => (
-              <div key={l} className={`flex flex-col-reverse gap-3 px-5 sm:px-8 ${i % 2 ? "border-l border-line" : ""} ${i === 2 ? "lg:border-l lg:border-line" : ""} ${i === 0 ? "pl-0 sm:pl-0" : ""} ${i === 2 ? "pl-0 sm:pl-0 lg:pl-8" : ""}`}>
+              <div key={l} style={idx(i)} className={`lp-stagger flex flex-col-reverse gap-3 px-5 sm:px-8 ${i % 2 ? "border-l border-line" : ""} ${i === 2 ? "lg:border-l lg:border-line" : ""} ${i === 0 ? "pl-0 sm:pl-0" : ""} ${i === 2 ? "pl-0 sm:pl-0 lg:pl-8" : ""}`}>
                 <dt className="max-w-[24ch] text-[14px] leading-snug text-muted">{l}</dt>
-                <dd className={`text-[52px] leading-none font-medium tracking-[-0.04em] tabular-nums sm:text-[72px] ${i === 3 ? "text-red" : "text-ink"}`}>{n}</dd>
+                <dd className={`text-[52px] leading-none font-medium tracking-[-0.04em] tabular-nums sm:text-[72px] ${i === 3 ? "text-red" : "text-ink"}`}>{typeof n === "number" ? <CountUp to={n} /> : n}</dd>
               </div>
             ))}
           </dl>
+          </Reveal>
         </section>
 
         {/* Question bank */}
@@ -183,11 +169,11 @@ export default async function Landing() {
               Sorted the way the digital SAT is sorted: two sections, eight domains, {skillCount} skills. Pick one skill and drill it, or mix a whole domain.
             </SectionHead>
 
-            <div className="mt-12 grid gap-4 lg:grid-cols-3">
-              {(["math", "rw"] as Section[]).map((sec) => {
+            <Reveal stagger className="mt-12 grid gap-4 lg:grid-cols-3">
+              {(["math", "rw"] as Section[]).map((sec, si) => {
                 const max = Math.max(...TAXONOMY[sec].map((d) => c.byDomain[d.domain] ?? 0), 1);
                 return (
-                  <div key={sec} className="rounded-2xl border border-line bg-surface p-6 sm:p-7">
+                  <div key={sec} style={idx(si)} className="lp-stagger lp-lift rounded-2xl border border-line bg-surface p-6 sm:p-7">
                     <div className="flex items-baseline justify-between gap-4">
                       <h3 className="text-[18px] font-medium tracking-[-0.01em] text-ink">{SECTION_LABEL[sec]}</h3>
                       <p className="shrink-0 whitespace-nowrap text-[14px] text-muted tabular-nums">{c.bySection[sec].toLocaleString()} questions</p>
@@ -202,7 +188,7 @@ export default async function Landing() {
                               <span className="text-muted tabular-nums">{n.toLocaleString()}</span>
                             </div>
                             <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-surface-2">
-                              <div className={`h-full rounded-full ${sec === "math" ? "bg-red" : "bg-gold"}`} style={{ width: `${Math.max(3, (n / max) * 100)}%` }} />
+                              <div className={`lp-bar h-full rounded-full ${sec === "math" ? "bg-red" : "bg-gold"}`} style={{ width: `${Math.max(3, (n / max) * 100)}%` }} />
                             </div>
                             <p className="mt-2.5 text-[13px] text-muted">{d.skills.length} {d.skills.length === 1 ? "skill" : "skills"}</p>
                           </li>
@@ -213,8 +199,8 @@ export default async function Landing() {
                 );
               })}
 
-              <div className="grid gap-4">
-                <div className="rounded-2xl border border-line bg-surface p-6 sm:p-7">
+              <div style={idx(2)} className="lp-stagger grid gap-4">
+                <div className="lp-lift rounded-2xl border border-line bg-surface p-6 sm:p-7">
                   <h3 className="text-[18px] font-medium tracking-[-0.01em] text-ink">Three difficulty levels</h3>
                   <div className="mt-6 flex h-28 items-end gap-3">
                     {(["E", "M", "H"] as Difficulty[]).map((d) => (
@@ -245,7 +231,7 @@ export default async function Landing() {
                   <p className="mt-4 text-[14px] leading-relaxed text-muted">Math answers are computed by the program, so type-in questions accept every equivalent form.</p>
                 </div>
               </div>
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -253,7 +239,7 @@ export default async function Landing() {
         {items.length > 0 && (
           <section className="border-t border-line bg-surface">
             <div className={`${WRAP} grid items-start gap-x-16 gap-y-28 py-20 sm:py-28 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)]`}>
-              <div>
+              <Reveal>
                 <Tag>Live question</Tag>
                 <h2 className={`${H2} max-w-[14ch]`}>Answer one <Hl>right now</Hl></h2>
                 <p className="mt-5 max-w-[46ch] text-[17px] leading-[1.55] text-muted">
@@ -264,8 +250,10 @@ export default async function Landing() {
                     <li key={t} className="flex items-start gap-3"><ICheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-red" /> {t}</li>
                   ))}
                 </ul>
-              </div>
-              <LandingQuestion items={items} />
+              </Reveal>
+              <Reveal delay={150}>
+                <LandingQuestion items={items} />
+              </Reveal>
             </div>
           </section>
         )}
@@ -281,10 +269,10 @@ export default async function Landing() {
               {testQuestions} questions in {testLength}, timed, with two modules per section. Module 2 adapts to how you did on module 1, just like test day.
             </SectionHead>
 
-            <div className="mt-12 rounded-2xl border border-line bg-surface p-4 sm:p-6">
+            <Reveal stagger className="mt-12 rounded-2xl border border-line bg-surface p-4 sm:p-6">
               <ol className="grid gap-2 md:flex">
                 {MODULES.map((m, i) => (
-                  <li key={i} style={{ flexGrow: m.minutes }} className={`rounded-xl border bg-white p-5 md:basis-0 ${m.section === "rw" ? "border-gold-100" : "border-red-100"}`}>
+                  <li key={i} style={{ flexGrow: m.minutes, ...idx(i) }} className={`lp-stagger rounded-xl border bg-white p-5 md:basis-0 ${m.section === "rw" ? "border-gold-100" : "border-red-100"}`}>
                     <div className={`h-1.5 w-10 rounded-full ${m.section === "rw" ? "bg-gold" : "bg-red"}`} />
                     <p className="mt-4 text-[13px] text-muted">{SECTION_LABEL[m.section]}</p>
                     <p className="text-[20px] font-medium tracking-[-0.01em] text-ink">Module {(i % 2) + 1}</p>
@@ -293,18 +281,20 @@ export default async function Landing() {
                   </li>
                 ))}
               </ol>
-            </div>
+            </Reveal>
 
             <h3 id="how" className="sr-only">How it works</h3>
-            <ol className="mt-4 grid overflow-hidden rounded-2xl border border-line md:grid-cols-3">
+            <Reveal stagger className="mt-4">
+            <ol className="grid overflow-hidden rounded-2xl border border-line md:grid-cols-3">
               {STEPS.map(([t, d], i) => (
-                <li key={t} className={`p-6 sm:p-7 ${i ? "border-t border-line md:border-l md:border-t-0" : ""}`}>
+                <li key={t} style={idx(i)} className={`lp-stagger p-6 sm:p-7 ${i ? "border-t border-line md:border-l md:border-t-0" : ""}`}>
                   <p className="grid h-8 w-8 place-items-center rounded-lg bg-red-50 font-mono text-[14px] text-red">{i + 1}</p>
                   <p className="mt-4 text-[18px] font-medium tracking-[-0.01em] text-ink">{t}</p>
                   <p className="mt-1.5 leading-relaxed text-muted">{d}</p>
                 </li>
               ))}
             </ol>
+            </Reveal>
           </div>
         </section>
 
@@ -319,9 +309,10 @@ export default async function Landing() {
               You can practice from the question bank right away. A free account saves your progress and adds four tools.
             </SectionHead>
 
-            <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-[1.25fr_1fr]">
+            <Reveal stagger className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-[1.25fr_1fr]">
               <Tile
                 title="Mistake review"
+                i={0}
                 visual={
                   <ul className="grid w-full max-w-md grid-cols-[minmax(0,1fr)] gap-2">
                     {missed.map((s) => (
@@ -339,6 +330,7 @@ export default async function Landing() {
 
               <Tile
                 title="Predicted score"
+                i={1}
                 visual={
                   <div className="flex w-full max-w-xs items-center gap-6 rounded-2xl border border-line bg-white p-5 shadow-card">
                     <Ring value={0.72} size={92} stroke={9} label="1380" />
@@ -347,7 +339,7 @@ export default async function Landing() {
                       {[["Math", 0.76, "bg-red"], ["Reading and Writing", 0.68, "bg-gold"]].map(([l, v, cls]) => (
                         <div key={l as string} className="mt-3">
                           <p className="truncate text-[13px] text-ink">{l}</p>
-                          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2"><div className={`h-full rounded-full ${cls}`} style={{ width: `${(v as number) * 100}%` }} /></div>
+                          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2"><div className={`lp-bar h-full rounded-full ${cls}`} style={{ width: `${(v as number) * 100}%` }} /></div>
                         </div>
                       ))}
                     </div>
@@ -359,6 +351,7 @@ export default async function Landing() {
 
               <Tile
                 title="Vocabulary flashcards"
+                i={3}
                 className="lg:order-4"
                 visual={
                   <div className="relative w-full max-w-sm">
@@ -376,6 +369,7 @@ export default async function Landing() {
 
               <Tile
                 title="Daily questions and streaks"
+                i={2}
                 className="lg:order-3"
                 visual={
                   <div className="grid w-full max-w-md grid-cols-[minmax(0,1fr)] gap-2">
@@ -398,18 +392,38 @@ export default async function Landing() {
               >
                 Two fresh questions every day keep your skills sharp and your streak alive.
               </Tile>
-            </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Made by CodeStarters */}
+        <section className="border-t border-line">
+          <div className={`${WRAP} py-20 sm:py-28`}>
+            <Reveal className="grid items-center gap-8 rounded-3xl border border-line bg-surface p-8 sm:p-12 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-12">
+              <div className="grid h-24 w-24 place-items-center rounded-2xl border border-line bg-white sm:h-28 sm:w-28">
+                <Image src="/codestarters-logo.png" alt="CodeStarters logo" width={72} height={72} className="h-16 w-16 sm:h-[72px] sm:w-[72px]" />
+              </div>
+              <div>
+                <h2 className="text-[30px] leading-[1.1] font-medium tracking-[-0.03em] text-ink sm:text-[40px]">Made by <Hl>CodeStarters</Hl></h2>
+                <p className="mt-4 max-w-[62ch] text-[17px] leading-[1.6] text-muted">
+                  ScholarSAT is a CodeStarters tool, built by CodeStarters, a student-led nonprofit that makes computer science and AI accessible to every young student.
+                </p>
+              </div>
+              <a href={CODESTARTERS} target="_blank" rel="noopener noreferrer" className={`${btn("secondary", "lg")} justify-self-start`}>
+                Visit codestarters.org <IArrowR className="h-4 w-4" />
+              </a>
+            </Reveal>
           </div>
         </section>
 
         {/* FAQ */}
         <section id="faq" className="scroll-mt-20 border-t border-line">
           <div className={`${WRAP} grid gap-x-16 gap-y-8 py-20 sm:py-28 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]`}>
-            <div>
+            <Reveal>
               <Tag>FAQ</Tag>
               <h2 className={H2}>Questions, <Hl>answered</Hl></h2>
-            </div>
-            <div className="border-b border-line">
+            </Reveal>
+            <Reveal delay={120} className="border-b border-line">
               {FAQ.map(([q, a]) => (
                 <details key={q} className="group border-t border-line [&_summary::-webkit-details-marker]:hidden">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[17px] font-medium text-ink">
@@ -419,13 +433,13 @@ export default async function Landing() {
                   <p className="max-w-[62ch] pb-6 leading-relaxed text-muted">{a}</p>
                 </details>
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
         {/* Closing call to action */}
         <section className={`${WRAP} pb-20 sm:pb-28`}>
-          <div className="group relative grid overflow-hidden rounded-3xl bg-red text-white lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+          <Reveal className="group relative grid overflow-hidden rounded-3xl bg-red text-white lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
             <div className="pattern-grid pointer-events-none absolute inset-0 text-white/[0.07]" />
             <div className="relative p-8 sm:p-14">
               <div className="grid h-[88px] w-[88px] place-items-center rounded-2xl bg-white"><Owl size={64} /></div>
@@ -442,7 +456,7 @@ export default async function Landing() {
             <div className="relative hidden min-h-[380px] lg:block" aria-hidden="true">
               <Image src="/landing/tests.webp" alt="" width={2040} height={1275} sizes="900px" className="absolute left-0 top-14 w-[900px] max-w-none rounded-tl-xl border border-black/20 shadow-[0_-8px_60px_rgb(0_0_0/0.28)]" />
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
 
@@ -450,7 +464,10 @@ export default async function Landing() {
         <div className={`${WRAP} grid gap-10 py-14 text-sm text-muted md:grid-cols-[minmax(0,1.6fr)_repeat(3,minmax(0,1fr))]`}>
           <div>
             <Logo size={30} />
-            <p className="mt-4 max-w-sm text-xs leading-relaxed">SAT® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, ScholarSAT. All ScholarSAT questions are original.</p>
+            <a href={CODESTARTERS} target="_blank" rel="noopener noreferrer" className="mt-4 flex w-fit items-center gap-2 text-[13px] font-medium text-ink hover:text-red">
+              <Image src="/codestarters-logo.png" alt="" width={22} height={22} className="h-[22px] w-[22px]" /> A CodeStarters tool
+            </a>
+            <p className="mt-3 max-w-sm text-xs leading-relaxed">SAT® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, ScholarSAT. All ScholarSAT questions are original.</p>
           </div>
           <nav aria-label="Practice" className="grid content-start gap-3">
             <p className="font-medium text-ink">Practice</p>
@@ -467,6 +484,7 @@ export default async function Landing() {
           <nav aria-label="Project" className="grid content-start gap-3">
             <p className="font-medium text-ink">Project</p>
             <a href={REPO} className="hover:text-ink" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href={CODESTARTERS} className="hover:text-ink" target="_blank" rel="noopener noreferrer">CodeStarters</a>
             <Link href="/privacy" className="hover:text-ink">Privacy</Link>
             <Link href="/terms" className="hover:text-ink">Terms</Link>
           </nav>
