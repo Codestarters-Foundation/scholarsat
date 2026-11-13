@@ -5,7 +5,8 @@ import type { DailyPollData } from "@/lib/daily";
 import { SECTION_LABEL, type Section } from "@/lib/types";
 import { Passage } from "./QuestionBody";
 import { Rich } from "./Rich";
-import { ICheck } from "./icons";
+import { ICheck, IChevD, IChevR } from "./icons";
+import { SubjectArt } from "./ui";
 
 const L = ["A", "B", "C", "D"];
 
@@ -31,12 +32,14 @@ function useCountdown(resetsAt: number) {
 /** Today's question as a poll: pick an answer, then see what everyone else picked. The answer is never shown. */
 export function DailyPoll({ polls }: { polls: Record<Section, DailyPollData> }) {
   const [data, setData] = useState(polls);
-  const [section, setSection] = useState<Section>("math");
+  const [open, setOpen] = useState<Section | null>(null);
+  const section: Section = open ?? "math";
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const p = data[section];
   const q = p.question;
   const countdown = useCountdown(p.resetsAt);
+  const dayNo = p.day - 20400;
   const voted = p.mine !== null;
   const split = !!(q.passage || q.table);
 
@@ -56,24 +59,41 @@ export function DailyPoll({ polls }: { polls: Record<Section, DailyPollData> }) 
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-3 border-b border-line px-4 pt-3 sm:px-5">
-        <div className="flex gap-1" role="tablist" aria-label="Section">
-          {(["math", "rw"] as Section[]).map((s) => (
+      <div className="grid gap-3 p-4 sm:grid-cols-2">
+        {(["math", "rw"] as Section[]).map((sec) => {
+          const d = data[sec];
+          const on = open === sec;
+          return (
             <button
-              key={s}
-              role="tab"
-              aria-selected={section === s}
-              onClick={() => setSection(s)}
-              className={`-mb-px border-b-2 px-3 py-2 text-sm font-medium transition-colors ${section === s ? "border-red text-red" : "border-transparent text-muted hover:text-ink"}`}
+              key={sec}
+              type="button"
+              onClick={() => setOpen(on ? null : sec)}
+              aria-expanded={on}
+              className={`group relative flex h-40 flex-col justify-between overflow-hidden rounded-xl p-5 text-left transition-all duration-200 hover:-translate-y-0.5 ${sec === "math" ? "bg-red-50 text-red" : "bg-gold-50 text-gold-600"} ${on ? "ring-2 ring-current" : ""}`}
             >
-              {SECTION_LABEL[s]}
-              {data[s].mine !== null && <ICheck className="ml-1.5 inline h-3.5 w-3.5 text-ok-500" />}
+              <SubjectArt kind={sec} className="pointer-events-none absolute -right-6 -top-8 h-56 w-56 transition-transform duration-500 group-hover:rotate-3 group-hover:scale-105" />
+              <div className="relative">
+                <p className="eyebrow opacity-80">Daily #{dayNo}</p>
+                <p className="mt-1 text-[20px] font-medium text-ink">{SECTION_LABEL[sec]}</p>
+              </div>
+              <div className="relative flex items-end justify-between text-sm">
+                <span className="flex items-center gap-1.5 font-medium text-ink">
+                  {d.mine !== null && <ICheck className="h-4 w-4 text-ok-500" />}
+                  {d.mine !== null ? "Voted" : "Click for more"}
+                </span>
+                <span className="inline-flex items-center gap-1 text-[13px] font-medium tabular-nums">
+                  {d.total.toLocaleString()} {d.total === 1 ? "vote" : "votes"}
+                  {on ? <IChevD className="h-4 w-4" /> : <IChevR className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />}
+                </span>
+              </div>
             </button>
-          ))}
-        </div>
-        <p className="pb-2 text-xs text-muted">New question in <span className="font-medium tabular-nums text-ink">{countdown || "…"}</span></p>
+          );
+        })}
       </div>
+      <p className="px-5 pb-3 text-xs text-muted">New question in <span className="font-medium tabular-nums text-ink">{countdown || "…"}</span></p>
 
+      {open && (
+      <div className="animate-rise border-t border-line">
       <div className="p-4 sm:p-5">
         <p className="eyebrow text-muted">{q.skill}</p>
         {split && (
@@ -118,6 +138,8 @@ export function DailyPoll({ polls }: { polls: Record<Section, DailyPollData> }) 
           {err ? <span className="text-bad">{err}</span> : voted ? <>You picked <span className="font-medium text-ink">{p.mine}</span>. {p.total.toLocaleString()} {p.total === 1 ? "person has" : "people have"} voted. The answer isn&apos;t revealed. Work it out and see if you agree with the crowd.</> : "Pick an answer to see what everyone else chose. No peeking at the answer."}
         </p>
       </div>
+      </div>
+      )}
     </div>
   );
 }
