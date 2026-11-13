@@ -8,7 +8,21 @@ import { IArrowL, IArrowR, ICheck, IRefresh } from "./icons";
 export function Flashcards({ words, initialKnown, signedIn }: { words: Vocab[]; initialKnown: string[]; signedIn: boolean }) {
   const [known, setKnown] = useState(new Set(initialKnown));
   const [mode, setMode] = useState<"learning" | "all">("learning");
-  const deck = useMemo(() => (mode === "learning" ? words.filter((w) => !known.has(w.word)) : words), [mode, words, known]);
+  const [kind, setKind] = useState<"all" | "classic" | "context">("all");
+  const [seed, setSeed] = useState(1);
+  // Seeded shuffle: stable across renders (and on the server), reshuffled on demand.
+  const order = useMemo(() => {
+    let a = seed >>> 0;
+    const rnd = () => ((a = (a + 0x6d2b79f5) >>> 0), ((t) => ((t = Math.imul(t ^ (t >>> 15), t | 1)), (t ^= t + Math.imul(t ^ (t >>> 7), t | 61)), ((t ^ (t >>> 14)) >>> 0) / 4294967296))(a));
+    const idx = words.map((_, k) => k);
+    for (let k = idx.length - 1; k > 0; k--) {
+      const j = Math.floor(rnd() * (k + 1));
+      [idx[k], idx[j]] = [idx[j], idx[k]];
+    }
+    return idx.map((k) => words[k]);
+  }, [words, seed]);
+  const deck = useMemo(() => order.filter((w) => (kind === "all" || (w.kind ?? "classic") === kind) && (mode === "all" || !known.has(w.word))), [order, kind, mode, known]);
+  const kindCounts = useMemo(() => ({ classic: words.filter((w) => (w.kind ?? "classic") === "classic").length, context: words.filter((w) => w.kind === "context").length }), [words]);
   const [i, setI] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const w = deck[Math.min(i, deck.length - 1)];
@@ -34,7 +48,7 @@ export function Flashcards({ words, initialKnown, signedIn }: { words: Vocab[]; 
               className={`group relative grid min-h-[340px] w-full place-items-center overflow-hidden rounded-2xl border-2 p-8 text-center shadow-card transition-colors ${flipped ? "border-gold-100 bg-gold-50" : "border-line bg-white hover:border-red-200"}`}
               aria-label={flipped ? "Show word" : "Show definition"}
             >
-              <span className="eyebrow absolute left-5 top-4 text-faint">{flipped ? "Definition" : "Word"}</span>
+              <span className="eyebrow absolute left-5 top-4 text-faint">{flipped ? "Definition" : w.kind === "context" ? "Everyday word, SAT meaning" : "Hard word"}</span>
               <span className="absolute right-5 top-4 text-xs tabular-nums text-faint">{Math.min(i, deck.length - 1) + 1} / {deck.length}</span>
               {!flipped ? (
                 <div key="front" className="animate-rise">
@@ -74,7 +88,15 @@ export function Flashcards({ words, initialKnown, signedIn }: { words: Vocab[]; 
         <div className="p-5">
           <p className="text-[32px] leading-none font-medium tabular-nums">{known.size}<span className="text-lg text-muted"> / {words.length}</span></p>
           <div className="mt-3"><Progress value={known.size / words.length} tone="gold" /></div>
-          <div className="mt-5 inline-flex w-full rounded-xl bg-surface-2 p-1">
+          <div className="mt-5 grid gap-1.5" role="group" aria-label="Word type">
+            {([["all", "All words", words.length], ["classic", "Hard words", kindCounts.classic], ["context", "In context", kindCounts.context]] as const).map(([k, label, n]) => (
+              <button key={k} onClick={() => { setKind(k); setI(0); setFlipped(false); }} aria-pressed={kind === k} className={`flex items-center justify-between rounded-lg border px-3 py-2 text-sm transition-colors ${kind === k ? "border-red bg-red-50 font-medium text-red" : "border-line text-ink-2 hover:bg-surface"}`}>
+                {label}<span className="tabular-nums text-xs text-muted">{n}</span>
+              </button>
+            ))}
+          </div>
+          <button onClick={() => { setSeed(Math.floor(Math.random() * 1e9)); setI(0); setFlipped(false); }} className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-sm text-ink-2 hover:bg-surface"><IRefresh className="h-4 w-4" /> Reshuffle</button>
+          <div className="mt-4 inline-flex w-full rounded-xl bg-surface-2 p-1">
             {(["learning", "all"] as const).map((m) => (
               <button key={m} onClick={() => { setMode(m); setI(0); setFlipped(false); }} aria-pressed={mode === m} className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${mode === m ? "bg-white text-red shadow-card" : "text-muted hover:text-ink"}`}>
                 {m === "learning" ? "Still learning" : "All words"}

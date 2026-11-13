@@ -14,7 +14,7 @@ export default async function VocabPage() {
     : [];
   return (
     <>
-      <PageTitle title="Vocab" sub={`${VOCAB.length} high-value words that show up in SAT-style reading. Flip, learn, and track what you know.`} />
+      <PageTitle title="Vocab" sub={`${VOCAB.length.toLocaleString()} words: classic hard vocabulary plus everyday words used in the senses the SAT tests. Flip, learn, and track what you know.`} />
       <Flashcards words={VOCAB} initialKnown={known} signedIn={!!user} />
     </>
   );

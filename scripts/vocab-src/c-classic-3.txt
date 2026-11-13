@@ -1,0 +1,244 @@
+naive|adj.|lacking experience or caution; too trusting|It was naive to expect the project to finish early.|c
+nebulous|adj.|vague and unclear|The plan was too nebulous for anyone to act on.|c
+nefarious|adj.|wicked or criminal|Police uncovered a nefarious scheme to steal identities.|c
+nonchalant|adj.|calm and unconcerned|He seemed nonchalant about the upcoming exam.|c
+nostalgia|noun|a wistful longing for the past|The old photographs filled her with nostalgia.|c
+notorious|adj.|famous for something bad|The notorious bridge is known for its traffic jams.|c
+nuance|noun|a subtle difference in meaning or expression|A good translator captures every nuance of the original.|c
+nurture|verb|to care for and encourage growth|The teacher worked to nurture each student's talent.|c
+obdurate|adj.|stubbornly refusing to change|The obdurate board ignored all appeals.|c
+obfuscate|verb|to make something unclear or confusing|The company obfuscated the real costs in fine print.|c
+oblivious|adj.|unaware of what is happening around one|He was oblivious to the stares as he sang loudly.|c
+obscure|adj.|not well known or hard to understand|She wrote about an obscure poet few had read.|c
+obsequious|adj.|too eager to please or obey|The obsequious assistant laughed at every joke the boss made.|c
+obstinate|adj.|stubbornly refusing to change one's mind|The obstinate mule would not budge.|c
+obtuse|adj.|slow to understand|Are you being deliberately obtuse, or do you really not see the problem?|c
+odious|adj.|extremely unpleasant|The odious smell drove everyone from the room.|c
+ominous|adj.|suggesting that something bad will happen|Ominous clouds gathered over the field.|c
+onerous|adj.|requiring heavy effort or responsibility|The onerous task took the whole weekend.|c
+opaque|adj.|not able to be seen through; hard to understand|The company's opaque rules confused new employees.|c
+opportunistic|adj.|taking advantage of chances as they arise, often without principle|An opportunistic seller raised prices during the storm.|c
+opulent|adj.|richly luxurious|The opulent hotel lobby glittered with chandeliers.|c
+ornate|adj.|elaborately decorated|The ornate clock was covered in gold leaf.|c
+orthodox|adj.|following traditional or widely accepted beliefs|The scientist's ideas were far from orthodox.|c
+ostensible|adj.|appearing to be true but perhaps not actually so|The ostensible reason for the trip was business.|c
+ostentatious|adj.|showy in a way meant to impress|He drove an ostentatious gold car.|c
+ostracize|verb|to exclude from a group|Teammates ostracized the player who broke the rules.|c
+overt|adj.|done openly, not hidden|The overt bias in the article was obvious to everyone.|c
+pacify|verb|to calm and quiet|A bedtime story pacified the restless child.|c
+painstaking|adj.|done with great care and effort|The painstaking restoration took five years.|c
+palatable|adj.|pleasant to taste or acceptable|The compromise made the plan more palatable to voters.|c
+pariah|noun|a person rejected by society|After the scandal, he became a pariah in town.|c
+parochial|adj.|narrow in outlook, limited to a small area|The newspaper's parochial coverage ignored national news.|c
+parsimonious|adj.|extremely unwilling to spend money|The parsimonious owner refused to buy new chairs.|c
+partisan|adj.|strongly supporting one side or party|The debate grew partisan, with neither side listening.|c
+passive|adj.|accepting without acting or resisting|A passive audience watched without applauding.|c
+paternal|adj.|like a father; related through the father|The coach took a paternal interest in his players.|c
+pathos|noun|a quality that evokes pity or sadness|The film's final scene is full of pathos.|c
+patronize|verb|to treat in a condescending way, or to be a regular customer|She disliked how the speaker patronized the audience.|c
+paucity|noun|a small or insufficient amount|There was a paucity of evidence against him.|c
+pedantic|adj.|overly concerned with minor details or rules|The pedantic editor argued over every hyphen.|c
+pedestrian|adj.|dull and unimaginative|The film's pedestrian script offered no surprises.|c
+penchant|noun|a strong liking for something|She has a penchant for mystery novels.|c
+penitent|adj.|feeling sorry for wrongdoing|The penitent thief returned the stolen money.|c
+pensive|adj.|deep in serious thought|The pensive student stared at the blank page.|c
+perennial|adj.|lasting or recurring for a long time|Traffic is a perennial problem in the city.|c
+perfunctory|adj.|done with minimal effort or interest|He gave the report a perfunctory glance.|c
+peripheral|adj.|on the edge; of secondary importance|A peripheral issue should not distract from the main goal.|c
+pernicious|adj.|having a harmful effect, especially gradually|The pernicious rumor damaged her reputation.|c
+perpetual|adj.|never ending or changing|The cave remains in perpetual darkness.|c
+perplexed|adj.|completely baffled|The perplexed tourist studied the map upside down.|c
+pertinent|adj.|relevant to the matter at hand|She asked a pertinent question about the budget.|c
+perturb|verb|to make anxious or unsettled|The strange noise perturbed the campers.|c
+petulant|adj.|childishly sulky or bad-tempered|The petulant player threw his helmet.|c
+philanthropy|noun|generous donation of money or effort to good causes|Her philanthropy funded dozens of scholarships.|c
+phlegmatic|adj.|calm and not easily upset|His phlegmatic reaction surprised everyone.|c
+piety|noun|deep religious devotion or respect|The villagers admired her quiet piety.|c
+pinnacle|noun|the highest point of achievement|Winning the title was the pinnacle of her career.|c
+pithy|adj.|brief and full of meaning|Her pithy advice fit on a sticky note.|c
+placate|verb|to make someone less angry by giving them something|The manager placated the customer with a discount.|c
+platitude|noun|an overused remark presented as if fresh|Telling him to "stay positive" was just a platitude.|c
+plethora|noun|an excessively large amount|The menu offered a plethora of choices.|c
+poignant|adj.|evoking deep feeling, often sadness|The poignant letter brought tears to her eyes.|c
+polarize|verb|to divide into two opposing groups|The issue polarized the town.|c
+pompous|adj.|self-important in speech and manner|The pompous host lectured guests about wine.|c
+ponderous|adj.|slow and clumsy because of weight; dull|The author's ponderous style made the book a chore.|c
+portend|verb|to be a sign that something is likely to happen|Dark clouds portend a storm.|c
+posterity|noun|all future generations|The photos were preserved for posterity.|c
+potent|adj.|powerful and effective|The potent medicine worked within minutes.|c
+precarious|adj.|not secure; dangerous because of instability|The cup sat in a precarious position on the edge of the shelf.|c
+precipitate|verb|to cause something to happen suddenly|The announcement precipitated a rush on the stores.|c
+preclude|verb|to prevent or make impossible|A broken leg precluded her from running the race.|c
+predecessor|noun|a person or thing that came before|She improved on the work of her predecessor.|c
+predilection|noun|a preference or special liking|He has a predilection for spicy food.|c
+preeminent|adj.|surpassing all others|She was the preeminent scientist of her generation.|c
+premise|noun|an idea that serves as the basis for an argument|The premise of the film is that dreams can be shared.|c
+presumptuous|adj.|too bold, going beyond what is appropriate|It was presumptuous to assume she would lend her car.|c
+pretentious|adj.|trying to seem more important or cultured than one is|The pretentious menu used foreign words for plain dishes.|c
+prevalent|adj.|widespread in a particular time or place|Colds are prevalent during the winter.|c
+pristine|adj.|in its original, unspoiled condition|The pristine beach was untouched by tourists.|c
+probity|noun|strong moral principles and honesty|The judge was known for her probity.|c
+procrastinate|verb|to delay doing something|He procrastinated until the night before the deadline.|c
+prodigal|adj.|wastefully extravagant|The prodigal heir spent his fortune in a year.|c
+prodigious|adj.|remarkably great in size or amount|The pianist had a prodigious talent.|c
+proficient|adj.|competent and skilled|She is proficient in three languages.|c
+profuse|adj.|given or occurring in large amounts|The shopkeeper offered profuse thanks.|c
+proliferate|verb|to increase rapidly in number|Coffee shops proliferated across the city.|c
+propensity|noun|a natural tendency to behave in a certain way|He has a propensity for losing his keys.|c
+propitious|adj.|giving a good chance of success|The calm weather was propitious for sailing.|c
+proponent|noun|a person who argues in favor of something|She is a leading proponent of renewable energy.|c
+propriety|noun|conformity to accepted standards of behavior|The students were reminded to observe propriety at the ceremony.|c
+prosaic|adj.|plain and unimaginative|The poet found a prosaic task like laundry strangely calming.|c
+proscribe|verb|to forbid officially|The rules proscribe the use of phones in the exam room.|c
+protagonist|noun|the main character in a story|The protagonist of the novel is a young orphan.|c
+provincial|adj.|unsophisticated or narrow in outlook|The visitors found the town charming but provincial.|c
+provocative|adj.|intended to stir a strong reaction|The provocative ad drew complaints.|c
+prowess|noun|great skill or ability|The athlete's prowess on the court was undeniable.|c
+punctilious|adj.|very careful about correct behavior and details|The punctilious clerk checked the form twice.|c
+pungent|adj.|having a sharp, strong smell or taste|The pungent cheese filled the whole kitchen.|c
+quaint|adj.|attractively old-fashioned|They stayed in a quaint cottage by the sea.|c
+quandary|noun|a state of uncertainty about what to do|She was in a quandary over which offer to accept.|c
+querulous|adj.|complaining in a whining way|The querulous customer complained about everything.|c
+quixotic|adj.|idealistic in an impractical way|Their quixotic plan to cure every disease in a year failed.|c
+rampant|adj.|spreading uncontrollably|Rampant rumors fueled panic in the town.|c
+rancor|noun|long-lasting bitter resentment|He felt no rancor toward the rival who beat him.|c
+rapport|noun|a close and harmonious relationship|The teacher quickly built a rapport with her class.|c
+rationale|noun|the reasons behind a decision or belief|The principal explained the rationale for the new schedule.|c
+raucous|adj.|loud and rowdy|A raucous crowd filled the stadium.|c
+ravenous|adj.|extremely hungry|The ravenous hikers devoured the meal.|c
+rebuke|verb|to express sharp disapproval|The teacher rebuked the student for cheating.|c
+recalcitrant|adj.|stubbornly resisting authority|The recalcitrant student ignored every instruction.|c
+recant|verb|to publicly take back a statement or belief|The witness recanted his earlier testimony.|c
+reclusive|adj.|avoiding other people; living in seclusion|The reclusive author rarely left her house.|c
+rectify|verb|to put right or correct|The bank quickly rectified the error on his account.|c
+refrain|verb|to hold oneself back from doing something|Please refrain from talking during the performance.|c
+regress|verb|to return to an earlier, worse state|The patient regressed after stopping treatment.|c
+reinforce|verb|to strengthen or support|The new data reinforced the earlier findings.|c
+rejuvenate|verb|to make look or feel young and fresh again|A weekend away rejuvenated the tired team.|c
+relentless|adj.|never stopping or easing off|The relentless rain lasted for six days.|c
+relevant|adj.|closely connected to the matter at hand|Only relevant facts belong in the summary.|c
+reluctant|adj.|unwilling and hesitant|She was reluctant to speak in front of the class.|c
+remedy|noun|a way of fixing a problem|Rest is the best remedy for a cold.|c
+remorse|noun|deep regret for wrongdoing|He felt deep remorse for lying.|c
+render|verb|to cause to be or become; to provide|The storm rendered the road impassable.|c
+renounce|verb|to give up formally|The prince renounced his claim to the throne.|c
+repel|verb|to drive back or cause disgust|The smell of the swamp repelled visitors.|c
+replete|adj.|filled or well supplied|The speech was replete with references to history.|c
+reprehensible|adj.|deserving blame|Cheating on the exam was reprehensible.|c
+reproach|noun|expression of disapproval or disappointment|Her look was a silent reproach.|c
+repudiate|verb|to reject as untrue or unjust|The senator repudiated the rumor.|c
+reputable|adj.|having a good reputation|Buy only from a reputable dealer.|c
+rescind|verb|to cancel or take back officially|The school rescinded the new dress code.|c
+reserved|adj.|slow to show feelings or opinions|The reserved student rarely raised her hand.|c
+resolute|adj.|admirably determined|Resolute workers rebuilt the bridge in a week.|c
+resolve|noun|firm determination|Her resolve never wavered.|c
+respite|noun|a short rest or relief from something difficult|The cool breeze offered a brief respite from the heat.|c
+restrained|adj.|kept under control; not showy|The restrained design used only two colors.|c
+reticent|adj.|not revealing thoughts or feelings readily|The reticent witness gave short answers.|c
+retort|noun|a sharp, quick reply|His clever retort silenced the heckler.|c
+retract|verb|to withdraw a statement or draw back|The newspaper retracted its story.|c
+revere|verb|to feel deep respect or admiration for|Students revere the teacher who changed their lives.|c
+rhetoric|noun|the art of persuasive speaking or writing|His rhetoric inspired the crowd but offered few specifics.|c
+rigorous|adj.|extremely thorough and strict|The school has rigorous admissions standards.|c
+robust|adj.|strong and healthy|The robust economy created thousands of jobs.|c
+rudimentary|adj.|basic or undeveloped|He has only a rudimentary knowledge of French.|c
+ruminate|verb|to think deeply about something|She ruminated over the offer for days.|c
+sagacious|adj.|having keen judgment; wise|A sagacious investor, he avoided the crash.|c
+salient|adj.|most noticeable or important|The salient point of the report is the budget.|c
+sanction|verb|to give official permission or approval|The school sanctioned the new club.|c
+sanguine|adj.|optimistic, especially in a difficult situation|She remained sanguine about their chances.|c
+sardonic|adj.|mocking in a grimly humorous way|His sardonic smile suggested he did not believe a word.|c
+satire|noun|the use of humor to criticize something|The comedy is a satire of reality television.|c
+scant|adj.|barely enough; very little|There was scant evidence to support the claim.|c
+scrupulous|adj.|very careful to be honest and fair|She was scrupulous about crediting her sources.|c
+scrutiny|noun|close and critical examination|The plan came under intense scrutiny.|c
+sedentary|adj.|involving much sitting and little exercise|A sedentary lifestyle can harm your health.|c
+serene|adj.|calm and peaceful|The lake was serene at dawn.|c
+servile|adj.|too eager to serve or obey|The servile assistant agreed with everything the boss said.|c
+shrewd|adj.|having sharp judgment, especially about money or people|A shrewd negotiator, she got the lowest price.|c
+sincere|adj.|honest and genuine|He offered a sincere apology.|c
+skeptic|noun|a person who doubts claims until shown proof|The skeptic demanded evidence.|c
+solace|noun|comfort in a time of distress|She found solace in music.|c
+solicit|verb|to ask for or try to obtain|The charity solicited donations from local businesses.|c
+solitary|adj.|done or existing alone|A solitary figure walked along the shore.|c
+somber|adj.|dark, serious, and gloomy|The somber mood at the funeral silenced the room.|c
+soporific|adj.|causing sleepiness|The teacher's soporific voice lulled half the class to sleep.|c
+sophisticated|adj.|highly developed or cultured|The phone uses a sophisticated camera system.|c
+spurious|adj.|false or not genuine|The spurious claim fooled no one.|c
+squander|verb|to waste carelessly|He squandered his savings on gadgets.|c
+stagnant|adj.|not flowing or developing|The stagnant pond was covered in algae.|c
+staunch|adj.|loyal and committed|A staunch supporter, he attended every game.|c
+stigma|noun|a mark of shame or disgrace|There was once a stigma attached to asking for help.|c
+stoic|adj.|enduring pain without showing feeling|The stoic soldier did not complain.|c
+stringent|adj.|strict and demanding|The factory follows stringent safety rules.|c
+strife|noun|angry or bitter conflict|Years of strife divided the family.|c
+stupor|noun|a dazed, almost unconscious state|He sat in a stupor after the long flight.|c
+subjective|adj.|based on personal opinions rather than facts|Judging art is a highly subjective business.|c
+sublime|adj.|of such excellence as to inspire awe|The view from the summit was sublime.|c
+submissive|adj.|ready to obey without question|The submissive dog lowered its head.|c
+subsequent|adj.|coming after in time|Subsequent studies confirmed the result.|c
+subtle|adj.|so slight as to be hard to notice|There is a subtle difference in flavor between the two cheeses.|c
+succinct|adj.|briefly and clearly expressed|Her succinct summary saved everyone time.|c
+succumb|verb|to give in to pressure or a stronger force|The town succumbed to the flood waters.|c
+superficial|adj.|existing only on the surface; shallow|Their friendship was superficial and never went deeper.|c
+supplant|verb|to take the place of|Email has largely supplanted letters.|c
+surmise|verb|to guess without firm evidence|I surmised from the empty parking lot that the store was closed.|c
+surreptitious|adj.|done secretly to avoid notice|He took a surreptitious glance at his phone.|c
+susceptible|adj.|easily affected by something|Young plants are susceptible to frost.|c
+sycophant|noun|a person who flatters the powerful to gain advantage|The mayor was surrounded by sycophants who never disagreed.|c
+synthesize|verb|to combine parts into a connected whole|The essay synthesizes ideas from three authors.|c
+taciturn|adj.|reserved in speech; saying little|The taciturn farmer answered in one-word replies.|c
+tactful|adj.|careful not to offend others|A tactful friend chose gentle words.|c
+tantamount|adj.|equivalent in effect to|Staying silent was tantamount to agreeing.|c
+tedious|adj.|too long, slow, or dull|The tedious lecture lasted three hours.|c
+temerity|noun|reckless boldness|She had the temerity to question the director's decision.|c
+tenacity|noun|determination that does not give up|The team's tenacity won the final point.|c
+tenuous|adj.|very weak or slight|The link between the two events was tenuous.|c
+terse|adj.|brief and abrupt in speech|His terse reply ended the conversation.|c
+thwart|verb|to prevent someone from accomplishing something|Heavy traffic thwarted their plan to arrive early.|c
+timid|adj.|lacking courage or confidence|The timid kitten hid under the sofa.|c
+tirade|noun|a long angry speech|The coach launched into a tirade after the loss.|c
+torpid|adj.|inactive and slow|The torpid snake barely moved in the cold.|c
+tranquil|adj.|calm and peaceful|The tranquil garden was a refuge from the noise.|c
+transient|adj.|lasting only a short time|Transient visitors came and went all summer.|c
+trepidation|noun|a feeling of fear about something that may happen|She opened the envelope with trepidation.|c
+trivial|adj.|of little value or importance|Don't argue over such a trivial matter.|c
+truculent|adj.|eager to argue or fight|The truculent customer shouted at the cashier.|c
+turbulent|adj.|full of violent or uncontrolled movement|The turbulent flight made many passengers nervous.|c
+ubiquitous|adj.|seeming to be everywhere|Smartphones are now ubiquitous.|c
+unanimous|adj.|agreed by everyone|The vote was unanimous.|c
+unassuming|adj.|modest and not boastful|The unassuming star signed autographs for hours.|c
+undermine|verb|to weaken gradually|Constant criticism undermined her confidence.|c
+unequivocal|adj.|leaving no doubt|The evidence was unequivocal.|c
+unkempt|adj.|untidy and messy in appearance|He arrived with unkempt hair and a wrinkled shirt.|c
+unwarranted|adj.|not justified|The criticism was unwarranted given her effort.|c
+upbraid|verb|to scold sharply|The captain upbraided the crew for their carelessness.|c
+urbane|adj.|polished and refined in manner|The urbane host welcomed each guest graciously.|c
+usurp|verb|to take a position by force or without right|The general tried to usurp the king's authority.|c
+utilitarian|adj.|designed to be useful rather than attractive|The utilitarian desk had no decoration.|c
+utopian|adj.|idealistic and unrealistic|Their utopian dream of a world without conflict proved impossible.|c
+vacillate|verb|to waver between opinions or actions|He vacillated between two job offers for weeks.|c
+vague|adj.|not clear or specific|The directions were so vague that we got lost.|c
+valid|adj.|logically sound or officially acceptable|She raised a valid concern about safety.|c
+vanguard|noun|the leaders of a movement|The group was in the vanguard of the reform effort.|c
+vehement|adj.|showing strong feeling|He was vehement in denying the rumor.|c
+venerable|adj.|commanding respect because of age or wisdom|The venerable professor taught for fifty years.|c
+veracity|noun|truthfulness|No one doubted the veracity of her account.|c
+verbose|adj.|using more words than necessary|The verbose report could have been half as long.|c
+vernacular|noun|the everyday language of a region or group|The novel is written in the local vernacular.|c
+vex|verb|to annoy or frustrate|The constant noise vexed the neighbors.|c
+vicarious|adj.|experienced through another person|She enjoyed a vicarious thrill watching her brother's race.|c
+vigilant|adj.|keeping careful watch for danger|A vigilant guard checked every visitor.|c
+vilify|verb|to speak of in an abusively negative way|The press vilified the senator for his remarks.|c
+vindictive|adj.|having a strong desire for revenge|The vindictive rival spread rumors about her.|c
+virulent|adj.|extremely harmful or bitter|A virulent strain of flu spread through the school.|c
+vivid|adj.|producing strong, clear images|She gave a vivid description of the festival.|c
+vociferous|adj.|expressing opinions loudly and forcefully|Vociferous critics packed the town meeting.|c
+voracious|adj.|having a huge appetite for something|He is a voracious reader of history.|c
+waive|verb|to give up a right or requirement|The school waived the application fee.|c
+wane|verb|to gradually become smaller or weaker|Interest in the fad began to wane.|c
+wanton|adj.|deliberate and without reason or mercy|The wanton destruction of the park angered residents.|c
+whimsical|adj.|playfully unusual or fanciful|The whimsical garden was full of tiny statues.|c
+wistful|adj.|full of longing and a sense of loss|She gave a wistful smile at the old photos.|c
+wry|adj.|dryly humorous, often mildly mocking|He gave a wry smile after the failed joke.|c
+zenith|noun|the highest point|The empire reached its zenith in the second century.|c

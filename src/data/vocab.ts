@@ -1,9 +1,9 @@
 /** ScholarSAT vocabulary list: definitions and example sentences written for this project. */
-export type Vocab = { word: string; pos: string; def: string; ex: string };
+export type Vocab = { word: string; pos: string; def: string; ex: string; /** classic = hard word; context = everyday word used in an SAT-tested sense */ kind?: "classic" | "context" };
 
-const V = (word: string, pos: string, def: string, ex: string): Vocab => ({ word, pos, def, ex });
+const V = (word: string, pos: string, def: string, ex: string): Vocab => ({ word, pos, def, ex, kind: "classic" });
 
-export const VOCAB: Vocab[] = [
+const BASE: Vocab[] = [
   V("abate", "verb", "to lessen in strength or intensity", "We waited in the car until the hailstorm began to abate."),
   V("ambiguous", "adj.", "open to more than one interpretation; unclear", "The coach's ambiguous reply left the team unsure who would start."),
   V("ameliorate", "verb", "to make a bad situation better", "Extra buses helped ameliorate the crowding on the morning route."),
@@ -90,3 +90,8 @@ export const VOCAB: Vocab[] = [
   V("wary", "adj.", "cautious about possible danger or problems", "The cat was wary of the new dog."),
   V("zealous", "adj.", "showing great energy and enthusiasm", "Zealous fans painted their faces in team colors."),
 ];
+
+import { BANK } from "./vocab-bank";
+
+/** The original core list followed by the large bank built from scripts/vocab-src. */
+export const VOCAB: Vocab[] = [...BASE, ...BANK];

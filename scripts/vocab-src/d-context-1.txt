@@ -1,0 +1,357 @@
+account|noun|a spoken or written report of events (not the banking sense)|The explorer's account of the voyage was published in 1820.|x
+address|verb|to deal with or take on a problem|The new policy addresses the shortage of teachers.|x
+adequate|adj.|just enough for a need; satisfactory but not excellent|The room was adequate for one night's stay.|x
+advance|verb|to move something forward or support its progress|The discovery advanced scientists' understanding of the disease.|x
+affect|noun|the outward expression of a person's emotions|The patient's flat affect worried the doctor.|x
+agency|noun|the power to act and make one's own choices|The novel gives its heroine real agency over her fate.|x
+alienate|verb|to make someone feel isolated or unfriendly|His constant bragging alienated his teammates.|x
+anchor|verb|to give a firm basis or fix in place|The report anchors its argument in decades of data.|x
+appreciate|verb|to understand fully; or to rise in value|Few people appreciate how hard the job is.|x
+apprehend|verb|to understand, or to arrest|It takes time to apprehend the full meaning of the poem.|x
+approach|noun|a way of dealing with something|The school takes a hands-on approach to science.|x
+apt|adj.|exactly right for the situation|The comparison to a river was apt.|x
+arrest|verb|to stop or check a process|Early treatment can arrest the spread of the disease.|x
+assert|verb|to state firmly; to claim|The author asserts that the old maps were accurate.|x
+assume|verb|to take on or begin to have (a quality or role)|The chameleon assumes the color of its surroundings.|x
+attribute|verb|to say that something is caused by or belongs to|Historians attribute the poem to a medieval monk.|x
+bear|verb|to carry or have as a feature|The document bears the mayor's signature.|x
+bleak|adj.|offering no hope; barren and exposed|The bleak outlook discouraged investors.|x
+blunt|adj.|direct and plainly honest, even if harsh|The coach gave a blunt assessment of the team's play.|x
+bound|adj.|certain to happen; or obligated|Anyone who practices daily is bound to improve.|x
+brittle|adj.|hard but easily broken; or tense and fragile|Their brittle friendship ended after one argument.|x
+broach|verb|to bring up a topic for discussion|She hesitated before broaching the subject of money.|x
+buffer|noun|something that lessens the impact of a shock|Savings are a buffer against sudden expenses.|x
+capacity|noun|the ability to do or contain something|The theater has a capacity of nine hundred.|x
+capture|verb|to represent or record accurately|The photograph captures the mood of the festival.|x
+cast|verb|to give a form or appearance to|The mayor cast the plan as a bold new start.|x
+cautious|adj.|careful to avoid risk or error|Scientists are cautious about drawing broad conclusions.|x
+charge|verb|to entrust with a duty|The committee is charged with reviewing the budget.|x
+chart|verb|to plan or follow a course of action|The report charts a new direction for the school.|x
+circulate|verb|to pass from person to person|Rumors circulated through the halls.|x
+clear|adj.|obvious or easy to understand|The instructions were clear and brief.|x
+cling|verb|to hold on tightly, often to an idea or hope|Some residents clung to the hope that the factory would reopen.|x
+clip|noun|a fast pace|The train moved along at a steady clip.|x
+coherent|adj.|logical and well organized; easy to follow|She presented a coherent plan for the project.|x
+colorful|adj.|vivid and interesting, especially in description|The author gives a colorful account of life at sea.|x
+command|noun|mastery or control of a subject|She has a strong command of Spanish.|x
+commit|verb|to pledge or dedicate oneself|The company committed to cutting its emissions in half.|x
+compound|verb|to make a problem worse by adding to it|Bad weather compounded the delays.|x
+conceive|verb|to form an idea or plan in the mind|Few people could conceive of such a huge project.|x
+concrete|adj.|real and specific, not abstract|The mayor offered no concrete proposals.|x
+condition|verb|to train or accustom|Years of rain conditioned the farmers to plant earlier.|x
+conflicted|adj.|having opposing feelings or ideas at once|She felt conflicted about leaving the team.|x
+consider|verb|to regard as having a particular quality|Most critics consider the film a classic.|x
+consistent|adj.|steady and not changing; in agreement with|The results are consistent with earlier studies.|x
+constrain|verb|to limit or restrict|A small budget constrained what the team could build.|x
+contend|verb|to argue or claim; or to compete|Some historians contend that the treaty was unfair.|x
+context|noun|the circumstances in which something happens or is said|The quote makes more sense in its historical context.|x
+contradict|verb|to be inconsistent with or say the opposite of|The new data contradict the earlier theory.|x
+convey|verb|to communicate or make an idea known|The painting conveys a sense of loneliness.|x
+credit|verb|to give someone recognition for something|The author credits her editor for the book's structure.|x
+critical|adj.|extremely important; or inclined to find fault|Sleep is critical to healthy development.|x
+crude|adj.|simple and rough, not refined|The settlers built a crude shelter from branches.|x
+cultivate|verb|to develop or encourage|She cultivated a reputation for reliability.|x
+curb|verb|to hold back or limit|The city passed rules to curb noise at night.|x
+current|adj.|happening now; in progress|Current research suggests sleep affects memory.|x
+dampen|verb|to make less strong or intense|Rain dampened the crowd's spirits.|x
+decline|verb|to refuse politely; or to become weaker|He declined the invitation to speak.|x
+dedicated|adj.|devoted to a task or purpose|She is a dedicated teacher who stays late to help students.|x
+default|noun|what happens or is chosen when nothing else is specified|Drivers tend to use the shortest route as the default.|x
+defer|verb|to put off until later; or to yield to another's judgment|The board deferred the vote until spring.|x
+define|verb|to set the boundaries or the essential nature of|A strong sense of place defines her poems.|x
+demand|verb|to need or require|The recipe demands patience and fresh ingredients.|x
+demonstrate|verb|to show clearly by example or evidence|The experiment demonstrates how heat moves through metal.|x
+denote|verb|to be a sign of; to mean|A red flag on the map denotes a dangerous area.|x
+depict|verb|to show or represent in words or images|The mural depicts a scene from the town's early history.|x
+derive|verb|to obtain from a source|The word "salary" derives from the Latin word for salt.|x
+descend|verb|to come from a particular source|The family descends from early settlers.|x
+detached|adj.|emotionally distant; objective|The narrator keeps a detached tone throughout the story.|x
+devote|verb|to give time or resources to a purpose|She devoted her career to protecting wetlands.|x
+differentiate|verb|to recognize or show what makes things different|The test can differentiate the two diseases.|x
+dim|adj.|faint or unlikely|The team's chances of winning looked dim.|x
+discount|verb|to treat as unimportant or not true|Critics discounted the report as biased.|x
+discriminating|adj.|having good taste and judgment|The discriminating buyer rejected every cheap copy.|x
+disposition|noun|a person's natural qualities of mind and character|She has a cheerful disposition.|x
+distinct|adj.|clearly different or separate|The two songs have distinct styles.|x
+distinguished|adj.|successful and widely respected|The distinguished scientist received a lifetime award.|x
+distill|verb|to extract the essential meaning of|The speech distilled the long report into three key ideas.|x
+domestic|adj.|of or within one's own country|Domestic sales rose faster than exports.|x
+dominant|adj.|most important or influential|The dominant theory held for fifty years.|x
+draw|verb|to take or get from a source|The poet draws inspiration from nature.|x
+drive|noun|a strong motivation or push|Her drive to succeed impressed everyone.|x
+elaborate|verb|to give more detail about|Could you elaborate on your second point?|x
+embody|verb|to represent or express in a visible form|The statue embodies the spirit of the city.|x
+emerge|verb|to come into view or become known|New evidence emerged during the investigation.|x
+encompass|verb|to include comprehensively|The course encompasses history, art, and music.|x
+engage|verb|to occupy someone's attention or interest|The novel engages readers from the first page.|x
+enhance|verb|to improve the quality or value of|Good lighting enhances the mood of a room.|x
+enlist|verb|to engage the help or support of|The mayor enlisted local businesses in the cleanup.|x
+entertain|verb|to consider or allow in the mind|The board refused to entertain the idea of closing the library.|x
+entitle|verb|to give someone the right to something|A ticket entitles the holder to one free drink.|x
+equate|verb|to treat as being the same or equal|It is a mistake to equate wealth with happiness.|x
+essential|adj.|absolutely necessary; at the core of|Water is essential to life.|x
+establish|verb|to show something to be true|The study established a link between sleep and memory.|x
+evaluate|verb|to judge the value or quality of|Teachers evaluate each essay with a rubric.|x
+evident|adj.|clearly seen or understood|Her frustration was evident from her tone.|x
+exceed|verb|to be greater than a limit|Demand exceeded all expectations.|x
+exert|verb|to apply force or influence|Moonlight exerts a pull on the tides.|x
+exploit|verb|to use fully; or to take unfair advantage of|The company exploited a gap in the market.|x
+expose|verb|to reveal something hidden; or to make vulnerable|The investigation exposed a pattern of fraud.|x
+extend|verb|to offer; or to stretch in time or space|The school extended an invitation to all families.|x
+extensive|adj.|large in amount, range, or area|The library has an extensive collection of maps.|x
+extract|verb|to pull out or obtain with effort|Researchers extracted the key points from hundreds of pages.|x
+fabricate|verb|to invent in order to deceive; to build|The witness fabricated an alibi.|x
+faculty|noun|a natural ability or power|He lost the faculty of hearing in one ear.|x
+fair|adj.|reasonable in quality or amount; just|The company offered a fair price for the land.|x
+falter|verb|to lose strength or momentum|Her confidence faltered as the audience grew silent.|x
+feasible|adj.|possible and practical to do|Engineers said the bridge design was feasible.|x
+figure|verb|to be included or play a part|Weather figured heavily in their decision.|x
+fine|adj.|delicate or subtle|There is a fine line between confidence and arrogance.|x
+firm|adj.|steady and not likely to change|He held firm to his decision.|x
+fixed|adj.|set and unchanging|The recipe calls for a fixed amount of flour.|x
+flag|verb|to grow tired or weak|Her energy flagged near the end of the race.|x
+flat|adj.|lacking variety or excitement|The performance felt flat and uninspired.|x
+flaw|noun|a mistake or weakness in something|The study had a serious flaw in its design.|x
+fluid|adj.|able to change easily; not fixed|The plan stayed fluid as new information arrived.|x
+focus|verb|to concentrate attention or effort|The course focuses on practical skills.|x
+forge|verb|to create or build, often through effort|The two nations forged a strong alliance.|x
+formal|adj.|following established rules or customs|A formal apology appeared in the newspaper.|x
+fortunate|adj.|having good luck|The team was fortunate to avoid injuries.|x
+foster|verb|to encourage the development of|Teachers foster curiosity by asking open-ended questions.|x
+frame|verb|to present or express in a particular way|The article frames the issue as a matter of fairness.|x
+frank|adj.|open, honest, and direct|She was frank about her doubts.|x
+fundamental|adj.|forming the necessary base; central|Respect is fundamental to any friendship.|x
+gauge|verb|to estimate or judge|Teachers use quizzes to gauge understanding.|x
+generate|verb|to produce or create|The wind turbines generate enough power for the town.|x
+genuine|adj.|real and sincere|He showed genuine concern for the injured player.|x
+grasp|verb|to understand fully|It took her a while to grasp the concept.|x
+grave|adj.|serious and important|The doctor warned of grave consequences.|x
+ground|verb|to base on; to provide a firm basis for|The theory is grounded in years of observation.|x
+grounded|adj.|sensible and realistic|Her grounded advice kept the team focused.|x
+guarded|adj.|cautious and careful not to reveal too much|He gave a guarded answer to the reporter's question.|x
+handle|verb|to deal with or manage|She handled the crisis calmly.|x
+harbor|verb|to hold in the mind, often a feeling|He harbored doubts about the plan.|x
+hinder|verb|to make progress difficult|Poor roads hindered the delivery of supplies.|x
+hold|verb|to maintain or believe an opinion|Many scientists hold that the climate is warming.|x
+hollow|adj.|lacking real value or meaning|The politician's promises sounded hollow.|x
+humane|adj.|showing compassion and kindness|The shelter has a humane policy toward strays.|x
+identify|verb|to recognize and name; or to associate closely with|Researchers identified a new species of frog.|x
+illustrate|verb|to explain or make clear by example|The chart illustrates the rise in prices.|x
+impose|verb|to force something unwelcome on someone|The city imposed a curfew after the storm.|x
+impression|noun|an idea or feeling about someone or something|She gave the impression of being calm.|x
+incline|verb|to tend toward or influence|His upbringing inclined him to distrust authority.|x
+incorporate|verb|to include as part of a whole|The design incorporates solar panels.|x
+indicate|verb|to point out or show|The data indicate a steady decline.|x
+induce|verb|to persuade or bring about|Nothing could induce him to change his mind.|x
+influential|adj.|having great effect on people or events|She wrote an influential book on city planning.|x
+inform|verb|to give a particular quality or character to|Her background in art informs every design she makes.|x
+initial|adj.|happening at the beginning|My initial reaction was surprise.|x
+inquire|verb|to ask for information|She inquired about the price of the tickets.|x
+insight|noun|a deep and accurate understanding|The book offers insight into how teenagers think.|x
+instill|verb|to gradually put an idea or habit into someone's mind|The coach instilled discipline in the team.|x
+intact|adj.|complete and undamaged|The vase arrived intact.|x
+intend|verb|to plan or mean to do|The author intends the story as a warning.|x
+intense|adj.|extreme in degree or strength|She felt intense pressure before the finals.|x
+interpret|verb|to explain the meaning of|Critics interpret the ending in different ways.|x
+intimate|adj.|private and personal; marked by close detail|The author's intimate knowledge of the town shows on every page.|x
+invoke|verb|to call on as support or authority|The lawyer invoked an old law to defend her client.|x
+isolate|verb|to separate from others|Scientists isolated the gene responsible.|x
+keen|adj.|sharp or eager|She has a keen eye for detail.|x
+landmark|adj.|marking an important stage or turning point|The court issued a landmark ruling.|x
+launch|verb|to start or set in motion|The school launched a new reading program.|x
+lean|verb|to tend toward|The committee leans toward approving the plan.|x
+lend|verb|to give a quality to|Soft music lent the room a calm mood.|x
+leverage|verb|to use something to maximum advantage|The company leveraged its brand to enter new markets.|x
+limited|adj.|small in amount, extent, or range|Resources for the project were limited.|x
+literal|adj.|taking words in their basic, exact sense|The literal meaning of the phrase differs from how people use it.|x
+loose|adj.|not exact or strict|It's a loose translation of the original poem.|x
+magnify|verb|to make greater or more intense|Stress can magnify small problems.|x
+maintain|verb|to state or insist that something is true|The defendant maintained his innocence.|x
+manifest|verb|to display or show clearly|Her stress manifested as headaches.|x
+margin|noun|the amount by which something is won or exceeds|The team won by a narrow margin.|x
+marked|adj.|clearly noticeable|There was a marked improvement in her grades.|x
+mask|verb|to hide or disguise|A cheerful voice masked her disappointment.|x
+measure|noun|an action taken to achieve a purpose|The city took measures to reduce traffic.|x
+mediate|verb|to help settle a dispute between others|A counselor mediated the disagreement.|x
+merit|noun|a good quality that deserves praise|The proposal has real merit.|x
+mild|adj.|gentle or not extreme|A mild breeze cooled the afternoon.|x
+minimal|adj.|the smallest possible amount|The repair caused minimal disruption.|x
+modest|adj.|small or limited in size or amount|The town saw modest growth last year.|x
+momentum|noun|the strength or speed gained by progress|The campaign gained momentum after the debate.|x
+monitor|verb|to observe and check over time|Doctors monitor patients' heart rates overnight.|x
+motivate|verb|to give a reason or drive to act|A desire to help others motivated her to volunteer.|x
+mute|adj.|silent or unexpressed|The crowd stood in mute disbelief.|x
+narrow|verb|to reduce in size or range|The detective narrowed the list of suspects.|x
+negotiate|verb|to work out a deal through discussion; to get past an obstacle|The hikers negotiated a steep, rocky slope.|x
+neutral|adj.|not supporting either side|The referee stayed neutral during the dispute.|x
+nominal|adj.|existing in name only; very small|The museum charges a nominal fee.|x
+notion|noun|a belief or idea|The notion that the earth was flat persisted for centuries.|x
+nurture|noun|the care and encouragement given to a person or thing|The garden thrived under her nurture.|x
+obscure|verb|to make hard to see or understand|Heavy fog obscured the road ahead.|x
+obstruct|verb|to block or make progress difficult|Fallen branches obstructed the trail.|x
+occupy|verb|to take up time or attention|Planning the festival occupied her all summer.|x
+offset|verb|to balance or cancel the effect of|Savings on fuel offset the higher price of the car.|x
+opt|verb|to make a choice|Many students opt for online classes.|x
+orient|verb|to direct or adjust toward a particular aim|The program is oriented toward beginners.|x
+outweigh|verb|to be greater in importance than|The benefits outweigh the costs.|x
+overlook|verb|to fail to notice; or to view from above|Critics overlooked the novel's quiet strengths.|x
+overshadow|verb|to make seem less important|His rare talent overshadowed the other players.|x
+overwhelming|adj.|very great in amount or effect|The team won by an overwhelming margin.|x
+parallel|adj.|similar and corresponding|The two stories follow a parallel plot.|x
+partial|adj.|incomplete; or favoring one side|She had only a partial memory of the event.|x
+patent|adj.|obvious and clear|It was a patent lie.|x
+peak|verb|to reach the highest point|The river peaked at midnight.|x
+perceive|verb|to become aware of through the senses or mind|Many people perceive the policy as unfair.|x
+persist|verb|to continue despite difficulty|The cough persisted for weeks.|x
+pervade|verb|to spread through every part of|A sense of calm pervaded the room.|x
+pique|verb|to arouse interest or curiosity|The strange noise piqued her curiosity.|x
+pivotal|adj.|of central importance|The meeting was pivotal to the company's future.|x
+plain|adj.|simple, not elaborate; clear|The author's plain language made the idea easy to grasp.|x
+plausible|adj.|seeming reasonable or probable|Scientists offered a plausible explanation for the pattern.|x
+pointed|adj.|directed clearly at someone; sharp in expression|She made a pointed remark about being late.|x
+pose|verb|to present or create a problem or question|The new law poses a challenge for small businesses.|x
+posit|verb|to put forward as a basis for argument|Researchers posit that the species migrated north.|x
+practice|noun|a customary way of doing something|It was common practice to hand-deliver the mail.|x
+precise|adj.|exact and accurate in detail|The recipe requires precise measurements.|x
+preclude|verb|to make impossible|A tight schedule precluded a visit to the museum.|x
+predominant|adj.|most common or strongest|Blue was the predominant color in the painting.|x
+preliminary|adj.|coming before the main part|The preliminary results look promising.|x
+premium|noun|something valued highly or given extra worth|The team places a premium on teamwork.|x
+preserve|verb|to keep safe or maintain in its original state|Volunteers work to preserve the old theater.|x
+pressing|adj.|requiring immediate attention|Housing is the town's most pressing issue.|x
+presume|verb|to suppose something is true without proof|I presume you've read the report.|x
+prime|adj.|of first importance; ideal|The old mill is a prime location for a museum.|x
+principal|adj.|first in importance|Rising costs were the principal cause of the closure.|x
+priority|noun|something regarded as more important than others|Safety is our top priority.|x
+profound|adj.|very great or intense; deep|Her work had a profound influence on the field.|x
+prohibit|verb|to formally forbid|The rules prohibit phones in the lab.|x
+prominent|adj.|important or widely known|A prominent scientist opened the conference.|x
+promote|verb|to support or encourage|The festival promotes local artists.|x
+prompt|verb|to cause or bring about an action|The scandal prompted calls for reform.|x
+proper|adj.|appropriate or correct|Use the proper tools for the job.|x
+proportion|noun|a part in relation to a whole|A small proportion of voters stayed home.|x
+prospect|noun|the possibility of something happening|There is little prospect of rain this week.|x
+provision|noun|a condition within an agreement|The contract includes a provision for early termination.|x
+pursue|verb|to follow in order to achieve|She pursued her dream of becoming a pilot.|x
+qualified|adj.|limited or not unconditional|The mayor gave the plan only qualified support.|x
+radical|adj.|far-reaching or extreme|The inventor proposed a radical redesign.|x
+rank|verb|to hold a particular position|The school ranks among the best in the state.|x
+rare|adj.|not often occurring|A rare snowfall closed the schools.|x
+rational|adj.|based on reason rather than emotion|She made a rational decision after weighing the costs.|x
+ready|adj.|willing and prepared|The audience was ready to applaud.|x
+realm|noun|a field or area of activity|The idea belongs to the realm of science fiction.|x
+reap|verb|to receive as a result of an action|Careful planning allowed them to reap the benefits.|x
+rebut|verb|to prove a statement wrong with evidence|The lawyer rebutted every charge.|x
+reckon|verb|to estimate or consider|Experts reckon the project will cost millions.|x
+reflect|verb|to show or be a sign of|The survey results reflect growing concern.|x
+reform|verb|to improve by removing faults|The council voted to reform the tax system.|x
+regard|verb|to consider in a certain way|Many regard her as the finest chef in town.|x
+rein|verb|to restrain or control|The coach tried to rein in the team's wild enthusiasm.|x
+relative|adj.|considered in comparison with something else|They lived in relative comfort.|x
+reliable|adj.|consistently good and trustworthy|The car has proven reliable for years.|x
+remote|adj.|far away; slight|There is only a remote chance of rain.|x
+renew|verb|to begin again with fresh energy|The discovery renewed interest in the old theory.|x
+repress|verb|to hold back or suppress|She struggled to repress a laugh.|x
+resolve|verb|to settle or find a solution to|The two sides resolved their dispute.|x
+resonate|verb|to evoke a strong response or echo|The speaker's message resonated with the audience.|x
+resort|verb|to turn to as a last option|They resorted to carrying water by hand.|x
+restore|verb|to bring back to a former condition|Volunteers restored the historic lighthouse.|x
+restrict|verb|to limit or control|Fog restricted visibility to a few yards.|x
+retain|verb|to keep or hold onto|The village retains its old charm.|x
+reveal|verb|to make known|The documents revealed a secret deal.|x
+revise|verb|to change or improve based on new information|She revised her essay after the feedback.|x
+revolve|verb|to center on|The story revolves around a lost dog.|x
+rigid|adj.|not able to be changed or adapted|The school's rigid schedule left no time for electives.|x
+robust|adj.|strong and vigorous; sturdy|The company posted robust earnings.|x
+rough|adj.|approximate; not exact|He made a rough estimate of the cost.|x
+route|verb|to send along a particular course|Mail was routed through the central office.|x
+sanctuary|noun|a place of refuge or protection|The reserve is a sanctuary for wildlife.|x
+scale|noun|the relative size or extent of something|The scale of the damage became clear after the storm.|x
+scarce|adj.|in short supply|Fresh water is scarce in the desert.|x
+scatter|verb|to spread widely|Seeds scattered across the field.|x
+seize|verb|to take hold of eagerly|She seized the opportunity to speak.|x
+sensible|adj.|reasonable and practical|It was a sensible plan with clear steps.|x
+sentiment|noun|an attitude or feeling about something|Public sentiment turned against the proposal.|x
+settle|verb|to resolve or decide|The two sides settled the dispute.|x
+shape|verb|to influence or determine the form of|Childhood experiences shape our attitudes.|x
+sharp|adj.|sudden and extreme|There was a sharp drop in sales.|x
+shed|verb|to give off or get rid of|The report sheds light on the causes of the crisis.|x
+shift|noun|a change in position or direction|The poll shows a shift in voter opinion.|x
+shortcoming|noun|a fault or failing|The plan's main shortcoming is its cost.|x
+sizable|adj.|fairly large|A sizable crowd gathered outside the stadium.|x
+slight|adj.|small in degree|There was a slight delay before the show started.|x
+sober|adj.|serious and realistic|The report offers a sober assessment of the risks.|x
+solid|adj.|dependable and sound|She offered solid evidence to back up her claim.|x
+sound|adj.|based on reason and good judgment|The doctor gave sound advice.|x
+span|verb|to extend across or cover a period|Her career spans four decades.|x
+spare|adj.|lean or plain; extra|The author's spare prose avoids decoration.|x
+spark|verb|to cause something to begin|The article sparked a heated debate.|x
+specific|adj.|clearly defined and precise|The teacher gave specific feedback on each paragraph.|x
+speculate|verb|to form an opinion without full information|Experts speculate about what caused the outage.|x
+spirited|adj.|full of energy and enthusiasm|The two sides had a spirited debate.|x
+sprawling|adj.|spread out in a large, irregular way|The sprawling city covers hundreds of square miles.|x
+stable|adj.|steady and not likely to change|The patient's condition is stable.|x
+stake|noun|an interest or share in something|Residents have a stake in the outcome.|x
+stark|adj.|plain, severe, or very clear in contrast|There is a stark difference between the two plans.|x
+steep|adj.|extreme or sharply increased|The company faced steep losses.|x
+steer|verb|to guide in a particular direction|The coach steered the conversation toward strategy.|x
+stem|verb|to originate or come from|Her fear of water stems from a childhood accident.|x
+sterile|adj.|lacking creativity or life|The sterile office had no personality.|x
+stifle|verb|to hold back or suppress|Strict rules can stifle creativity.|x
+stimulate|verb|to encourage activity or growth|New roads stimulated economic growth.|x
+stipulate|verb|to state as a required condition|The contract stipulates a two-week notice period.|x
+strain|noun|a heavy demand on strength or resources|The long drought put a strain on the town's water supply.|x
+strand|noun|one element or thread within a larger whole|The novel weaves several strands into one story.|x
+stress|verb|to emphasize|The coach stressed the importance of teamwork.|x
+strike|verb|to affect the mind in a particular way|It struck her as odd that no one answered.|x
+striking|adj.|noticeable and impressive|There is a striking resemblance between the twins.|x
+subdued|adj.|quiet and restrained; softened|The mood at the dinner was subdued.|x
+subject|verb|to cause to undergo something|The metal was subjected to extreme heat.|x
+substantial|adj.|large in amount or importance|The project received substantial funding.|x
+subtle|adj.|delicate, not obvious|A subtle shift in tone changed the meaning.|x
+suffice|verb|to be enough|A short note will suffice.|x
+supple|adj.|bending and moving easily; flexible|The supple leather felt soft in her hands.|x
+supplement|verb|to add to something to improve or complete it|She supplements her income by tutoring.|x
+suppress|verb|to hold back or put an end to|The government suppressed the report.|x
+sustain|verb|to keep going over time|The team could not sustain its early lead.|x
+sweeping|adj.|wide in scope|The new law brings sweeping changes.|x
+tangible|adj.|real and able to be shown|The program has produced tangible results.|x
+taper|verb|to gradually become narrower or less|The path tapers to a narrow track.|x
+tarnish|verb|to damage or spoil|The scandal tarnished the senator's reputation.|x
+temper|verb|to moderate or soften|She tempered her criticism with praise.|x
+tend|verb|to be likely to behave in a certain way|Students tend to do better after a good night's sleep.|x
+tentative|adj.|not certain or final|They made tentative plans to meet on Friday.|x
+tenure|noun|the period of holding a position|During her tenure, the school doubled in size.|x
+terrain|noun|a stretch of land and its physical features|The rough terrain slowed the hikers.|x
+thorough|adj.|complete and careful|The inspector gave the building a thorough check.|x
+threshold|noun|the point at which something begins|The team reached the threshold of a major discovery.|x
+thrive|verb|to grow and develop well|Orchids thrive in humid conditions.|x
+tolerate|verb|to accept or endure without protest|The community will not tolerate cruelty to animals.|x
+touch|verb|to mention briefly|The speaker touched on several topics.|x
+trace|noun|a slight sign that something was present|There was not a trace of fear in her voice.|x
+trait|noun|a distinguishing characteristic|Curiosity is her defining trait.|x
+trajectory|noun|the path or direction of development|Her career trajectory rose steadily.|x
+transform|verb|to change completely in form or character|The renovation transformed the old warehouse into apartments.|x
+transparent|adj.|open and easy to understand; easy to see through|The agency pledged to be transparent about its spending.|x
+treat|verb|to deal with a topic in writing or discussion|The essay treats the issue with great care.|x
+trigger|verb|to cause something to begin|The loud noise triggered an avalanche.|x
+turn|noun|a change in direction|The story took an unexpected turn.|x
+undercut|verb|to weaken or damage|The scandal undercut her campaign.|x
+undertake|verb|to commit to and begin a task|The team undertook a survey of local birds.|x
+underscore|verb|to emphasize|The accident underscores the need for better safety rules.|x
+uniform|adj.|the same in all cases; consistent|The bricks were uniform in size.|x
+unveil|verb|to reveal or make known for the first time|The company unveiled its new phone.|x
+uphold|verb|to confirm or support a decision|The court upheld the earlier ruling.|x
+urge|verb|to strongly encourage|Doctors urge people to get plenty of rest.|x
+vast|adj.|extremely large|The vast desert stretched to the horizon.|x
+venture|verb|to dare to go or say something|She ventured an opinion despite her nerves.|x
+verify|verb|to check the truth or accuracy of|Reporters verified every quote before publishing.|x
+versatile|adj.|able to adapt to many functions|The versatile tool serves as a hammer and a wrench.|x
+vested|adj.|having a personal stake or interest|The owners have a vested interest in the town's success.|x
+vital|adj.|absolutely necessary or full of life|Exercise is vital to good health.|x
+volatile|adj.|liable to change quickly or unpredictably|The volatile market rose and fell within hours.|x
+warrant|verb|to justify or call for|The results warrant further study.|x
+weigh|verb|to consider carefully before deciding|She weighed the pros and cons of each school.|x
+wield|verb|to hold and use, especially power or influence|The editor wields great influence over the paper.|x
+withstand|verb|to resist or endure|The bridge was built to withstand earthquakes.|x
+yield|verb|to produce or give way|The experiment yielded surprising results.|x
