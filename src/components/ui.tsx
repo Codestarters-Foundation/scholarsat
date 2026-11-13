@@ -130,7 +130,7 @@ export function Ring({ value, size = 64, stroke = 7, label, tone = "red" }: { va
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--surface-2)" strokeWidth={stroke} />
         {v > 0 && <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - v)} />}
       </svg>
-      <span className="absolute font-medium tabular-nums" style={{ color: value === null ? "var(--faint)" : color, fontSize: Math.max(11, Math.round(size * 0.23)) }}>
+      <span className="absolute font-medium tabular-nums" style={{ color: value === null ? "var(--faint)" : color, fontSize: Math.max(11, Math.round(size * 0.2)) }}>
         {label ?? (value === null ? "–" : `${Math.round(v * 100)}%`)}
       </span>
     </div>

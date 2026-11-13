@@ -6,10 +6,10 @@ import { userStats } from "@/lib/stats";
 import { counts, QUESTIONS, utcDay } from "@/lib/bank";
 import { getDailyPoll } from "@/lib/daily";
 import { DailyPoll } from "@/components/DailyPoll";
+import { ProgressBody } from "@/components/ProgressCard";
 import { db } from "@/lib/db";
 import { TAXONOMY, SECTION_LABEL, type Section } from "@/lib/types";
-import { Badge, Card, HeaderCard, LinkButton, Progress, Ring } from "@/components/ui";
-import { Owl } from "@/components/Owl";
+import { Badge, Card, HeaderCard, LinkButton, Progress } from "@/components/ui";
 import { IArrowR, IChevR, IFireSolid, ITarget } from "@/components/icons";
 import { questionsPerDay } from "@/lib/onboarding";
 
@@ -164,76 +164,23 @@ export default async function Dashboard() {
           </Card>
 
           <HeaderCard title="Your Progress" right={<Link href="/tests" className="hover:underline">Practice tests →</Link>} bodyClassName="p-5">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl bg-surface p-4">
-                <p className="text-xs text-muted">Predicted score</p>
-                {s.predicted ? (
-                  <>
-                    <p className="mt-1 text-[34px] leading-none font-medium text-red tabular-nums">{s.predicted.total}</p>
-                    <p className="mt-1.5 text-xs text-muted tabular-nums">R&amp;W {s.predicted.rw} · Math {s.predicted.math}</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="mt-1 text-[34px] leading-none font-medium text-faint">–</p>
-                    <p className="mt-1.5 text-xs text-muted">Unlocks after 10 questions in each section</p>
-                  </>
-                )}
-              </div>
-              <div className="flex items-center gap-3 rounded-xl bg-surface p-4">
-                <Ring value={s.unique ? s.correct / s.unique : null} size={64} stroke={7} tone="ok" />
-                <div>
-                  <p className="text-xs text-muted">Accuracy</p>
-                  <p className="mt-0.5 text-sm font-medium tabular-nums">{s.correct} of {s.unique} correct</p>
-                </div>
-              </div>
-              <div className="rounded-xl bg-surface p-4">
-                <p className="text-xs text-muted">Answered</p>
-                <p className="mt-1 text-[34px] leading-none font-medium tabular-nums">{s.unique.toLocaleString()}</p>
-                <p className="mt-1.5 text-xs text-muted tabular-nums">of {c.total.toLocaleString()} in the bank</p>
-              </div>
-            </div>
-
-            {!s.predicted && (
-              <div className="mt-4 flex items-center gap-4 rounded-xl border border-dashed border-line-strong p-4">
-                <Owl size={44} />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium">Unlock your predicted score</p>
-                  <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                    {(["rw", "math"] as Section[]).map((sec) => (
-                      <div key={sec}>
-                        <div className="mb-1 flex justify-between text-xs text-muted"><span>{SECTION_LABEL[sec]}</span><span className="tabular-nums">{Math.min(10, s.bySection[sec].seen)}/10</span></div>
-                        <Progress value={Math.min(1, s.bySection[sec].seen / 10)} tone="gold" className="h-1.5" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="mt-6 grid gap-6">
-              {(["math", "rw"] as Section[]).map((sec) => (
-                <div key={sec}>
-                  <p className="eyebrow mb-3 text-gold-600">{SECTION_LABEL[sec]}</p>
-                  <ul className="grid gap-3.5">
-                    {TAXONOMY[sec].map((d) => {
-                      const skills = d.skills.map((k) => s.bySkill[k]).filter(Boolean);
-                      const seen = skills.reduce((a, b) => a + b.seen, 0);
-                      const corr = skills.reduce((a, b) => a + b.correct, 0);
-                      const acc = seen ? corr / seen : 0;
-                      return (
-                        <li key={d.domain}>
-                          <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
-                            <Link href={`/practice/play?section=${sec}&domain=${encodeURIComponent(d.domain)}`} className="min-w-0 flex-1 truncate hover:text-red">{d.domain}</Link>
-                            <span className="shrink-0 tabular-nums text-muted">{seen ? <><span className="font-medium text-ink">{Math.round(acc * 100)}%</span> · {seen} answered</> : "Not started"}</span>
-                          </div>
-                          <Progress value={acc} tone={seen && acc >= 0.7 ? "ok" : seen && acc < 0.5 ? "red" : "gold"} />
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ))}
-            </div>
+            <ProgressBody
+              predicted={s.predicted}
+              unique={s.unique}
+              correct={s.correct}
+              bankTotal={c.total}
+              sections={(["math", "rw"] as Section[]).map((sec) => ({
+                key: sec,
+                label: SECTION_LABEL[sec],
+                seen: s.bySection[sec].seen,
+                domains: TAXONOMY[sec].map((d) => {
+                  const skills = d.skills.map((k) => s.bySkill[k]).filter(Boolean);
+                  const seen = skills.reduce((a, b) => a + b.seen, 0);
+                  const corr = skills.reduce((a, b) => a + b.correct, 0);
+                  return { name: d.domain, href: `/practice/play?section=${sec}&domain=${encodeURIComponent(d.domain)}`, seen, acc: seen ? corr / seen : 0 };
+                }),
+              }))}
+            />
           </HeaderCard>
         </div>
       </div>
