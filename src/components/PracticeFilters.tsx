@@ -28,7 +28,7 @@ export function PracticeFilters({
   }, [skills]);
 
   const go = (p: Record<string, string>) => {
-    const q = new URLSearchParams({ section, status: "all", limit: "20", ...p });
+    const q = new URLSearchParams({ section, status: "all", limit: "0", ...p }); // limit 0 = every question in the skill or domain
     router.push(`/practice/play?${q}`);
   };
 
