@@ -38,7 +38,7 @@ export function AppShell({ user, answered = 0, children }: { user: User | null; 
       </aside>
       <div className="min-w-0">
         <MobileNav signedIn={!!user} footer={account} />
-        <main className="mx-auto w-full max-w-[1240px] px-4 py-6 sm:px-6 lg:px-10 lg:py-9">{children}</main>
+        <main className="mx-auto w-full max-w-[1240px] px-4 py-6 sm:px-6 lg:px-10 lg:py-9 2xl:max-w-[1380px]">{children}</main>
       </div>
     </div>
   );

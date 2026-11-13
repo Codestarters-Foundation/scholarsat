@@ -96,9 +96,9 @@ export default async function Dashboard() {
               <span className="text-xs text-muted">Your weakest skills</span>
             </div>
             {weak.length ? (
-              <ul className="mt-3 grid gap-2">
+              <ul className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-2">
                 {weak.map((w) => (
-                  <li key={w.skill}>
+                  <li key={w.skill} className="min-w-0">
                     <Link href={`/practice/play?section=${w.section}&skill=${encodeURIComponent(w.skill)}`} className="group flex items-center gap-3 rounded-xl border border-line px-3.5 py-3 text-sm transition-colors hover:border-red-200 hover:bg-red-50/50">
                       <span className="min-w-0 flex-1">
                         <span className="block truncate font-medium">{w.skill}</span>

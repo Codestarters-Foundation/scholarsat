@@ -102,7 +102,7 @@ export function TestRunner({ id }: { id: number }) {
 
   return (
     <div className="fixed inset-0 z-40 flex flex-col overflow-hidden bg-white">
-      <header className="grid h-[68px] shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b-4 border-red-700 bg-red px-4 text-white sm:px-6">
+      <header className="grid h-[60px] shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b-4 border-red-700 bg-red px-3 text-white sm:h-[68px] sm:gap-3 sm:px-6">
         <div className="min-w-0">
           <p className="truncate text-[15px] font-medium">{moduleLabel}</p>
           <p className="text-xs text-white/75">{answeredCount} of {v.questions.length} answered</p>
@@ -149,7 +149,7 @@ export function TestRunner({ id }: { id: number }) {
         </section>
       </div>
 
-      <footer className="relative shrink-0 border-t border-line bg-white px-4 py-3 sm:px-6">
+      <footer className="relative shrink-0 border-t border-line bg-white px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6">
         {showGrid && (
           <div className="absolute bottom-full left-1/2 mb-3 w-[min(94vw,640px)] -translate-x-1/2 animate-rise rounded-2xl border border-line bg-white p-5 shadow-pop">
             <p className="text-center font-medium">{moduleLabel}</p>

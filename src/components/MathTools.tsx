@@ -45,7 +45,7 @@ export function ReferenceSheet({ onClose }: { onClose: () => void }) {
 export function ToolButton({ icon, label, onClick, href, active }: { icon: React.ReactNode; label: string; onClick?: () => void; href?: string; active?: boolean }) {
   const [calcOpen, setCalcOpen] = useState(false);
   const [calcMounted, setCalcMounted] = useState(false);
-  const cls = `flex flex-col items-center gap-0.5 rounded-lg px-2.5 py-1 text-[12px] transition-colors ${active || calcOpen ? "bg-white/20" : "hover:bg-white/10"}`;
+  const cls = `flex flex-col items-center gap-0.5 rounded-lg px-2 py-1.5 text-[12px] transition-colors sm:px-2.5 sm:py-1 ${active || calcOpen ? "bg-white/20" : "hover:bg-white/10"}`;
   // The calculator button opens an embedded Desmos panel when an API key is configured.
   if (href === DESMOS_URL && DESMOS_ENABLED)
     return (
@@ -58,24 +58,25 @@ export function ToolButton({ icon, label, onClick, href, active }: { icon: React
           }}
           aria-pressed={calcOpen}
           className={cls}
+          aria-label={label}
         >
           {icon}
-          <span>{label}</span>
+          <span className="hidden sm:inline">{label}</span>
         </button>
         {calcMounted && createPortal(<DesmosCalculator open={calcOpen} onClose={() => setCalcOpen(false)} />, document.body)}
       </>
     );
   if (href)
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
+      <a href={href} target="_blank" rel="noopener noreferrer" className={cls} aria-label={label} title={label}>
         {icon}
-        <span>{label}</span>
+        <span className="hidden sm:inline">{label}</span>
       </a>
     );
   return (
-    <button type="button" onClick={onClick} aria-pressed={active} className={cls}>
+    <button type="button" onClick={onClick} aria-pressed={active} aria-label={label} title={label} className={cls}>
       {icon}
-      <span>{label}</span>
+      <span className="hidden sm:inline">{label}</span>
     </button>
   );
 }

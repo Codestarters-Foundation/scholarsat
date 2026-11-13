@@ -152,14 +152,14 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Top bar */}
-        <header className="flex h-[68px] shrink-0 items-center gap-3 border-b-4 border-red-700 bg-red px-3 text-white sm:px-5">
+        <header className="flex h-[60px] shrink-0 items-center gap-2 border-b-4 border-red-700 bg-red px-2 text-white sm:h-[68px] sm:gap-3 sm:px-5">
           <button className="rounded-lg p-2 hover:bg-white/10 lg:hidden" onClick={() => setListOpen(true)} aria-label="Show question list"><IList /></button>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[15px] font-medium">{title}</p>
             <p className="text-xs text-white/75">Question {idx + 1} of {n}</p>
           </div>
-          <span className="hidden font-mono text-[20px] tabular-nums sm:block" aria-label="Time on this question">{mm}:{String(ss).padStart(2, "0")}</span>
-          <div className="flex flex-1 items-center justify-end gap-0.5">
+          <span className="font-mono text-[16px] tabular-nums sm:text-[20px]" aria-label="Time on this question">{mm}:{String(ss).padStart(2, "0")}</span>
+          <div className="flex shrink-0 items-center justify-end gap-0.5 sm:flex-1">
             {signedIn && <ToolButton icon={<IBookmark filled={bookmarked} className="h-5 w-5" />} label={bookmarked ? "Saved" : "Save"} onClick={toggleBookmark} active={bookmarked} />}
             {q?.type === "mcq" && <ToolButton icon={<IStrike className="h-5 w-5" />} label="Eliminate" onClick={() => setStrikeMode((s) => !s)} active={strikeMode} />}
             {q?.section === "math" && (
@@ -178,7 +178,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
         ) : (
           <div className="scroll-thin flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
             <section className="scroll-thin border-b border-line px-6 py-7 lg:w-1/2 lg:overflow-y-auto lg:border-b-0 lg:border-r-4 lg:border-r-surface-2 lg:px-9 lg:py-9" aria-label={split ? "Passage" : "Question"}>
-              {split ? <Passage q={q} /> : <Rich text={q.stem} className="text-[18px] text-ink" />}
+              <div className="mx-auto w-full max-w-[720px]">{split ? <Passage q={q} /> : <Rich text={q.stem} className="text-[18px] text-ink" />}</div>
             </section>
             <section className="scroll-thin px-6 py-7 lg:w-1/2 lg:overflow-y-auto lg:px-9 lg:py-9" aria-label="Answer">
               <div className="mb-5 flex items-center gap-3 border-b border-line bg-surface pr-3">
@@ -222,7 +222,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
         )}
 
         {/* Bottom bar */}
-        <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-line bg-white px-4 py-3 sm:px-6">
+        <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-line bg-white px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6">
           <p className="hidden text-xs text-muted md:block">A–D to choose · Enter to check · ← → to move</p>
           <div className="ml-auto flex items-center gap-2">
             <Button variant="secondary" onClick={prev} disabled={idx === 0}><IArrowL className="h-4 w-4" /> Back</Button>

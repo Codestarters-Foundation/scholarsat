@@ -102,14 +102,14 @@ export function DailyFullscreen({ initial, section, dayNo }: { initial: Record<S
       {listOpen && <div className="fixed inset-0 z-40 bg-ink/30 lg:hidden" onClick={() => setListOpen(false)} />}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-[68px] shrink-0 items-center gap-3 border-b-4 border-red-700 bg-red px-3 text-white sm:px-5">
+        <header className="flex h-[60px] shrink-0 items-center gap-2 border-b-4 border-red-700 bg-red px-2 text-white sm:h-[68px] sm:gap-3 sm:px-5">
           <button className="rounded-lg p-2 hover:bg-white/10 lg:hidden" onClick={() => setListOpen(true)} aria-label="Show daily questions"><IList /></button>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[15px] font-medium">Daily Question #{dayNo} · {SECTION_LABEL[section]}</p>
             <p className="truncate text-xs text-white/75">{q.skill}</p>
           </div>
           <span className="hidden text-sm text-white/85 sm:block">New in <span className="font-mono tabular-nums">{countdown || "…"}</span></span>
-          <div className="flex flex-1 items-center justify-end gap-0.5">
+          <div className="flex shrink-0 items-center justify-end gap-0.5 sm:flex-1">
             {section === "math" && (
               <>
                 <ToolButton icon={<IFormula className="h-5 w-5" />} label="Reference" onClick={() => setRefOpen((o) => !o)} active={refOpen} />
@@ -122,7 +122,7 @@ export function DailyFullscreen({ initial, section, dayNo }: { initial: Record<S
 
         <div className="scroll-thin flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
           <section className="scroll-thin border-b border-line px-6 py-7 lg:w-1/2 lg:overflow-y-auto lg:border-b-0 lg:border-r-4 lg:border-r-surface-2 lg:px-9 lg:py-9" aria-label={split ? "Passage" : "Question"}>
-            {split ? <Passage q={q} /> : <Rich text={q.stem} className="text-[18px] text-ink" />}
+            <div className="mx-auto w-full max-w-[720px]">{split ? <Passage q={q} /> : <Rich text={q.stem} className="text-[18px] text-ink" />}</div>
           </section>
           <section className="scroll-thin px-6 py-7 lg:w-1/2 lg:overflow-y-auto lg:px-9 lg:py-9" aria-label="Answer">
             <div className="mb-5 flex items-center gap-3 border-b border-line bg-surface pr-3">
@@ -151,7 +151,7 @@ export function DailyFullscreen({ initial, section, dayNo }: { initial: Record<S
           </section>
         </div>
 
-        <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-line bg-white px-4 py-3 sm:px-6">
+        <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-line bg-white px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6">
           <p className="hidden text-xs text-muted md:block">{voted ? "Come back tomorrow for a new question." : "A–D to choose · Enter to vote"}</p>
           <div className="ml-auto flex items-center gap-2">
             {voted ? (

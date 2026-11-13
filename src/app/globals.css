@@ -167,8 +167,28 @@
     outline-offset: 2px;
     border-radius: 6px;
   }
+  button, [role="button"], a, label, select, summary {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
   button, [role="button"] {
     cursor: pointer;
+  }
+  /* iOS zooms the page when a focused field is under 16px. */
+  @media (max-width: 640px) {
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea {
+      font-size: 16px;
+    }
+  }
+  /* Large monitors: scale the whole interface up so it isn't tiny. Breakpoints keep using the real screen width. */
+  @media (min-width: 1800px) {
+    html { zoom: 1.15; --zoom: 1.15; }
+  }
+  @media (min-width: 2200px) {
+    html { zoom: 1.35; --zoom: 1.35; }
+  }
+  @media (min-width: 3000px) {
+    html { zoom: 1.7; --zoom: 1.7; }
   }
   button:disabled {
     cursor: not-allowed;
@@ -355,6 +375,10 @@
 @keyframes owl-squint {
   to { transform: scaleY(0.55); }
 }
+
+/* `dvh` ignores CSS zoom, so full-height layouts divide by the zoom factor (set on html on large monitors). */
+.min-h-dvh { min-height: calc(100dvh / var(--zoom, 1)); }
+.h-dvh { height: calc(100dvh / var(--zoom, 1)); }
 
 .blank {
   display: inline-block;

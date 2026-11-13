@@ -60,14 +60,14 @@ export function PracticeFilters({
               key={sec}
               onClick={() => { setSection(sec); setSelected(new Set()); router.replace(`/practice?section=${sec}`, { scroll: false }); }}
               aria-pressed={on}
-              className={`group relative overflow-hidden rounded-2xl border-2 bg-white p-6 text-left transition-all ${on ? "border-red shadow-card" : "border-line opacity-75 hover:opacity-100 md:scale-[0.97]"}`}
+              className={`group relative overflow-hidden rounded-2xl border-2 bg-white p-4 text-left transition-all sm:p-6 ${on ? "border-red shadow-card" : "border-line opacity-75 hover:opacity-100 md:scale-[0.97]"}`}
             >
               <SubjectArt kind={sec} className={`pointer-events-none absolute -right-8 -top-10 h-64 w-64 ${sec === "math" ? "text-red" : "text-gold"} opacity-60`} />
               <div className="relative">
                 <p className={`eyebrow ${sec === "math" ? "text-red" : "text-gold-600"}`}>{sec === "math" ? "Math" : "English"}</p>
-                <p className="mt-1 text-[24px] font-medium">ScholarSAT {SECTION_LABEL[sec]} Bank</p>
-                <p className="mt-1 text-sm text-muted">{sec === "math" ? "Computed answers and step-by-step solutions for every tested math skill." : "Passages and drills built on every reading and writing question type."}</p>
-                <p className="mt-4 flex items-baseline gap-1.5">
+                <p className="mt-1 text-[20px] font-medium sm:text-[24px]">ScholarSAT {SECTION_LABEL[sec]} Bank</p>
+                <p className="mt-1 hidden text-sm text-muted sm:block">{sec === "math" ? "Computed answers and step-by-step solutions for every tested math skill." : "Passages and drills built on every reading and writing question type."}</p>
+                <p className="mt-3 flex items-baseline gap-1.5 sm:mt-4">
                   <span className={`text-[28px] font-medium tabular-nums ${sec === "math" ? "text-red" : "text-gold-600"}`}>{t.answered.toLocaleString()}</span>
                   <span className="text-sm text-muted">/ {t.total.toLocaleString()} questions</span>
                 </p>

@@ -40,7 +40,7 @@ export default async function Tests() {
           const n = i + 1;
           if (!t) {
             return (
-              <article key={`empty-${n}`} className="overflow-hidden rounded-2xl border border-line bg-white shadow-card">
+              <article key={`empty-${n}`} className={`overflow-hidden rounded-2xl border border-line bg-white shadow-card ${n > rows.length + 2 ? "hidden sm:block" : ""}`}>
                 <div className="bg-red-50 px-5 pb-2 pt-4"><p className="text-[30px] leading-none font-medium tracking-tight text-red/40">TEST {n}</p></div>
                 <p className="eyebrow bg-surface-2 px-5 py-1 text-muted">SAT mock exam</p>
                 <div className="p-5">
