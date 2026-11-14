@@ -19,6 +19,13 @@ import {
   IRefresh,
   ITarget,
   IGear,
+  IGraduationCap,
+  IFire,
+  IStar,
+  IBook,
+  ITrophy,
+  ISparkle,
+  ICompass,
 } from "./icons";
 import { useTheme, type Theme, type AccentColor } from "./ThemeProvider";
 import type { ActiveSession } from "@/lib/auth";
@@ -87,6 +94,7 @@ function Toggle({
           className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
             checked ? "translate-x-5" : "translate-x-0"
           }`}
+          style={{ backgroundColor: "#ffffff" }}
         />
       </button>
     </div>
@@ -112,15 +120,15 @@ type Props = {
   activeSessions: ActiveSession[];
 };
 
-const PRESET_AVATARS = [
-  { id: "owl", label: "Scholar Owl", icon: "🦉" },
-  { id: "cap", label: "Graduate Cap", icon: "🎓" },
-  { id: "scholar", label: "Scholar", icon: "📚" },
-  { id: "spark", label: "Spark", icon: "✨" },
-  { id: "star", label: "Star", icon: "⭐" },
-  { id: "flame", label: "Streak Flame", icon: "🔥" },
-  { id: "book", label: "Book", icon: "📖" },
-  { id: "trophy", label: "Trophy", icon: "🏆" },
+const PRESET_AVATARS: { id: string; label: string; Icon: React.ComponentType<{ className?: string }> }[] = [
+  { id: "cap", label: "Grad Cap", Icon: IGraduationCap },
+  { id: "flame", label: "Streak", Icon: IFire },
+  { id: "star", label: "Star", Icon: IStar },
+  { id: "target", label: "Target", Icon: ITarget },
+  { id: "book", label: "Book", Icon: IBook },
+  { id: "trophy", label: "Trophy", Icon: ITrophy },
+  { id: "spark", label: "Spark", Icon: ISparkle },
+  { id: "compass", label: "Compass", Icon: ICompass },
 ];
 
 const ACCENT_COLORS: { id: AccentColor; name: string; hex: string; bgClass: string }[] = [
@@ -464,28 +472,31 @@ export function SettingsForms({ user, hasPassword, googleLinked, googleAvailable
                 </div>
               </div>
 
-              {/* Preset Avatars */}
+              {/* Preset Vector Avatars */}
               <div>
                 <p className="text-xs font-medium text-muted uppercase tracking-wider mb-2.5">
-                  Or choose a Scholar icon
+                  Or select a profile icon
                 </p>
                 <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
                   {PRESET_AVATARS.map((a) => {
                     const isSelected = currentAvatar === a.id;
+                    const IconComp = a.Icon;
                     return (
                       <button
                         key={a.id}
                         type="button"
                         onClick={() => handleSelectPresetAvatar(a.id)}
                         title={a.label}
-                        className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all ${
+                        className={`flex flex-col items-center justify-center p-2.5 rounded-xl border transition-all ${
                           isSelected
-                            ? "border-red bg-red-50 dark:bg-red-950/30 ring-2 ring-red/20"
-                            : "border-line bg-surface hover:bg-surface-2"
+                            ? "border-red bg-red-50 dark:bg-red-950/40 ring-2 ring-red/20 text-red"
+                            : "border-line bg-surface hover:bg-surface-2 text-ink-2"
                         }`}
                       >
-                        <span className="text-2xl select-none">{a.icon}</span>
-                        <span className="mt-1 text-[10px] text-muted truncate w-full text-center">
+                        <span className="grid h-7 w-7 place-items-center">
+                          <IconComp className="h-5 w-5" />
+                        </span>
+                        <span className="mt-1 text-[11px] font-medium truncate w-full text-center">
                           {a.label}
                         </span>
                       </button>

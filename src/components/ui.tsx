@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import type { Difficulty } from "@/lib/types";
+import { IGraduationCap, IFire, IStar, ITarget, IBook, ITrophy, ISparkle, ICompass } from "./icons";
 
 type Variant = "primary" | "secondary" | "ghost" | "gold" | "success" | "dark";
 type Size = "sm" | "md" | "lg";
@@ -179,38 +180,42 @@ export function Avatar({
     );
   }
 
-  // Preset avatar identifiers
+  // Preset vector avatar icons
   const presetGradients: Record<string, string> = {
-    owl: "from-red to-red-700",
-    cap: "from-gold-600 to-amber-700",
-    scholar: "from-blue-600 to-indigo-800",
-    spark: "from-amber-500 to-rose-600",
-    star: "from-yellow-500 to-amber-600",
+    cap: "from-red to-red-700",
     flame: "from-orange-500 to-red-600",
-    book: "from-emerald-600 to-teal-800",
+    star: "from-amber-500 to-yellow-600",
+    target: "from-rose-500 to-red-700",
+    book: "from-blue-600 to-indigo-800",
     trophy: "from-purple-600 to-indigo-800",
+    spark: "from-gold-600 to-amber-700",
+    compass: "from-emerald-600 to-teal-800",
   };
 
-  const presetIcons: Record<string, string> = {
-    owl: "🦉",
-    cap: "🎓",
-    scholar: "📚",
-    spark: "✨",
-    star: "⭐",
-    flame: "🔥",
-    book: "📖",
-    trophy: "🏆",
+  const presetIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+    cap: IGraduationCap,
+    flame: IFire,
+    star: IStar,
+    target: ITarget,
+    book: IBook,
+    trophy: ITrophy,
+    spark: ISparkle,
+    compass: ICompass,
   };
 
   if (avatar && presetIcons[avatar]) {
+    const IconComp = presetIcons[avatar]!;
     const grad = presetGradients[avatar] || "from-red to-gold";
+    const iconDim = Math.max(16, Math.round(size * 0.52));
     return (
       <span
         className={`grid shrink-0 place-items-center rounded-full bg-gradient-to-br ${grad} text-white shadow-xs select-none ${className}`}
-        style={{ width: size, height: size, fontSize: size * 0.48 }}
+        style={{ width: size, height: size }}
         aria-hidden="true"
       >
-        {presetIcons[avatar]}
+        <span style={{ width: iconDim, height: iconDim }} className="grid place-items-center text-white">
+          <IconComp className="w-full h-full text-white" />
+        </span>
       </span>
     );
   }

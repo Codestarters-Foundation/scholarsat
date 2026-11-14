@@ -461,40 +461,176 @@
    Theme & Appearance Engine (ScholarSAT Themes, Accents, Density & Motion)
    --------------------------------------------------------------------------- */
 
-/* Dark Mode Tokens */
+/* Dark Mode Tokens (Deep, clean academic neutral charcoal palette) */
 html.dark {
   color-scheme: dark;
-  --canvas: #0e1117;
-  --bg: #151821;
-  --surface: #1d212d;
-  --surface-2: #262c3b;
-  --ink: #f3f5f9;
-  --ink-2: #d4d8e3;
-  --muted: #9aa1b3;
-  --faint: #636b7e;
-  --line: #272d3c;
-  --line-strong: #373f54;
+  --canvas: #09090b;
+  --bg: #121316;
+  --surface: #1a1b20;
+  --surface-2: #242630;
+  --ink: #f5f6f8;
+  --ink-2: #d5d6de;
+  --muted: #9497a5;
+  --faint: #626574;
+  --line: #23252d;
+  --line-strong: #323541;
 
-  --shadow-card: 0 1px 3px rgb(0 0 0 / 30%);
-  --shadow-pop: 0 14px 36px rgb(0 0 0 / 50%);
+  --red: #e12d4d;
+  --red-600: #c41b39;
+  --red-700: #9f122d;
+  --red-50: #291016;
+  --red-100: #451421;
+  --red-200: #691a2e;
+
+  --gold: #dca735;
+  --gold-600: #b88624;
+  --gold-700: #8f6515;
+  --gold-50: #261f0e;
+  --gold-100: #3f3214;
+
+  --ok: #22c55e;
+  --ok-500: #22c55e;
+  --ok-700: #16a34a;
+  --ok-50: #0f2918;
+  --ok-100: #174227;
+
+  --bad: #ef4444;
+  --bad-50: #331316;
+  --bad-100: #4e191f;
+
+  --warn: #eab308;
+  --warn-50: #2e230a;
+
+  --owl-white: #ffffff;
+  --shadow-card: 0 1px 3px rgb(0 0 0 / 45%), 0 0 0 1px rgb(255 255 255 / 4%);
+  --shadow-pop: 0 16px 36px rgb(0 0 0 / 65%), 0 0 0 1px rgb(255 255 255 / 6%);
 }
 
-/* Dark Mode Color Overrides for Utility Tokens */
-html.dark .bg-white {
-  background-color: var(--bg) !important;
+html.dark body {
+  background-color: var(--canvas);
+  color: var(--ink);
 }
-html.dark .bg-surface {
+
+/* Card and Container Backgrounds in Dark Mode */
+html.dark aside,
+html.dark nav,
+html.dark section,
+html.dark article,
+html.dark main,
+html.dark .shadow-card,
+html.dark [role="menu"],
+html.dark div.bg-white:not([role="switch"] *):not(.owl *):not(.keep-white) {
+  background-color: var(--bg);
+}
+
+/* Ensure pure white text on dark or colored buttons and headers */
+html.dark .text-white,
+html.dark .text-white * {
+  color: #ffffff !important;
+}
+
+/* Toggle switch knob stays pure white */
+html.dark [role="switch"] span {
+  background-color: #ffffff !important;
+}
+
+/* Secondary 3D button in dark mode */
+html.dark button.bg-white,
+html.dark a.bg-white,
+html.dark .btn-3d.bg-white {
   background-color: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line-strong) !important;
 }
-html.dark .bg-surface-2 {
+html.dark button.bg-white:hover,
+html.dark a.bg-white:hover,
+html.dark .btn-3d.bg-white:hover {
   background-color: var(--surface-2) !important;
 }
+
+/* Primary buttons in dark mode */
+html.dark .btn-3d.bg-red,
+html.dark a.btn-3d.bg-red {
+  background-color: var(--red) !important;
+  color: #ffffff !important;
+  border-bottom-color: var(--red-700) !important;
+}
+html.dark .btn-3d.bg-gold,
+html.dark a.btn-3d.bg-gold {
+  background-color: var(--gold) !important;
+  color: #ffffff !important;
+  border-bottom-color: var(--gold-700) !important;
+}
+html.dark .btn-3d.bg-ok-500,
+html.dark a.btn-3d.bg-ok-500 {
+  background-color: var(--ok-500) !important;
+  color: #ffffff !important;
+  border-bottom-color: var(--ok-700) !important;
+}
+
+/* Inputs and Forms in Dark Mode */
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.dark select,
+html.dark textarea {
+  background-color: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  background-color: var(--bg) !important;
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 3px rgba(225, 45, 77, 0.25) !important;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--muted) !important;
+}
+
+/* Borders and dividers */
 html.dark .border-line {
   border-color: var(--line) !important;
 }
 html.dark .border-line-strong {
   border-color: var(--line-strong) !important;
 }
+html.dark .divide-line > * + * {
+  border-color: var(--line) !important;
+}
+
+/* Subtle Tinted Alert/Badge Backgrounds */
+html.dark .bg-red-50 {
+  background-color: var(--red-50) !important;
+}
+html.dark .border-red-200,
+html.dark .border-red-100 {
+  border-color: var(--red-200) !important;
+}
+html.dark .bg-gold-50 {
+  background-color: var(--gold-50) !important;
+}
+html.dark .border-gold-100,
+html.dark .border-gold-200 {
+  border-color: var(--gold-100) !important;
+}
+html.dark .bg-ok-50 {
+  background-color: var(--ok-50) !important;
+}
+html.dark .border-ok-100 {
+  border-color: var(--ok-100) !important;
+}
+html.dark .bg-bad-50 {
+  background-color: var(--bad-50) !important;
+}
+html.dark .border-bad-100 {
+  border-color: var(--bad-100) !important;
+}
+html.dark .bg-warn-50 {
+  background-color: var(--warn-50) !important;
+}
+
+/* Text Overrides */
 html.dark .text-ink {
   color: var(--ink) !important;
 }
@@ -507,35 +643,56 @@ html.dark .text-muted {
 html.dark .text-faint {
   color: var(--faint) !important;
 }
+
+/* Surfaces & Hovers */
+html.dark .bg-surface {
+  background-color: var(--surface) !important;
+}
+html.dark .bg-surface-2 {
+  background-color: var(--surface-2) !important;
+}
+html.dark .hover\:bg-surface:hover {
+  background-color: var(--surface) !important;
+}
+html.dark .hover\:bg-surface-2:hover {
+  background-color: var(--surface-2) !important;
+}
+html.dark .hover\:bg-white\/50:hover {
+  background-color: var(--surface) !important;
+}
+
+/* HeaderCard Colored Strips - Text Always White */
+html.dark header.bg-red,
+html.dark header.bg-gold,
+html.dark header.bg-ok-500,
+html.dark header.bg-ink {
+  color: #ffffff !important;
+}
+html.dark header.bg-red *,
+html.dark header.bg-gold *,
+html.dark header.bg-ok-500 *,
+html.dark header.bg-ink * {
+  color: #ffffff !important;
+}
+
+/* Shadows */
 html.dark .shadow-card {
   box-shadow: var(--shadow-card) !important;
 }
 html.dark .shadow-pop {
   box-shadow: var(--shadow-pop) !important;
 }
-html.dark input:not([type="checkbox"]):not([type="radio"]),
-html.dark select,
-html.dark textarea {
-  background-color: var(--surface) !important;
-  color: var(--ink) !important;
-  border-color: var(--line-strong) !important;
-}
-html.dark input:focus,
-html.dark select:focus,
-html.dark textarea:focus {
-  background-color: var(--bg) !important;
-}
 
 /* Accent Colors */
 /* 1. Crimson (Default) */
 html.dark:not([data-accent]),
 html.dark[data-accent="red"] {
-  --red: #c91838;
-  --red-600: #a50c26;
-  --red-700: #8c0a20;
-  --red-50: #2b1016;
-  --red-100: #4a1520;
-  --red-200: #6b1828;
+  --red: #e12d4d;
+  --red-600: #c41b39;
+  --red-700: #9f122d;
+  --red-50: #291016;
+  --red-100: #451421;
+  --red-200: #691a2e;
 }
 
 /* 2. Gold / Amber */
@@ -548,12 +705,12 @@ html[data-accent="gold"] {
   --red-200: #ebd49a;
 }
 html.dark[data-accent="gold"] {
-  --red: #d9a537;
+  --red: #dca735;
   --red-600: #b88624;
   --red-700: #8f6515;
-  --red-50: #292010;
-  --red-100: #423315;
-  --red-200: #5c4519;
+  --red-50: #261f0e;
+  --red-100: #3f3214;
+  --red-200: #5c471b;
 }
 
 /* 3. Blue / Cobalt */
@@ -569,8 +726,8 @@ html.dark[data-accent="blue"] {
   --red: #3b82f6;
   --red-600: #2563eb;
   --red-700: #1d4ed8;
-  --red-50: #101c38;
-  --red-100: #172d5c;
+  --red-50: #0f1c38;
+  --red-100: #162c5a;
   --red-200: #1e3f80;
 }
 

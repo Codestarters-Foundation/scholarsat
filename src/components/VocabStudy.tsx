@@ -14,6 +14,7 @@ import {
   IStar,
   ITarget,
   IX,
+  ICards,
 } from "./icons";
 
 type StudyMode = "flashcards" | "browse" | "quiz";
@@ -340,35 +341,35 @@ export function VocabStudy({
           <button
             type="button"
             onClick={() => setMode("flashcards")}
-            className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-all ${
               mode === "flashcards"
                 ? "bg-white text-ink shadow-xs"
                 : "text-muted hover:text-ink hover:bg-white/50"
             }`}
           >
-            🎴 Flashcards
+            <ICards className="h-4 w-4" /> Flashcards
           </button>
           <button
             type="button"
             onClick={() => setMode("browse")}
-            className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-all ${
               mode === "browse"
                 ? "bg-white text-ink shadow-xs"
                 : "text-muted hover:text-ink hover:bg-white/50"
             }`}
           >
-            🔍 Browse & Search
+            <ISearch className="h-4 w-4" /> Browse & Search
           </button>
           <button
             type="button"
             onClick={() => setMode("quiz")}
-            className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-all ${
               mode === "quiz"
                 ? "bg-white text-ink shadow-xs"
                 : "text-muted hover:text-ink hover:bg-white/50"
             }`}
           >
-            ⚡ Quick Quiz
+            <ITarget className="h-4 w-4" /> Quick Quiz
           </button>
         </div>
 
