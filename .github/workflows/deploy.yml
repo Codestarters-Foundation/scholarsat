@@ -56,4 +56,7 @@ jobs:
             printf 'NEXT_PUBLIC_DESMOS_API_KEY=%s\n' "$NEXT_PUBLIC_DESMOS_API_KEY" |
               ssh deploy@"$HOST" 'set -e; cd /opt/scholarsat; umask 077; touch .env; (grep -v "^NEXT_PUBLIC_DESMOS_API_KEY=" .env || true) > .env.new; cat >> .env.new; mv .env.new .env'
           fi
+          # Point the site's GitHub links at this repository. An old value in the server's .env overrides the code default, so always rewrite it.
+          printf 'NEXT_PUBLIC_REPO_URL=%s\n' "https://github.com/$REPO" |
+            ssh deploy@"$HOST" 'set -e; cd /opt/scholarsat; umask 077; touch .env; (grep -v "^NEXT_PUBLIC_REPO_URL=" .env || true) > .env.new; cat >> .env.new; mv .env.new .env'
           ssh deploy@"$HOST" 'cd /opt/scholarsat && ./deploy/deploy.sh'
