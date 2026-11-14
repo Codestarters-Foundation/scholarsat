@@ -10,7 +10,7 @@ const REPO = process.env.NEXT_PUBLIC_REPO_URL ?? "https://github.com/Codestarter
 
 export function AppShell({ user, answered = 0, children }: { user: User | null; answered?: number; children: ReactNode }) {
   const account = user ? (
-    <UserMenu name={user.name} email={user.email} answered={answered} />
+    <UserMenu name={user.name} email={user.email} avatar={user.avatar} answered={answered} />
   ) : (
     <div className="grid gap-2">
       <LinkButton href="/signup" className="w-full">Create free account</LinkButton>

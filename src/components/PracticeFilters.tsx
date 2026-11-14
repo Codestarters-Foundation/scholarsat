@@ -51,7 +51,7 @@ export function PracticeFilters({
       </div>
 
       {/* Bank selector */}
-      <div className="grid gap-4 md:grid-cols-[1.35fr_1fr]">
+      <div className="grid gap-4 sm:grid-cols-2">
         {(["math", "rw"] as Section[]).map((sec) => {
           const on = section === sec;
           const t = sectionTotals[sec];

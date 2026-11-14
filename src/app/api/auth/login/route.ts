@@ -10,7 +10,9 @@ export async function POST(req: Request) {
   const u = db.prepare("SELECT id, password_hash FROM users WHERE email = ?").get(email) as { id: number; password_hash: string } | undefined;
   if (u && !u.password_hash) return bad("This account uses Google sign-in. Use “Continue with Google” above.", 401);
   if (!u || !(await verifyPassword(password, u.password_hash))) return bad("That email and password don't match.", 401);
-  const s = createSession(u.id);
+  const ip = clientIp(req);
+  const userAgent = req.headers.get("user-agent");
+  const s = createSession(u.id, { userAgent, ip });
   await setSessionCookie(s.token, s.expires);
   return json({ ok: true });
 }

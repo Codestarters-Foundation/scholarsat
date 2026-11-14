@@ -5,7 +5,17 @@ import { useEffect, useRef, useState } from "react";
 import { Avatar } from "./ui";
 import { IChevD, IGear, ILogout } from "./icons";
 
-export function UserMenu({ name, email, answered }: { name: string; email: string; answered: number }) {
+export function UserMenu({
+  name,
+  email,
+  avatar,
+  answered,
+}: {
+  name: string;
+  email: string;
+  avatar?: string | null;
+  answered: number;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -27,8 +37,8 @@ export function UserMenu({ name, email, answered }: { name: string; email: strin
 
   return (
     <div ref={ref} className="relative">
-      <button onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="menu" className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left hover:bg-surface-2">
-        <Avatar name={name} />
+      <button onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="menu" className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left hover:bg-surface-2 transition-colors">
+        <Avatar name={name} avatar={avatar} />
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-medium text-ink">{name}</span>
           <span className="mt-1 flex items-center gap-2 text-xs text-muted">

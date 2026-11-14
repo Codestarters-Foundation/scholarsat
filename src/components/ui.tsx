@@ -148,11 +148,76 @@ export function EmptyState({ icon, title, children, action }: { icon?: ReactNode
   );
 }
 
-export function Avatar({ name, size = 36 }: { name: string; size?: number }) {
-  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((s) => s[0]!.toUpperCase()).join("") || "?";
+export function Avatar({
+  name,
+  avatar,
+  size = 36,
+  className = "",
+}: {
+  name: string;
+  avatar?: string | null;
+  size?: number;
+  className?: string;
+}) {
+  const initials =
+    name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((s) => s[0]!.toUpperCase())
+      .join("") || "?";
+
+  if (avatar && (avatar.startsWith("data:") || avatar.startsWith("http://") || avatar.startsWith("https://"))) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={avatar}
+        alt={name}
+        className={`shrink-0 rounded-full object-cover border border-line ${className}`}
+        style={{ width: size, height: size }}
+      />
+    );
+  }
+
+  // Preset avatar identifiers
+  const presetGradients: Record<string, string> = {
+    owl: "from-red to-red-700",
+    cap: "from-gold-600 to-amber-700",
+    scholar: "from-blue-600 to-indigo-800",
+    spark: "from-amber-500 to-rose-600",
+    star: "from-yellow-500 to-amber-600",
+    flame: "from-orange-500 to-red-600",
+    book: "from-emerald-600 to-teal-800",
+    trophy: "from-purple-600 to-indigo-800",
+  };
+
+  const presetIcons: Record<string, string> = {
+    owl: "🦉",
+    cap: "🎓",
+    scholar: "📚",
+    spark: "✨",
+    star: "⭐",
+    flame: "🔥",
+    book: "📖",
+    trophy: "🏆",
+  };
+
+  if (avatar && presetIcons[avatar]) {
+    const grad = presetGradients[avatar] || "from-red to-gold";
+    return (
+      <span
+        className={`grid shrink-0 place-items-center rounded-full bg-gradient-to-br ${grad} text-white shadow-xs select-none ${className}`}
+        style={{ width: size, height: size, fontSize: size * 0.48 }}
+        aria-hidden="true"
+      >
+        {presetIcons[avatar]}
+      </span>
+    );
+  }
+
   return (
     <span
-      className="grid shrink-0 place-items-center rounded-full bg-gradient-to-br from-red to-gold font-medium text-white"
+      className={`grid shrink-0 place-items-center rounded-full bg-gradient-to-br from-red to-gold font-medium text-white shadow-xs select-none ${className}`}
       style={{ width: size, height: size, fontSize: size * 0.38 }}
       aria-hidden="true"
     >

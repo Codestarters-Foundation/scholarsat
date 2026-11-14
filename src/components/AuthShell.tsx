@@ -14,7 +14,7 @@ export function AuthShell({ children }: { children: ReactNode }) {
 
   return (
     <ShyContext.Provider value={setShy}>
-      <div className="grid min-h-dvh bg-white lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+      <div className="grid min-h-dvh bg-white lg:grid-cols-2">
         {/* Brand panel */}
         <aside className="group relative hidden overflow-hidden bg-red text-white lg:flex lg:flex-col">
           <div className="pattern-grid pointer-events-none absolute inset-0 text-white opacity-[0.045]" aria-hidden="true" />

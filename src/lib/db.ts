@@ -90,12 +90,43 @@ function open() {
   addColumn("current_score", "INTEGER");
   addColumn("study_minutes", "INTEGER");
   addColumn("focus", "TEXT");
+  addColumn("avatar", "TEXT");
+  addColumn("theme", "TEXT DEFAULT 'system'");
+  addColumn("accent_color", "TEXT DEFAULT 'red'");
+  addColumn("compact_mode", "INTEGER DEFAULT 0");
+  addColumn("reduce_animations", "INTEGER DEFAULT 0");
   if (!userCols.has("onboarded_at")) {
     addColumn("onboarded_at", "INTEGER");
     // Accounts that existed before onboarding shipped don't get sent through it.
     db.exec("UPDATE users SET onboarded_at = created_at WHERE onboarded_at IS NULL");
   }
   db.exec("CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub ON users(google_sub) WHERE google_sub IS NOT NULL");
+
+  // Sessions table migrations
+  const sessionCols = new Set((db.prepare("PRAGMA table_info(sessions)").all() as { name: string }[]).map((c) => c.name));
+  const addSessionColumn = (name: string, ddl: string) => {
+    if (sessionCols.has(name)) return;
+    try {
+      db.exec(`ALTER TABLE sessions ADD COLUMN ${name} ${ddl}`);
+    } catch (e) {
+      if (!String(e).includes("duplicate column")) throw e;
+    }
+  };
+  addSessionColumn("user_agent", "TEXT");
+  addSessionColumn("ip", "TEXT");
+  addSessionColumn("created_at", "INTEGER");
+  addSessionColumn("last_active", "INTEGER");
+
+  // Vocab progress table migrations
+  const vocabCols = new Set((db.prepare("PRAGMA table_info(vocab_progress)").all() as { name: string }[]).map((c) => c.name));
+  if (!vocabCols.has("starred")) {
+    try {
+      db.exec("ALTER TABLE vocab_progress ADD COLUMN starred INTEGER DEFAULT 0");
+    } catch (e) {
+      if (!String(e).includes("duplicate column")) throw e;
+    }
+  }
+
   return db;
 }
 
