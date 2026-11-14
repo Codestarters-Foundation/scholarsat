@@ -14,7 +14,9 @@ export async function POST(req: Request) {
   if (db.prepare("SELECT 1 FROM users WHERE email = ?").get(email)) return bad("An account with that email already exists. Try logging in.", 409);
   const hash = await hashPassword(password);
   const info = db.prepare("INSERT INTO users (email, name, password_hash, created_at) VALUES (?, ?, ?, ?)").run(email, name, hash, Date.now());
-  const s = createSession(Number(info.lastInsertRowid));
+  const ip = clientIp(req);
+  const userAgent = req.headers.get("user-agent");
+  const s = createSession(Number(info.lastInsertRowid), { userAgent, ip });
   await setSessionCookie(s.token, s.expires);
   return json({ ok: true });
 }

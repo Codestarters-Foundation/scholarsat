@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createSession, getUser, setSessionCookie } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { clientIp } from "@/lib/http";
 import { OAUTH_COOKIE, exchangeCode, googleEnabled, publicUrl, redirectUri, upsertGoogleUser } from "@/lib/google";
 
 export async function GET(req: Request) {
@@ -35,7 +36,9 @@ export async function GET(req: Request) {
       return r;
     }
     const userId = upsertGoogleUser(profile);
-    const s = createSession(userId);
+    const ip = clientIp(req);
+    const userAgent = req.headers.get("user-agent");
+    const s = createSession(userId, { userAgent, ip });
     await setSessionCookie(s.token, s.expires);
     const r = NextResponse.redirect(publicUrl(req, saved.next));
     r.cookies.delete({ name: OAUTH_COOKIE, path: "/api/auth/google" });

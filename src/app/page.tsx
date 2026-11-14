@@ -311,7 +311,7 @@ export default async function Landing() {
               You can practice from the question bank right away. A free account saves your progress and adds four tools.
             </SectionHead>
 
-            <Reveal stagger className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-[1.25fr_1fr]">
+            <Reveal stagger className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-2">
               <Tile
                 title="Mistake review"
                 i={0}
@@ -441,7 +441,7 @@ export default async function Landing() {
 
         {/* Closing call to action */}
         <section className={`${WRAP} pb-20 sm:pb-28`}>
-          <Reveal className="group relative grid overflow-hidden rounded-3xl bg-red text-white lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+          <Reveal className="group relative grid overflow-hidden rounded-3xl bg-red text-white lg:grid-cols-2">
             <div className="pattern-grid pointer-events-none absolute inset-0 text-white/[0.07]" />
             <div className="relative p-8 sm:p-14">
               <div className="grid h-[88px] w-[88px] place-items-center rounded-2xl bg-white"><Owl size={64} /></div>

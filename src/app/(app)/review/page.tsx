@@ -16,19 +16,21 @@ export default async function Review() {
   const saved = [...st.bookmarks].map((id) => BY_ID.get(id)).filter(Boolean).map((q) => q!);
 
   const List = ({ items }: { items: typeof missed }) => (
-    <ul className="divide-y divide-line">
-      {items.slice(0, 100).map((q) => (
-        <li key={q.id}>
-          <Link href={`/practice/play?ids=${q.id}&title=Review`} className="group flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-surface">
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium group-hover:text-red">{q.skill}</p>
-              <p className="text-xs text-muted">{SECTION_LABEL[q.section]} · {q.domain}</p>
-            </div>
-            <div className="flex shrink-0 items-center gap-2"><DiffBadge d={q.difficulty} /><IChevR className="h-4 w-4 text-muted transition-transform group-hover:translate-x-0.5" /></div>
-          </Link>
-        </li>
-      ))}
-    </ul>
+    <div className="max-h-[540px] overflow-y-auto scroll-thin">
+      <ul className="divide-y divide-line">
+        {items.slice(0, 100).map((q) => (
+          <li key={q.id}>
+            <Link href={`/practice/play?ids=${q.id}&title=Review`} className="group flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-surface">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium group-hover:text-red">{q.skill}</p>
+                <p className="text-xs text-muted">{SECTION_LABEL[q.section]} · {q.domain}</p>
+              </div>
+              <div className="flex shrink-0 items-center gap-2"><DiffBadge d={q.difficulty} /><IChevR className="h-4 w-4 text-muted transition-transform group-hover:translate-x-0.5" /></div>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 
   return (

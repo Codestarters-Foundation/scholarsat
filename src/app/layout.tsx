@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { getUser } from "@/lib/auth";
+import { ThemeProvider, type Theme, type AccentColor } from "@/components/ThemeProvider";
 
 // Typography matches Cramzo: CursorGothic for UI, berkeleyMono for timers/code.
 // Inter (400/500) is the fallback until the licensed files are dropped into public/fonts.
@@ -38,15 +40,47 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#a50c26", viewportFit: "cover" };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+const themeInitScript = `
+(function() {
+  try {
+    var t = localStorage.getItem('ss_theme') || 'system';
+    var a = localStorage.getItem('ss_accent') || 'red';
+    var c = localStorage.getItem('ss_compact') === 'true';
+    var r = localStorage.getItem('ss_reduce_motion') === 'true';
+    var d = document.documentElement;
+    d.dataset.theme = t;
+    d.dataset.accent = a;
+    if (t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      d.classList.add('dark');
+    } else {
+      d.classList.remove('dark');
+    }
+    if (c) d.classList.add('compact');
+    if (r) d.classList.add('reduce-motion');
+  } catch(e) {}
+})();
+`;
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const user = await getUser();
+
   return (
-    <html lang="en" className={inter.variable}>
-      {brandFontCss ? (
-        <head>
-          <style dangerouslySetInnerHTML={{ __html: brandFontCss }} />
-        </head>
-      ) : null}
-      <body className="min-h-dvh">{children}</body>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {brandFontCss ? <style dangerouslySetInnerHTML={{ __html: brandFontCss }} /> : null}
+      </head>
+      <body className="min-h-dvh">
+        <ThemeProvider
+          signedIn={!!user}
+          initialTheme={(user?.theme as Theme) || "system"}
+          initialAccent={(user?.accent_color as AccentColor) || "red"}
+          initialCompact={!!user?.compact_mode}
+          initialReduceMotion={!!user?.reduce_animations}
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

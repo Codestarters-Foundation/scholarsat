@@ -3,19 +3,32 @@ import { getUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { VOCAB } from "@/data/vocab";
 import { PageTitle } from "@/components/ui";
-import { Flashcards } from "@/components/Flashcards";
+import { VocabStudy } from "@/components/VocabStudy";
 
 export const metadata: Metadata = { title: "Vocabulary" };
+export const dynamic = "force-dynamic";
 
 export default async function VocabPage() {
   const user = await getUser();
-  const known = user
-    ? (db.prepare("SELECT word FROM vocab_progress WHERE user_id = ? AND known = 1").all(user.id) as { word: string }[]).map((r) => r.word)
-    : [];
+
+  let known: string[] = [];
+  let starred: string[] = [];
+
+  if (user) {
+    const rows = db
+      .prepare("SELECT word, known, starred FROM vocab_progress WHERE user_id = ?")
+      .all(user.id) as { word: string; known: number; starred: number }[];
+    known = rows.filter((r) => r.known === 1).map((r) => r.word);
+    starred = rows.filter((r) => r.starred === 1).map((r) => r.word);
+  }
+
   return (
-    <>
-      <PageTitle title="Vocab" sub={`${VOCAB.length.toLocaleString()} words: classic hard vocabulary plus everyday words used in the senses the SAT tests. Flip, learn, and track what you know.`} />
-      <Flashcards words={VOCAB} initialKnown={known} signedIn={!!user} />
-    </>
+    <div className="max-w-6xl mx-auto">
+      <PageTitle
+        title="SAT Vocabulary"
+        sub="Master high-frequency Digital SAT words, tricky words in context, and academic terminology in bite-sized sessions."
+      />
+      <VocabStudy words={VOCAB} initialKnown={known} initialStarred={starred} signedIn={!!user} />
+    </div>
   );
 }

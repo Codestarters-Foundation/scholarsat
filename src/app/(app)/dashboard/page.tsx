@@ -54,7 +54,7 @@ export default async function Dashboard() {
         <LinkButton href="/practice">Start practicing <IArrowR className="h-4 w-4" /></LinkButton>
       </div>
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="grid gap-6 xl:grid-cols-2">
         {/* Left column */}
         <div className="grid grid-cols-[minmax(0,1fr)] content-start gap-6">
           <HeaderCard
