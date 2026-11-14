@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { IBook, ICards, IExam, IHome, ILink, IMenu, IRefresh, IX } from "./icons";
+import { IBook, ICards, IChart, IExam, IHome, ILink, IMenu, IRefresh, IX } from "./icons";
 import { Logo } from "./Logo";
 
 const LINKS = [
@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/practice", label: "Question Bank", Icon: IBook },
   { href: "/tests", label: "Practice Tests", Icon: IExam },
   { href: "/review", label: "Review", Icon: IRefresh },
+  { href: "/diagnostics", label: "Diagnostics", Icon: IChart },
   { href: "/vocab", label: "Vocab", Icon: ICards },
   { href: "/resources", label: "Resources", Icon: ILink },
 ];

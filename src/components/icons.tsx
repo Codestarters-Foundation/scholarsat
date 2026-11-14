@@ -42,6 +42,7 @@ export const ITarget = (p: P) => <S {...p}><circle cx="12" cy="12" r="8.5" /><ci
 export const ICalc = (p: P) => <S {...p}><rect x="5" y="3" width="14" height="18" rx="2" /><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01" /></S>;
 export const IFormula = (p: P) => <S {...p}><path d="M5 18h3l4-12h4" /><path d="M7 11h6" /><path d="m15 13 4 5m0-5-4 5" /></S>;
 export const IMenu = (p: P) => <S {...p}><path d="M4 7h16M4 12h16M4 17h16" /></S>;
+export const IChart = (p: P) => <S {...p}><path d="M4 4v16h16" /><path d="m7.5 14.5 3.5-4 3 2.5 4.5-6" /></S>;
 export const IList = (p: P) => <S {...p}><path d="M9 6.5h11M9 12h11M9 17.5h11" /><path d="M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01" /></S>;
 export const IStrike = (p: P) => <S {...p}><path d="M4 12h16" /><path d="M7 6h10M8 18h8" /></S>;
 export const ILogout = (p: P) => <S {...p}><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" /><path d="M10 16l-4-4 4-4M6 12h10" /></S>;

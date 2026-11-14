@@ -2,6 +2,7 @@ import "server-only";
 import { db } from "./db";
 import { BY_ID } from "./bank";
 import type { Section } from "./types";
+import { MIN_FOR_PREDICTION, sectionScore } from "./scoring";
 
 type Row = { question_id: string; correct: number; created_at: number };
 
@@ -40,9 +41,8 @@ export function userStats(userId: number) {
 
   const predicted = (["rw", "math"] as Section[]).map((sec) => {
     const s = bySection[sec];
-    if (s.seen < 10) return null;
-    const acc = s.correct / s.seen;
-    return Math.round((200 + 600 * Math.pow(acc, 1.15)) / 10) * 10;
+    if (s.seen < MIN_FOR_PREDICTION) return null;
+    return sectionScore(s.correct / s.seen);
   });
 
   return {
