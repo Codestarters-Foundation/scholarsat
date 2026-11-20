@@ -1,0 +1,10 @@
+// Vocabulary spaced repetition (Learn mode)
+for (const [col, ddl] of [["box", "INTEGER DEFAULT 0"], ["due_at", "INTEGER"], ["reps", "INTEGER DEFAULT 0"], ["lapses", "INTEGER DEFAULT 0"]] as const) {
+  if (vocabCols.has(col)) continue;
+  try {
+    db.exec(`ALTER TABLE vocab_progress ADD COLUMN ${col} ${ddl}`);
+  } catch (e) {
+    if (!String(e).includes("duplicate column")) throw e;
+  }
+}
+db.exec("CREATE INDEX IF NOT EXISTS vocab_progress_due ON vocab_progress(user_id, due_at)");
