@@ -10,7 +10,9 @@ export default function Privacy() {
       <h2>What we store</h2>
       <p>Your name, email address, a securely hashed password, your answers, saved questions, test results, and the optional goal and test date you enter in Settings.</p>
       <h2>What we don&apos;t do</h2>
-      <p>We don&apos;t sell your data, run advertising, or use third-party tracking scripts. A single session cookie keeps you logged in.</p>
+      <p>We don&apos;t sell your data, run advertising, or use third-party tracking scripts. A session cookie keeps you logged in.</p>
+      <h2>Optional AI tutor</h2>
+      <p>When you request an AI explanation, ScholarSAT sends the exercise to OpenAI using your selected credential. API keys stay in tab memory and pass through the server for that request. The local ChatGPT connection uses a separate HTTP-only cookie. Its credentials stay in server memory for this session. Disconnect from the tutor or manage access in ChatGPT settings.</p>
       <h2>Deleting your data</h2>
       <p>You can reset your progress or permanently delete your account at any time from Settings. Deletion removes your account and all associated data.</p>
       <h2>Open source</h2>

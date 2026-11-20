@@ -63,7 +63,7 @@ export function HeaderCard({
   bodyClassName?: string;
 }) {
   return (
-    <section className={`overflow-hidden rounded-2xl border border-line bg-bg shadow-card ${className}`}>
+    <section className={`study-section overflow-hidden rounded-2xl border border-line bg-bg shadow-card ${className}`}>
       <header className={`flex min-h-14 items-center justify-between gap-3 border-t-4 px-5 py-3 ${HEADER_TONE[tone]}`}>
         <h2 className="min-w-0 text-[17px] font-medium">{title}</h2>
         {right && <div className="flex shrink-0 items-center gap-3 text-[13px] text-white/90">{right}</div>}
@@ -96,7 +96,7 @@ export function DiffBadge({ d, className }: { d: Difficulty; className?: string 
 
 export function PageTitle({ title, sub, action }: { title: string; sub?: string; action?: ReactNode }) {
   return (
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+    <div className="workspace-title mb-8 flex flex-wrap items-end justify-between gap-4">
       <div>
         <h1 className="text-[30px] leading-tight font-medium tracking-[-0.01em] text-ink">{title}</h1>
         {sub && <p className="mt-1.5 text-[15px] text-muted">{sub}</p>}

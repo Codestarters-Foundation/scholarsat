@@ -2,85 +2,54 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
-import { LinkButton } from "./ui";
 import { IGithub } from "./icons";
+import { LinkButton } from "./ui";
+import { questionBankSession } from "./landing-navigation";
 
-const CODESTARTERS = "https://codestarters.org";
-
-/**
- * Top bar for the landing page. Full width with a hairline at the top of the page; once you scroll
- * it narrows into a floating, rounded frosted-glass bar (fixed, so the page never reflows).
- */
 export function LandingNav({ signedIn, repo }: { signedIn: boolean; repo: string }) {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const y = window.scrollY;
-      // Two thresholds so it doesn't flicker when you stop right on the edge.
-      setScrolled((was) => (was ? y > 8 : y > 32));
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
+  const links = <>
+    <Link href={questionBankSession}>Question bank</Link>
+    <a href="#tests">Mock tests</a>
+    <a href="#tools">Tools</a>
+    <a href="#faq">FAQ</a>
+    <a href={repo} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5"><IGithub className="h-4 w-4" /> GitHub</a>
+  </>;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40">
-      <div
-        className={`border backdrop-blur-xl backdrop-saturate-150 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
-          scrolled
-            ? "mt-3 rounded-full border-white/70 bg-bg/55 py-2 shadow-[0_8px_32px_rgb(38_37_30/0.12),0_1px_0_rgb(255_255_255/0.9)_inset] dark:border-white/10 dark:shadow-[0_8px_32px_rgb(0_0_0/0.45),0_1px_0_rgb(255_255_255/0.08)_inset]"
-            : "mt-0 rounded-none border-transparent border-b-line bg-bg py-3 shadow-none"
-        }`}
-        style={{
-          marginInline: scrolled ? "max(12px, calc((100% - 1060px) / 2))" : "0px",
-          paddingInline: scrolled ? "20px" : "max(20px, calc((100% - 1120px) / 2))",
-        }}
-      >
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Logo size={34} />
-            <a
-              href={CODESTARTERS}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="CodeStarters"
-              className="hidden items-center gap-2 border-l border-line pl-4 text-[13px] font-medium text-ink hover:text-red sm:flex"
-            >
-              <Image src="/codestarters-logo.png" alt="" width={24} height={24} className="h-6 w-6" />
-              <span className="hidden xl:inline">
-                <span className="text-muted">by </span>CodeStarters
-              </span>
-            </a>
-          </div>
-          <nav className="hidden items-center gap-7 text-sm text-muted lg:flex" aria-label="Site">
-            <a href="#bank" className="hover:text-ink">Question bank</a>
-            <a href="#tests" className="hover:text-ink">Mock tests</a>
-            <a href="#tools" className="hover:text-ink">Tools</a>
-            <a href="#faq" className="hover:text-ink">FAQ</a>
-            <a href={repo} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-ink"><IGithub className="h-4 w-4" /> GitHub</a>
-          </nav>
-          <div className="flex items-center gap-2">
-            {signedIn ? (
-              <LinkButton href="/dashboard" size="sm">Open dashboard</LinkButton>
-            ) : (
-              <>
-                <Link href="/login" className="hidden rounded-xl px-3 py-2 text-sm font-medium text-muted hover:text-ink sm:inline-block">Log in</Link>
-                <LinkButton href="/signup" size="sm">Create free account</LinkButton>
-              </>
-            )}
-          </div>
+    <header className="landing-header sticky inset-x-0 top-0 z-40 border-b border-line bg-bg font-sans text-ink">
+      <div className="mx-auto flex h-full max-w-[1160px] items-center justify-between gap-2 px-4 sm:gap-4 sm:px-5">
+        <div className="flex items-center gap-4">
+          <Logo size={34} />
+          <a href="https://codestarters.org" target="_blank" rel="noopener noreferrer" aria-label="CodeStarters"
+            className="hidden items-center gap-2 border-l border-line pl-4 text-[13px] font-medium sm:flex">
+            <Image unoptimized src="/codestarters-logo.png" alt="" width={24} height={24} />
+            <span className="hidden xl:inline"><span className="text-muted">by </span>CodeStarters</span>
+          </a>
+        </div>
+        <nav aria-label="Main navigation" className="hidden items-center gap-7 text-sm text-muted lg:flex">{links}</nav>
+        <div className="flex items-center gap-2">
+          {!signedIn && <Link href="/login" className="hidden px-3 py-2 text-sm font-medium text-muted lg:inline-block">Log in</Link>}
+          <LinkButton href={signedIn ? "/dashboard" : "/signup"} size="sm">
+            {signedIn ? "Open dashboard" : <><span className="hidden sm:inline">Create free account</span><span className="sm:hidden">Sign up</span></>}
+          </LinkButton>
+          <details className="landing-menu relative lg:hidden"
+            onClick={event => { if ((event.target as Element).closest("a")) event.currentTarget.open = false; }}
+            onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) event.currentTarget.open = false; }}
+            onKeyDown={event => {
+              if (event.key === "Escape") {
+                event.currentTarget.open = false;
+                event.currentTarget.querySelector("summary")?.focus();
+              }
+            }}>
+            <summary aria-label="Navigation menu" className="grid h-10 w-10 cursor-pointer list-none place-items-center rounded-lg">
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 6h16M3 11h16M3 16h16" /></svg>
+            </summary>
+            <nav aria-label="Mobile navigation" className="absolute right-0 top-full grid w-48 rounded-xl border border-line bg-bg p-2 text-sm shadow-pop">
+              {links}
+              {!signedIn && <Link href="/login">Log in</Link>}
+            </nav>
+          </details>
         </div>
       </div>
     </header>

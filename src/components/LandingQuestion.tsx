@@ -1,126 +1,75 @@
 "use client";
 
+import { quietPlayback } from "./landing-navigation";
 import Link from "next/link";
-import { useState } from "react";
-import { Owl } from "./Owl";
-import { btn } from "./ui";
-import { IArrowR, ICheckCircle, IXCircle } from "./icons";
+import { useLayoutEffect, useRef, useState } from "react";
 
-export type LandingItem = {
-  id: string;
-  /** e.g. "Math, Algebra" */
-  topic: string;
-  difficulty: string;
-  passageHtml?: string;
-  stemHtml: string;
-  choicesHtml: string[];
-  /** "A" | "B" | "C" | "D" */
-  answer: string;
-  explanationHtml: string;
+export type FeaturedQuestion = { passage: string; stem: string; choices: string[]; answer: string; explanation: string };
+const wrongReading: Record<string, string> = {
+  "Furthermore,": "This would add another point. Read the second sentence again. It names one culture that used the Moon.",
+  "Finally,": "This would finish a sequence. The passage moves from several cultures to one specific culture.",
+  "By contrast,": "This would set up a difference. The Babylonian calendar fits the pattern in the first sentence.",
 };
 
-const LETTERS = "ABCD";
+function emphasize(text: string, phrase: string) {
+  const at = text.indexOf(phrase);
+  return at === -1 ? text : <>{text.slice(0,at)}<mark>{phrase}</mark>{text.slice(at + phrase.length)}</>;
+}
 
-/** A real question from the bank that visitors can answer on the landing page. The owl reacts. */
-export function LandingQuestion({ items }: { items: LandingItem[] }) {
-  const [idx, setIdx] = useState(0);
-  const [picked, setPicked] = useState<string | null>(null);
-  const [right, setRight] = useState(0);
-
-  const q = items[idx];
-  const answered = picked !== null;
-  const correct = picked === q.answer;
-  const last = idx === items.length - 1;
-
-  function pick(letter: string) {
-    if (answered) return;
-    setPicked(letter);
-    if (letter === q.answer) setRight((n) => n + 1);
-  }
-
-  function next() {
-    setIdx((i) => i + 1);
-    setPicked(null);
-  }
-
+export function LandingQuestion({ question, pick, setPick }: {
+  question: FeaturedQuestion; pick: number | null; setPick: (index: number) => void;
+}) {
+  const [preview, setPreview] = useState<number | null>(null);
+  const typesetWord = useRef<HTMLSpanElement>(null);
+  const source = useRef<DOMRect | null>(null);
+  useLayoutEffect(() => {
+    const word = typesetWord.current, from = source.current;
+    source.current = null;
+    if (!word || !from || quietPlayback(word)) return;
+    const to = word.getBoundingClientRect();
+    const zoom = to.width / parseFloat(getComputedStyle(word).width);
+    const flight = word.animate([
+      { transform: `translate(${(from.left-to.left)/zoom}px,${(from.top-to.top)/zoom}px) scale(${from.width/to.width})` },
+      { transform: "none" }
+    ], {duration: 290, easing: "cubic-bezier(.21,.8,.2,1)"});
+    return () => flight.cancel();
+  }, [pick]);
+  const correct = pick !== null && "ABCD"[pick] === question.answer;
+  const shown = correct ? pick : preview ?? pick;
+  const [first, second] = question.passage.split(/\s*_{4,}\s*/);
   return (
-    <div className="relative">
-      <div className="pointer-events-none absolute bottom-full right-8 -mb-1.5">
-        <Owl key={`${q.id}-${picked ?? "idle"}`} size={76} mood={!answered ? "idle" : correct ? "celebrate" : "sad"} />
+    <div className="passage-copy" data-solved={correct}>
+      <h2 id="passage-title" tabIndex={-1}>Which word fits?</h2>
+      <p className="reading-text">
+        <span className="claim">{emphasize(first,"Several ancient cultures")}</span>{" "}
+        <span className="insertion" data-filled={shown !== null}>
+          {shown === null ? <><span aria-hidden="true">_____</span><span className="sr-only">blank</span></> : <span className="typeset-word" ref={typesetWord}>{question.choices[shown]}</span>}
+        </span>{" "}<span className="example">{emphasize(second,"Babylonian astronomers")}</span>
+      </p>
+      <fieldset className="word-bank">
+        <legend>{question.stem}</legend>
+        <div>{question.choices.map((word,i) => (
+          <button type="button" key={word} aria-pressed={pick === i} aria-disabled={correct}
+            data-state={pick === i ? correct ? "correct" : "retry" : undefined}
+            onPointerEnter={e => { if (e.pointerType === "mouse" && !correct) setPreview(i); }}
+            onPointerLeave={() => setPreview(null)} onFocus={() => { if (!correct) setPreview(i); }} onBlur={() => setPreview(null)}
+            onClick={e => {
+              if (correct) return;
+              source.current = e.currentTarget.querySelector(".choice-word")!.getBoundingClientRect();
+              setPick(i);
+              setPreview(null);
+            }}>
+            <span className="choice-key" aria-hidden="true">{pick === i ? correct ? "✓" : "↺" : "ABCD"[i]}</span><span className="choice-word">{word}</span>
+          </button>
+        ))}</div>
+      </fieldset>
+      <div aria-live="polite" aria-atomic="true" className="reading-note">
+        {pick !== null && <div key={pick}>
+          <strong>{correct ? "Exactly." : "Try another transition."}</strong>{" "}
+          {correct ? question.explanation : wrongReading[question.choices[pick]]}
+        </div>}
       </div>
-
-      <section aria-label="Sample question" className="rounded-2xl border border-line bg-bg p-6 shadow-pop sm:p-7">
-        <div className="flex items-baseline justify-between gap-4">
-          <p className="text-[15px] font-medium text-ink">{q.topic}</p>
-          <p className="shrink-0 text-[13px] text-muted tabular-nums">
-            Question {idx + 1} of {items.length}
-          </p>
-        </div>
-        <p className="mt-0.5 text-[13px] text-muted">{q.difficulty} difficulty</p>
-
-        <div className="mt-5 space-y-3 text-[16px] text-ink">
-          {q.passageHtml && <div className="qtext" dangerouslySetInnerHTML={{ __html: q.passageHtml }} />}
-          <div className="qtext font-medium" dangerouslySetInnerHTML={{ __html: q.stemHtml }} />
-        </div>
-
-        <div className="mt-5 grid gap-2.5" role="group" aria-label="Answer choices">
-          {q.choicesHtml.map((html, i) => {
-            const letter = LETTERS[i];
-            const isAnswer = answered && letter === q.answer;
-            const isWrongPick = answered && letter === picked && !correct;
-            const tone = isAnswer
-              ? "border-ok bg-ok-50"
-              : isWrongPick
-                ? "border-bad bg-bad-50"
-                : answered
-                  ? "border-line opacity-60"
-                  : "border-line hover:border-ink/40 active:bg-surface";
-            const dot = isAnswer ? "border-ok bg-ok-fill text-white" : isWrongPick ? "border-bad bg-bad-fill text-white" : "border-line-strong text-ink";
-            return (
-              <button
-                key={letter}
-                type="button"
-                onClick={() => pick(letter)}
-                aria-disabled={answered}
-                aria-pressed={letter === picked}
-                className={`flex min-h-[52px] w-full items-center gap-3.5 rounded-xl border-2 px-3.5 py-2.5 text-left text-[15px] transition-colors ${tone} ${answered ? "cursor-default" : ""}`}
-              >
-                <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 text-[13px] font-medium ${dot}`}>{letter}</span>
-                <span className="qtext min-w-0 flex-1" dangerouslySetInnerHTML={{ __html: html }} />
-                {isAnswer && <ICheckCircle className="h-5 w-5 shrink-0 text-ok" />}
-                {isWrongPick && <IXCircle className="h-5 w-5 shrink-0 text-bad" />}
-              </button>
-            );
-          })}
-        </div>
-
-        <div aria-live="polite">
-          {answered && (
-            <div className="mt-5 animate-rise border-t border-line pt-5">
-              <p className={`text-[15px] font-medium ${correct ? "text-ok" : "text-bad"}`}>
-                {correct ? "Correct." : `Not quite. The answer is ${q.answer}.`}
-              </p>
-              <div className="qtext mt-1.5 text-[15px] text-ink-2" dangerouslySetInnerHTML={{ __html: q.explanationHtml }} />
-              <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-                {last ? (
-                  <>
-                    <p className="text-[14px] text-muted">
-                      You got {right} of {items.length}.
-                    </p>
-                    <Link href="/practice" className={btn("primary", "md")}>
-                      Keep going in the question bank <IArrowR className="h-4 w-4" />
-                    </Link>
-                  </>
-                ) : (
-                  <button type="button" onClick={next} className={`${btn("dark", "md")} ml-auto`}>
-                    Next question <IArrowR className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
+      {correct && <Link className="ink-link" href="/practice/play?section=rw&skill=Transitions&limit=5">Practice five more transitions <span aria-hidden="true">→</span></Link>}
     </div>
   );
 }

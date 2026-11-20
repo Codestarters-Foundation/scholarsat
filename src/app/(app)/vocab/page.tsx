@@ -26,7 +26,7 @@ export default async function VocabPage() {
     <div className="max-w-6xl mx-auto">
       <PageTitle
         title="SAT Vocabulary"
-        sub="Master high-frequency Digital SAT words, tricky words in context, and academic terminology in bite-sized sessions."
+        sub="Learn a word by finding the evidence for it in a passage."
       />
       <VocabStudy words={VOCAB} initialKnown={known} initialStarred={starred} signedIn={!!user} />
     </div>

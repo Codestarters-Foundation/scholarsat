@@ -1,0 +1,51 @@
+@import "./practice-type.css";
+
+.scholar-workspace { font-family:"Mona Sans",system-ui,sans-serif; }
+.scholar-workspace > aside { border-inline-start:5px solid var(--accent-fill); }
+.workspace-index { display:grid; position:relative; }
+.workspace-index-link { display:flex; align-items:center; gap:12px; min-height:46px; padding-inline:12px; font-size:15px; color:var(--ink-2); }
+.workspace-index-link[aria-current],.workspace-index-link:hover { color:var(--red); }
+.workspace-index:has([aria-current])::before { content:""; position:absolute; top:11px; left:0; width:2px; height:24px; background:var(--red); transform:translateY(calc(var(--current)*46px)); }
+.source-link { display:flex; align-items:center; gap:8px; min-height:46px; padding-inline:9px; font-size:13px; color:var(--muted); }
+.source-link span { margin-left:auto; }
+.workspace-title { border-bottom:1px solid var(--line-strong); padding-bottom:clamp(15px,2.2vw,29px); }
+.workspace-title h1 { font:520 clamp(30px,3.4vw,54px)/1.06 "Mona Sans",system-ui; letter-spacing:-.052em; }
+.scholar-workspace .study-section { border:0; border-top:1px solid var(--line-strong); border-radius:0; box-shadow:none; }
+.scholar-workspace .study-section > header { background:var(--bg); color:var(--ink); border:0; padding-left:0; }
+.scholar-workspace .study-section > header > div { color:var(--muted); }
+.study-section h2,.exam-program h2 { font:580 clamp(19px,1.8vw,29px)/1.2 "Mona Sans",system-ui; letter-spacing:-.035em; }
+.exam-program section > p { margin:7px 0 18px; color:var(--muted); }
+.exam-program section + section { margin-top:40px; }
+.exam-program li { display:grid; grid-template-columns:2fr 1fr 1fr auto; align-items:baseline; gap:12px; padding:clamp(12px,2vw,26px) 0; border-top:1px solid var(--line); font-size:14px; }
+.exam-program li span:first-child { font-size:clamp(17px,1.6vw,25px); }
+.exam-program li strong { font-family:var(--font-code); font-size:15px; color:var(--red); }
+.test-record { border-top:1px solid var(--line); padding:18px 0; }
+.test-record header { display:flex; align-items:baseline; gap:16px; }
+.test-record h3 { font-weight:650; }
+.test-record time,.test-record details { font-size:13px; color:var(--muted); margin:8px 0; }
+.record-link { display:inline-flex; align-items:center; min-height:44px; color:var(--red); }
+.account-edition { display:none; }
+@media(min-width:1024px) {
+  .account-edition { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:4vh; padding:5vh 5vw; background:#e7decb; color:#282722; border-left:clamp(10px,1.8vw,32px) solid #943a2c; }
+  .account-signature { align-self:flex-start; display:flex; align-items:center; gap:12px; font:400 clamp(44px,5.6vw,110px)/1 "Mona Sans",system-ui,sans-serif; letter-spacing:-.055em; }
+  .account-edition figure { width:100%; }
+  .account-edition img { display:block; width:100%; height:min(53vh,630px); object-fit:cover; object-position:center 72%; filter:grayscale(1); }
+  .account-edition figcaption { font:450 12px/1.5 var(--font-code); margin-top:12px; }
+}
+@media(max-width:600px) {
+  .exam-program li { grid-template-columns:1.2fr 1fr; gap:3px 14px; }
+  .exam-program li span:nth-child(2),.exam-program li strong { text-align:right; }
+}
+@media(prefers-reduced-motion:no-preference) {
+  html:not(.reduce-motion) .workspace-index::before { transition:transform .28s cubic-bezier(.22,.75,.2,1); }
+  html:not(.reduce-motion) :is(.workspace-title h1,.practice-index h1,.account-signature,.question-leaf > section > div:first-child) { animation:ink-arrive .32s cubic-bezier(.2,.72,.22,1) backwards; }
+  @supports(animation-timeline:view()) {
+    html:not(.reduce-motion) :is(.skill-domain header,.exam-program li,.study-section > header) { position:relative; }
+    html:not(.reduce-motion) :is(.skill-domain header,.exam-program li,.study-section > header)::before {
+      content:""; position:absolute; left:0; right:0; top:0; height:1px; background:var(--line-strong); transform-origin:left;
+      animation:ink-rule linear both; animation-timeline:view(); animation-range:entry 0% cover 18%;
+    }
+  }
+}
+@keyframes ink-arrive { from { transform:translateY(.3em); clip-path:inset(0 0 30% 0); } to { transform:none; clip-path:inset(0); } }
+@keyframes ink-rule { from {transform:scaleX(0)} to {transform:scaleX(1)} }

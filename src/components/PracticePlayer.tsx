@@ -1,4 +1,6 @@
 "use client";
+import "./practice.css";
+import { Tutor } from "./Tutor";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Difficulty, Question } from "@/lib/types";
@@ -101,7 +103,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
 
   if (!n)
     return (
-      <div className="rounded-2xl border border-line bg-bg shadow-card">
+      <div className="border-y border-line bg-bg">
         <EmptyState icon={<IList />} title="No questions match these filters." action={<LinkButton href={backHref}>Change filters</LinkButton>}>
           Try more difficulties, a different skill, or &ldquo;All questions&rdquo;.
         </EmptyState>
@@ -120,7 +122,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
         const active = i === idx;
         return (
           <li key={it.id}>
-            <button onClick={() => go(i)} aria-current={active ? "true" : undefined} className={`flex w-full items-center gap-3 rounded-xl border-2 px-3 py-2 text-left transition-colors ${active ? "border-red-200 bg-red-50" : "border-transparent hover:bg-surface-2"}`}>
+            <button onClick={() => go(i)} aria-current={active ? "true" : undefined} className={`flex w-full items-center gap-3 border-b px-3 py-2 text-left transition-colors ${active ? "border-red-200 bg-red-50" : "border-transparent hover:bg-surface-2"}`}>
               <span className={`w-9 text-[15px] tabular-nums ${active ? "font-medium text-red" : "text-ink-2"}`}>Q{i + 1}</span>
               <DiffBadge d={it.difficulty} />
               <span className="ml-auto">
@@ -135,7 +137,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
   );
 
   return (
-    <div className="fixed inset-0 z-40 flex bg-bg">
+    <div className="practice-player fixed inset-0 z-40 flex bg-bg">
       {/* Question list */}
       <aside className={`${listOpen ? "fixed inset-y-0 left-0 z-50 flex shadow-pop" : "hidden"} w-[256px] shrink-0 flex-col border-r border-line bg-bg lg:static lg:flex lg:shadow-none`}>
         <div className="flex items-center justify-between px-5 pb-2 pt-5">
@@ -144,7 +146,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
         </div>
         <div className="px-5 pt-4">
           <p className="text-[17px] font-medium">Progress</p>
-          <div className="mt-2 rounded-xl bg-surface-2 px-3 py-2.5">
+          <div className="mt-2 py-2.5">
             <p className="text-sm text-ink-2"><span className="tabular-nums">{done}</span> of <span className="tabular-nums">{n}</span> questions{done > 0 && <span className="text-muted"> · {right} correct</span>}</p>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-line-strong"><div className="h-full rounded-full bg-red transition-[width] duration-500" style={{ width: `${(done / n) * 100}%` }} /></div>
           </div>
@@ -176,13 +178,13 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
             )}
           </div>
         </header>
-        <div className="eyebrow shrink-0 bg-inverse py-1 text-center text-white/90">ScholarSAT question bank</div>
+        <div className="sr-only">ScholarSAT question bank</div>
 
         {/* Body */}
         {!q ? (
           <div className="flex flex-1 items-center justify-center"><Owl size={72} mood="loading" title="Loading question" /></div>
         ) : (
-          <div className="scroll-thin flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
+          <div key={q.id} className="question-leaf scroll-thin flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
             <section className="scroll-thin border-b border-line px-6 py-7 lg:w-1/2 lg:overflow-y-auto lg:border-b-0 lg:border-r-4 lg:border-r-surface-2 lg:px-9 lg:py-9" aria-label={split ? "Passage" : "Question"}>
               <div className="mx-auto w-full max-w-[720px]">{split ? <Passage q={q} /> : <Rich text={q.stem} className="text-[18px] text-ink" />}</div>
             </section>
@@ -218,7 +220,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
               )}
 
               {result && (
-                <div className={`mt-6 animate-rise rounded-2xl border-2 p-5 ${result.correct ? "border-ok-100 bg-ok-50" : "border-bad-100 bg-bad-50"}`} role="status">
+                <div className={`mt-6 animate-rise border-t-2 py-5 ${result.correct ? "border-ok-500" : "border-bad"}`} role="status">
                   <div className="flex items-center gap-3">
                     <Owl key={`${idx}-${result.correct}`} size={44} mood={result.correct ? "celebrate" : "sad"} />
                     <p className={`text-[17px] font-medium ${result.correct ? "text-ok" : "text-bad"}`}>
@@ -226,6 +228,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
                     </p>
                   </div>
                   <div className="mt-3 text-[15px] text-ink"><Rich text={result.explanation} /></div>
+                  <Tutor key={q.id} item={q.id}/>
                   {!result.saved && (
                     <p className="mt-3 text-xs text-muted">
                       <Link href="/signup" className="font-medium text-red hover:underline">Create a free account</Link> to save progress and track weak spots.

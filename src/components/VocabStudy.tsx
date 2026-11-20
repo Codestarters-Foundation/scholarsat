@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import type { Vocab } from "@/data/vocab";
 import { Button, Badge, Card, Progress } from "./ui";
+import { ContextStudio } from "./ContextStudio";
 import { Owl } from "./Owl";
 import {
   IArrowL,
@@ -17,7 +18,7 @@ import {
   ICards,
 } from "./icons";
 
-type StudyMode = "flashcards" | "browse" | "quiz";
+type StudyMode = "studio" | "flashcards" | "browse" | "quiz";
 type DeckFilter = "daily" | "top50" | "context" | "academic" | "learning" | "starred" | "all";
 
 export function VocabStudy({
@@ -33,7 +34,7 @@ export function VocabStudy({
 }) {
   const [known, setKnown] = useState<Set<string>>(new Set(initialKnown));
   const [starred, setStarred] = useState<Set<string>>(new Set(initialStarred));
-  const [mode, setMode] = useState<StudyMode>("flashcards");
+  const [mode, setMode] = useState<StudyMode>("studio");
   const [deckFilter, setDeckFilter] = useState<DeckFilter>("daily");
   const [searchQuery, setSearchQuery] = useState("");
   const [seed, setSeed] = useState(1);
@@ -276,7 +277,7 @@ export function VocabStudy({
   return (
     <div className="grid gap-6 animate-rise">
       {/* 4 Balanced Top Metric Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {mode !== "studio" && <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="flex flex-col justify-between p-4 sm:p-5">
           <div className="flex items-center justify-between text-muted">
             <span className="text-xs font-medium uppercase tracking-wider">Mastered</span>
@@ -334,12 +335,13 @@ export function VocabStudy({
           </div>
           <p className="mt-3 text-xs text-ok font-medium">Bite-sized mastery</p>
         </Card>
-      </div>
+      </div>}
 
       {/* Main Bar: Study Mode Pills & Deck Selector */}
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-bg p-3 sm:p-4 shadow-card">
         {/* Mode Selector */}
-        <div className="inline-flex rounded-xl bg-surface-2 p-1 gap-1">
+        <div className="inline-flex flex-wrap rounded-xl bg-surface-2 p-1 gap-1">
+          <button type="button" aria-pressed={mode==="studio"} className={`rounded-lg px-3 py-2 text-sm ${mode==="studio" ? "bg-bg text-ink shadow-xs" : "text-muted"}`} onClick={()=>setMode("studio")}>Context studio</button>
           <button
             type="button"
             onClick={() => setMode("flashcards")}
@@ -376,7 +378,7 @@ export function VocabStudy({
         </div>
 
         {/* Curated Deck Selector Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto scroll-thin max-w-full pb-1 sm:pb-0">
+        {mode !== "studio" && <div className="flex items-center gap-1.5 overflow-x-auto scroll-thin max-w-full pb-1 sm:pb-0">
           {[
             { id: "daily" as DeckFilter, label: "Daily 15" },
             { id: "top50" as DeckFilter, label: "Top 50 Essentials" },
@@ -403,9 +405,10 @@ export function VocabStudy({
               {d.label}
             </button>
           ))}
-        </div>
+        </div>}
       </div>
 
+      {mode === "studio" && <ContextStudio />}
       {/* ---------------- MODE 1: FLASHCARDS ---------------- */}
       {mode === "flashcards" && (
         <div className="max-w-2xl mx-auto w-full grid gap-4">

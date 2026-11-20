@@ -1,0 +1,30 @@
+@import "./practice-type.css";
+
+.practice-index h1 { font: 600 clamp(36px, 4vw, 60px)/1 "Mona Sans", sans-serif; letter-spacing: -.03em; }
+.practice-index header > p { margin-top: 8px; color: var(--muted); }
+.bank-subjects { display: flex; gap: clamp(16px, 4vw, 55px); border-bottom: 1px solid var(--line-strong); margin-block: 20px 28px; }
+.bank-subjects button { text-align: left; padding: 7px 0 10px; border-bottom: 3px solid transparent; font: 400 clamp(23px,3vw,38px)/1.12 "Mona Sans", sans-serif; }
+.bank-subjects button[aria-pressed="true"] { border-color: var(--red); color: var(--red); }
+.practice-index small { display: block; color: var(--muted); font: 400 12px/1.55 var(--font-code); margin-top: 4px; }
+.skill-domain { margin-bottom: 32px; }
+.skill-domain header, .skill-domain li { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.skill-domain h2 { font: 600 clamp(24px,2.8vw,38px)/1.05 "Mona Sans", sans-serif; }
+.skill-domain li { border-bottom: 1px solid var(--line); }
+.skill-domain li:first-child { border-top: 1px solid var(--line-strong); }
+.skill-domain button { min-height: 44px; cursor: pointer; }
+.skill-domain header button, .skill-start { font-size: 14px; color: var(--red); flex-shrink: 0; }
+.select-domain { color: var(--muted); text-decoration: underline; text-underline-offset: 4px; font-size: 13px; }
+.skill-select { display: flex; gap: 14px; align-items: center; text-align: left; padding-block: 13px; flex: 1; }
+.skill-check { flex: 0 0 18px; height: 18px; border: 1px solid var(--muted); }
+.skill-select[aria-pressed="true"] .skill-check { color: white; background: var(--accent-fill); border-color: var(--accent-fill); }
+.skill-check svg { width: 100%; height: 100%; }
+.practice-player > div > header { background: #242622; border-color: #c63325; }
+.practice-player header p:first-child { font: 600 clamp(18px,2.2vw,27px)/1.1 "Mona Sans",sans-serif; }
+.practice-player section[aria-label="Passage"] .qtext, .practice-player section[aria-label="Question"] .qtext { font-family: "Mona Sans", system-ui, sans-serif; font-size: clamp(19px,1.6vw,25px); line-height: 1.35; }
+.practice-player fieldset { gap: 0; }
+.practice-player fieldset label { border-width: 0 0 1px; border-radius: 0; padding-inline: 8px; }
+.practice-player fieldset label:focus-within { outline: 2px solid var(--red); outline-offset: -2px; }
+@media (hover: hover) {
+  .skill-domain li:hover { background: var(--surface); }
+  .skill-start:hover, .skill-domain header button:hover { text-decoration: underline; }
+}

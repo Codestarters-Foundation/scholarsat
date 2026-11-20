@@ -332,3 +332,11 @@ SAT® is a trademark registered by the College Board, which is not affiliated wi
 **Built with 🦉 by [CodeStarters](https://codestarters.org)** · Contributions welcome · [scholarsat.com](https://scholarsat.com)
 
 </div>
+
+### Local vocabulary studio and AI tutor
+
+Open Vocabulary for two-step word and evidence practice. Missed passages return later in the session. In the studio or after answering a question in the practice player, expand **Ask the AI tutor** for an optional explanation.
+
+To enable the local ChatGPT plan connection, launch with `SITE_URL=http://127.0.0.1:3187 npm run dev -- -H 127.0.0.1 -p 3187` and open that exact origin. Continue with ChatGPT opens OpenAI's consent flow. The loopback callback verifies PKCE state, nonce, signed identity and grant scopes. The connection lasts until token expiry, disconnect or server restart. Use the tutor to reconnect. For a remotely hosted deployment, check OpenAI's requirements for hosted apps before enabling plan usage.
+
+Alternatively, choose **My OpenAI API key** in the tutor. The app forwards the key only for the requested explanation. API billing applies. Both providers send the current exercise and request an un-stored response. Standard worked explanations remain available without AI.

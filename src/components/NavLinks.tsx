@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { IBook, ICards, IChart, IExam, IHome, ILink, IMenu, IRefresh, IX } from "./icons";
 import { Logo } from "./Logo";
 
@@ -18,7 +18,7 @@ const LINKS = [
 export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const path = usePathname();
   return (
-    <ul className="grid gap-1">
+    <ul className="workspace-index" style={{"--current": LINKS.findIndex(link => path === link.href || path.startsWith(link.href+"/"))} as CSSProperties}>
       {LINKS.map(({ href, label, Icon }) => {
         const active = path === href || path.startsWith(href + "/");
         return (
@@ -27,9 +27,7 @@ export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
               href={href}
               onClick={onNavigate}
               aria-current={active ? "page" : undefined}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] transition-colors ${
-                active ? "bg-red-50 font-medium text-red" : "text-ink-2 hover:bg-surface-2 hover:text-ink"
-              }`}
+              className="workspace-index-link"
             >
               <Icon className="h-[20px] w-[20px] shrink-0" />
               {label}
