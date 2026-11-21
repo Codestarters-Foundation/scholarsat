@@ -9,6 +9,8 @@ import { DESMOS_URL, ReferenceSheet, ToolButton } from "./MathTools";
 import { Rich } from "./Rich";
 import { Logo } from "./Logo";
 import { Owl } from "./Owl";
+import { AiAsk } from "./AiAsk";
+import { TUTOR_SYSTEM, explainQuestionPrompt } from "@/lib/ai-prompts";
 import { Button, DiffBadge, EmptyState, LinkButton } from "./ui";
 import { IArrowL, IArrowR, IBookmark, ICalc, ICheckCircle, IFormula, IList, IStrike, IX, IXCircle } from "./icons";
 
@@ -228,6 +230,14 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
                     </p>
                   </div>
                   <div className="mt-3 text-[15px] text-ink"><Rich text={result.explanation} /></div>
+                  <div className="mt-4">
+                    <AiAsk
+                      key={q.id}
+                      label="Explain this"
+                      system={TUTOR_SYSTEM}
+                      prompt={explainQuestionPrompt(q, resp, result.answer, result.explanation, result.correct)}
+                    />
+                  </div>
                   <Tutor key={q.id} item={q.id}/>
                   {!result.saved && (
                     <p className="mt-3 text-xs text-muted">
