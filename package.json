@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:theme": "node --test tests/theme-contrast.test.mjs",
-    "pretypecheck": "npm run test:theme",
+      "test:logic": "node --import tsx --test tests/srs.test.ts tests/vocab-learn.test.ts tests/ai.test.ts",
+    "pretypecheck": "npm run test:theme && npm run test:logic"
     "bank": "tsx scripts/build-bank.ts",
     "prebuild": "tsx scripts/build-bank.ts",
     "typecheck": "tsx scripts/build-bank.ts > /dev/null && tsc --noEmit"
