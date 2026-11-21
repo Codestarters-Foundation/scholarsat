@@ -5,6 +5,8 @@ import type { Vocab } from "@/data/vocab";
 import { Button, Badge, Card, Progress } from "./ui";
 import { ContextStudio } from "./ContextStudio";
 import { Owl } from "./Owl";
+import { VocabLearn } from "./VocabLearn";
+import type { SrsState } from "@/lib/srs";
 import {
   IArrowL,
   IArrowR,
@@ -16,25 +18,28 @@ import {
   ITarget,
   IX,
   ICards,
+  ISparkle,
 } from "./icons";
 
-type StudyMode = "studio" | "flashcards" | "browse" | "quiz";
+type StudyMode = "studio" | "learn" | "flashcards" | "browse" | "quiz";
 type DeckFilter = "daily" | "top50" | "context" | "academic" | "learning" | "starred" | "all";
 
 export function VocabStudy({
   words,
   initialKnown,
   initialStarred = [],
+  initialSrs = {},
   signedIn,
 }: {
   words: Vocab[];
   initialKnown: string[];
   initialStarred?: string[];
+  initialSrs?: Record<string, SrsState>;
   signedIn: boolean;
 }) {
   const [known, setKnown] = useState<Set<string>>(new Set(initialKnown));
   const [starred, setStarred] = useState<Set<string>>(new Set(initialStarred));
-  const [mode, setMode] = useState<StudyMode>("studio");
+  const [mode, setMode] = useState<StudyMode>("learn");
   const [deckFilter, setDeckFilter] = useState<DeckFilter>("daily");
   const [searchQuery, setSearchQuery] = useState("");
   const [seed, setSeed] = useState(1);
@@ -168,7 +173,16 @@ export function VocabStudy({
     },
     [starred, signedIn]
   );
-
+  // Learn mode promotes and demotes words on its own; keep the local mastered count in step (the server already saved it).
+  const syncKnown = useCallback((word: string, isKnown: boolean) => {
+    setKnown((prev) => {
+      if (prev.has(word) === isKnown) return prev;
+      const next = new Set(prev);
+      if (isKnown) next.add(word);
+      else next.delete(word);
+      return next;
+    });
+  }, []);
   // Next / Prev flashcard handlers
   const handleNextCard = useCallback(() => {
     setFlipped(false);
@@ -341,6 +355,18 @@ export function VocabStudy({
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-bg p-3 sm:p-4 shadow-card">
         {/* Mode Selector */}
         <div className="inline-flex flex-wrap rounded-xl bg-surface-2 p-1 gap-1">
+          <button
+            type="button"
+            aria-pressed={mode === "learn"}
+            onClick={() => setMode("learn")}
+            className={`flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-all ${
+              mode === "learn"
+                ? "bg-bg text-ink shadow-xs"
+                : "text-muted hover:text-ink hover:bg-bg/50"
+            }`}
+          >
+            <ISparkle className="h-4 w-4" /> Learn
+          </button>
           <button type="button" aria-pressed={mode==="studio"} className={`rounded-lg px-3 py-2 text-sm ${mode==="studio" ? "bg-bg text-ink shadow-xs" : "text-muted"}`} onClick={()=>setMode("studio")}>Context studio</button>
           <button
             type="button"
@@ -378,7 +404,7 @@ export function VocabStudy({
         </div>
 
         {/* Curated Deck Selector Pills */}
-        {mode !== "studio" && <div className="flex items-center gap-1.5 overflow-x-auto scroll-thin max-w-full pb-1 sm:pb-0">
+        {mode !== "studio" && mode !== "learn" && <div className="flex items-center gap-1.5 overflow-x-auto scroll-thin max-w-full pb-1 sm:pb-0">
           {[
             { id: "daily" as DeckFilter, label: "Daily 15" },
             { id: "top50" as DeckFilter, label: "Top 50 Essentials" },
@@ -409,6 +435,18 @@ export function VocabStudy({
       </div>
 
       {mode === "studio" && <ContextStudio />}
+      {/* ---------------- MODE 0: LEARN (kept mounted so a session survives switching tabs) ---------------- */}
+      <div hidden={mode !== "learn"}>
+        <VocabLearn
+          words={words}
+          known={known}
+          initialSrs={initialSrs}
+          signedIn={signedIn}
+          onMasteryChange={syncKnown}
+          active={mode === "learn"}
+        />
+      </div>
+
       {/* ---------------- MODE 1: FLASHCARDS ---------------- */}
       {mode === "flashcards" && (
         <div className="max-w-2xl mx-auto w-full grid gap-4">
