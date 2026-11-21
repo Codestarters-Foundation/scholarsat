@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { googleEnabled } from "@/lib/google";
 import { PageTitle } from "@/components/ui";
 import { SettingsForms } from "@/components/SettingsForms";
+import { AiSettings } from "@/components/AiSettings";
 
 export const metadata: Metadata = { title: "Settings" };
 export const dynamic = "force-dynamic";
@@ -45,7 +46,7 @@ export default async function Settings({ searchParams }: { searchParams: Promise
           Redo study plan →
         </Link>
       </div>
-
+      <div className="mb-6"><AiSettings /></div>
       <SettingsForms
         user={{
           id: user.id,
