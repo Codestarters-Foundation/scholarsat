@@ -5,14 +5,91 @@
  * No framework imports here, so it can be unit tested with a fake fetch.
  */
 
-export type ProviderId = "openai" | "anthropic" | "gemini";
+export type ProviderId = "groq" | "gemini" | "openai" | "anthropic";
 export type AiConfig = { provider: ProviderId; apiKey: string; model: string };
 export type ChatMessage = { role: "user" | "assistant"; content: string };
 
-export const PROVIDERS: Record<ProviderId, { label: string; defaultModel: string; keyUrl: string; keyPrefix: string }> = {
-  openai: { label: "OpenAI", defaultModel: "gpt-5.4-mini", keyUrl: "https://platform.openai.com/api-keys", keyPrefix: "sk-" },
-  anthropic: { label: "Anthropic (Claude)", defaultModel: "claude-haiku-5-5", keyUrl: "https://console.anthropic.com/settings/keys", keyPrefix: "sk-ant-" },
-  gemini: { label: "Google Gemini", defaultModel: "gemini-3.8-flash", keyUrl: "https://aistudio.google.com/apikey", keyPrefix: "AIza" },
+export type ProviderInfo = {
+  label: string;
+  /** one line, plain language, shown on the provider card */
+  tagline: string;
+  /** true = there is a no-cost plan, so a student can use this without paying */
+  free: boolean;
+  /** fallback only; the app normally picks the model itself (see pickModel) */
+  defaultModel: string;
+  keyUrl: string;
+  keyUrlLabel: string;
+  /** what the key starts with, shown as a hint and used to catch the wrong key in the wrong box */
+  keyPrefix: string;
+  /** numbered, plain-language steps for getting a key */
+  steps: string[];
+  note?: string;
+};
+
+/** Free options first. The first one is what the setup screen preselects. */
+export const PROVIDER_ORDER: ProviderId[] = ["gemini", "groq", "openai", "anthropic"];
+
+export const PROVIDERS: Record<ProviderId, ProviderInfo> = {
+  groq: {
+    label: "Groq",
+    tagline: "Free and very fast. The easiest way to start.",
+    free: true,
+    defaultModel: "llama-3.3-70b-versatile",
+    keyUrl: "https://console.groq.com/keys",
+    keyUrlLabel: "Open Groq",
+    keyPrefix: "gsk_",
+    steps: [
+      "Click “Open Groq” and sign up. The free plan is all you need.",
+      "Open “API Keys”, then click “Create API Key”. Name it anything, like ScholarSAT.",
+      "Copy the key (it starts with gsk_) and paste it below.",
+    ],
+    note: "Free plans have daily limits. If you hit one, just try again later.",
+  },
+  gemini: {
+    label: "Google Gemini",
+    tagline: "Free plan available. Works with any Google account.",
+    free: true,
+    defaultModel: "gemini-3.8-flash",
+    keyUrl: "https://aistudio.google.com/apikey",
+    keyUrlLabel: "Open Google AI Studio",
+    keyPrefix: "AIza",
+    steps: [
+      "Click “Open Google AI Studio” and sign in with a Google account.",
+      "Click “Create API key”. If it asks for a project, pick any or let it make one.",
+      "Copy the key (it usually starts with AIza) and paste it below.",
+    ],
+    note: "On Google's free plan, your questions may be used to improve their products. Don't type personal details.",
+  },
+  openai: {
+    label: "OpenAI (ChatGPT)",
+    tagline: "Paid. You pay a small amount for what you use.",
+    free: false,
+    defaultModel: "gpt-5.4-mini",
+    keyUrl: "https://platform.openai.com/api-keys",
+    keyUrlLabel: "Open OpenAI",
+    keyPrefix: "sk-",
+    steps: [
+      "Click “Open OpenAI”, sign in, and add a payment method. Set a small monthly limit first.",
+      "Click “Create new secret key” and copy it right away. You can't see it again.",
+      "Paste it below.",
+    ],
+    note: "A ChatGPT subscription does not include API use. This needs its own billing.",
+  },
+  anthropic: {
+    label: "Anthropic (Claude)",
+    tagline: "Paid. You pay a small amount for what you use.",
+    free: false,
+    defaultModel: "claude-haiku-5-5",
+    keyUrl: "https://console.anthropic.com/settings/keys",
+    keyUrlLabel: "Open Anthropic",
+    keyPrefix: "sk-ant-",
+    steps: [
+      "Click “Open Anthropic”, sign in, and add credits. A small amount goes a long way.",
+      "Click “Create Key” and copy it right away.",
+      "Paste it below.",
+    ],
+    note: "A Claude subscription does not include API use. This needs its own credits.",
+  },
 };
 
 export const isProvider = (v: unknown): v is ProviderId => typeof v === "string" && v in PROVIDERS;
@@ -108,8 +185,8 @@ function httpError(cfg: AiConfig, status: number, body: unknown): AiError {
   if (status === 401 || status === 403 || /api key not valid|invalid api key|incorrect api key/i.test(detail))
     return new AiError(`${name} rejected your key. Check it and try again.`, "auth");
   if (status === 429) return new AiError(`${name} says you are out of quota or sending too fast. ${detail}`.trim(), "rate");
-  if (status === 404 || (/model/i.test(detail) && /not found|does not exist|not supported|invalid/i.test(detail)))
-    return new AiError(`${name} does not recognise the model "${cfg.model}". Pick another in Settings. ${detail}`.trim(), "model");
+  if (status === 404 || (/model/i.test(detail) && /not found|does not exist|not supported|invalid|decommissioned|deprecated|no longer/i.test(detail)))
+    return new AiError(`${name} no longer offers the model "${cfg.model}".`, "model");
   return new AiError(`${name} returned an error (${status}). ${detail}`.trim(), "other");
 }
 
@@ -128,6 +205,16 @@ export function buildRequest(cfg: AiConfig, system: string, messages: ChatMessag
           signal,
           headers: { ...json, authorization: `Bearer ${cfg.apiKey}` },
           body: JSON.stringify({ model: cfg.model, instructions: system, input: messages, stream: true, store: false }),
+        },
+      };
+    case "groq":
+      return {
+        url: "https://api.groq.com/openai/v1/chat/completions",
+        init: {
+          method: "POST",
+          signal,
+          headers: { ...json, authorization: `Bearer ${cfg.apiKey}` },
+          body: JSON.stringify({ model: cfg.model, messages: [{ role: "system", content: system }, ...messages], stream: true, max_completion_tokens: 1024 }),
         },
       };
     case "anthropic":
@@ -179,6 +266,11 @@ export function parseChunk(provider: ProviderId, data: string): string {
     if (o.type === "response.failed") throw new AiError(errorMessage(asObj(o.response)) ?? "The model failed to answer.");
     if (o.type === "error") throw new AiError(errorMessage(o) ?? "The model returned an error.");
     return "";
+  }
+  if (provider === "groq") {
+    if (o.error) throw new AiError(errorMessage(o) ?? "The model returned an error.");
+    const choice = Array.isArray(o.choices) ? asObj(o.choices[0]) : null;
+    return str(asObj(choice?.delta)?.content) ?? "";
   }
   if (provider === "anthropic") {
     if (o.type === "content_block_delta") {
@@ -272,6 +364,7 @@ export async function streamChat(cfg: AiConfig, opts: StreamOpts): Promise<void>
 // ------------------------------------------------------------- model listing
 
 const LIST_URL: Record<ProviderId, string> = {
+  groq: "https://api.groq.com/openai/v1/models",
   openai: "https://api.openai.com/v1/models",
   anthropic: "https://api.anthropic.com/v1/models?limit=100",
   gemini: "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200",
@@ -280,7 +373,7 @@ const LIST_URL: Record<ProviderId, string> = {
 /** Asks the provider which models this key can use, so the picker never goes stale. */
 export async function listModels(cfg: AiConfig, fetchImpl: typeof fetch = fetch): Promise<string[]> {
   const headers: Record<string, string> =
-    cfg.provider === "openai"
+    cfg.provider === "openai" || cfg.provider === "groq"
       ? { authorization: `Bearer ${cfg.apiKey}` }
       : cfg.provider === "anthropic"
         ? { "x-api-key": cfg.apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" }
@@ -306,6 +399,9 @@ export async function listModels(cfg: AiConfig, fetchImpl: typeof fetch = fetch)
       const methods = Array.isArray(mo.supportedGenerationMethods) ? mo.supportedGenerationMethods : [];
       const id = (str(mo.name) ?? "").replace(/^models\//, "");
       if (methods.includes("generateContent") && /^gemini/.test(id) && !/embedding|image|tts|live|robotics|aqa/.test(id)) ids.push(id);
+    } else if (cfg.provider === "groq") {
+      const id = str(mo.id) ?? "";
+      if (id && !/whisper|tts|playai|orpheus|guard|safeguard|embed|compound|distil/i.test(id)) ids.push(id);
     } else {
       const id = str(mo.id) ?? "";
       const chatModel = /^(gpt|o\d)/.test(id) && !/audio|realtime|image|tts|transcribe|search|embedding|moderation|whisper|instruct|codex/.test(id);
@@ -325,4 +421,99 @@ export async function testConnection(cfg: AiConfig, fetchImpl?: typeof fetch): P
     fetchImpl,
   });
   if (!text.trim()) throw new AiError("The model replied with nothing.");
+}
+
+// ------------------------------------------------- automatic model choice + setup
+
+const byNewest = (a: string, b: string) => b.localeCompare(a, "en", { numeric: true });
+
+/** What we'd like to use, best first. Each entry is tried against the provider's own list. */
+const PREFER: Record<ProviderId, RegExp[]> = {
+  groq: [/^llama-3\.3-70b-versatile$/, /^llama-3\.3-70b/, /^openai\/gpt-oss-20b$/, /^llama-3\.1-8b-instant$/, /^openai\/gpt-oss-120b$/],
+  gemini: [/^gemini-[\d.]+-flash$/, /^gemini-[\d.]+-flash-lite$/, /flash/],
+  openai: [/^gpt-[\d.]+-mini$/, /^gpt-[\d.]+-nano$/, /^gpt-4o-mini$/],
+  anthropic: [/^claude-haiku-[\d-]+$/, /haiku/],
+};
+
+/**
+ * Chooses a model so nobody has to know model names: the first preferred pattern that the provider's
+ * list contains (newest version wins), else our fallback if it's listed, else the first model in the
+ * list. Returns null when the list is empty.
+ */
+export function pickModel(provider: ProviderId, ids: string[]): string | null {
+  for (const re of PREFER[provider]) {
+    const hits = ids.filter((id) => re.test(id)).sort(byNewest);
+    if (hits.length) return hits[0];
+  }
+  const fallback = PROVIDERS[provider].defaultModel;
+  if (ids.includes(fallback)) return fallback;
+  return ids[0] ?? null;
+}
+
+/** Which provider a key looks like it belongs to, from its distinctive start. Null if unsure. */
+export function detectProvider(key: string): ProviderId | null {
+  const k = key.trim();
+  if (k.startsWith("gsk_")) return "groq";
+  if (k.startsWith("sk-ant-")) return "anthropic";
+  if (k.startsWith("AIza")) return "gemini";
+  if (k.startsWith("sk-")) return "openai";
+  return null;
+}
+
+/** Pasted keys often arrive with spaces, line breaks or quotes around them. */
+export const cleanKey = (raw: string) => raw.replace(/\s+/g, "").replace(/^["'`]+|["'`]+$/g, "");
+
+export type ConnectResult = { cfg: AiConfig; models: string[]; auto: boolean };
+
+/**
+ * The whole "Connect" button: clean the key, check it against the provider, pick a model for the
+ * student (unless they chose one under Advanced), and prove it works with one tiny request.
+ * Throws an AiError whose message is safe and plain enough to show as is.
+ */
+export async function connectAi(
+  provider: ProviderId,
+  rawKey: string,
+  opts: { model?: string; fetchImpl?: typeof fetch } = {},
+): Promise<ConnectResult> {
+  const apiKey = cleanKey(rawKey);
+  if (!apiKey) throw new AiError("Paste your key first.", "auth");
+  const seen = detectProvider(apiKey);
+  if (seen && seen !== provider)
+    throw new AiError(`That looks like a ${PROVIDERS[seen].label} key. Choose ${PROVIDERS[seen].label} above, or paste a ${PROVIDERS[provider].label} key.`, "auth");
+
+  const probe: AiConfig = { provider, apiKey, model: opts.model?.trim() || PROVIDERS[provider].defaultModel };
+  let models: string[] = [];
+  try {
+    models = await listModels(probe, opts.fetchImpl);
+  } catch (e) {
+    if (e instanceof AiError && e.kind === "auth") throw e; // a bad key is the one failure we can be sure about
+    // Anything else (network hiccup, odd list response): fall back to our default model and let the test decide.
+  }
+  const chosen = opts.model?.trim() || pickModel(provider, models) || PROVIDERS[provider].defaultModel;
+  const cfg: AiConfig = { provider, apiKey, model: chosen };
+  try {
+    await testConnection(cfg, opts.fetchImpl);
+  } catch (e) {
+    // Groq's browser access is the one thing we could not confirm ahead of time. If nothing got through at
+    // all, say so plainly and point at the other free option instead of blaming the student's connection.
+    if (provider === "groq" && e instanceof AiError && e.kind === "network" && models.length === 0)
+      throw new AiError("Groq didn't answer from this browser. If you're online, Groq may not allow this kind of connection. Try Google Gemini instead; it's free too.", "network");
+    throw e;
+  }
+  return { cfg, models, auto: !opts.model?.trim() };
+}
+
+/**
+ * Called when a saved model stops working (providers retire models). Looks up what is available now and
+ * returns the config with a working model, or null if there is nothing better to switch to.
+ */
+export async function repairModel(cfg: AiConfig, fetchImpl?: typeof fetch): Promise<AiConfig | null> {
+  let models: string[];
+  try {
+    models = await listModels(cfg, fetchImpl);
+  } catch {
+    return null;
+  }
+  const next = pickModel(cfg.provider, models.filter((m) => m !== cfg.model));
+  return next ? { ...cfg, model: next } : null;
 }
