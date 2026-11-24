@@ -194,7 +194,10 @@ function httpError(cfg: AiConfig, status: number, body: unknown): AiError {
 
 type Req = { url: string; init: RequestInit };
 
-export function buildRequest(cfg: AiConfig, system: string, messages: ChatMessage[], signal?: AbortSignal): Req {
+/** Reply length cap. Only Groq and Anthropic need one sent; for Gemini and OpenAI it would also cut into the model's thinking. */
+export const DEFAULT_MAX_TOKENS = 1024;
+
+export function buildRequest(cfg: AiConfig, system: string, messages: ChatMessage[], signal?: AbortSignal, maxTokens: number = DEFAULT_MAX_TOKENS): Req {
   const json = { "content-type": "application/json" };
   switch (cfg.provider) {
     case "openai":
@@ -214,7 +217,7 @@ export function buildRequest(cfg: AiConfig, system: string, messages: ChatMessag
           method: "POST",
           signal,
           headers: { ...json, authorization: `Bearer ${cfg.apiKey}` },
-          body: JSON.stringify({ model: cfg.model, messages: [{ role: "system", content: system }, ...messages], stream: true, max_completion_tokens: 1024 }),
+          body: JSON.stringify({ model: cfg.model, messages: [{ role: "system", content: system }, ...messages], stream: true, max_completion_tokens: maxTokens }),
         },
       };
     case "anthropic":
@@ -230,7 +233,7 @@ export function buildRequest(cfg: AiConfig, system: string, messages: ChatMessag
             // Required for calls made directly from a browser.
             "anthropic-dangerous-direct-browser-access": "true",
           },
-          body: JSON.stringify({ model: cfg.model, max_tokens: 1024, system, messages, stream: true }),
+          body: JSON.stringify({ model: cfg.model, max_tokens: maxTokens, system, messages, stream: true }),
         },
       };
     case "gemini": {
@@ -324,12 +327,14 @@ export type StreamOpts = {
   onText: (delta: string) => void;
   signal?: AbortSignal;
   fetchImpl?: typeof fetch;
+  /** Longest reply to allow (default 1024). The drawing tutor asks for more because its replies are JSON. */
+  maxTokens?: number;
 };
 
 /** Streams a reply, calling `onText` with each piece. Throws AiError on any provider or network failure. */
 export async function streamChat(cfg: AiConfig, opts: StreamOpts): Promise<void> {
   const doFetch = opts.fetchImpl ?? fetch;
-  const { url, init } = buildRequest(cfg, opts.system, opts.messages, opts.signal);
+  const { url, init } = buildRequest(cfg, opts.system, opts.messages, opts.signal, opts.maxTokens);
   let res: Response;
   try {
     res = await doFetch(url, init);
