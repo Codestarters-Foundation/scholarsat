@@ -12,7 +12,17 @@ type State = "idle" | "loading" | "done" | "error";
  * An optional "ask AI" button. Uses the student's own key (see AiSettings). Without a key it shows a
  * quiet link that opens the key form right here, so it also works when signed out.
  */
-export function AiAsk({ label, system, prompt }: { label: string; system: string; prompt: string }) {
+export function AiAsk(props: { label: string; system: string; prompt: string }) {
+  // The practice screen listens for Enter and the arrow keys on the whole window (check / next / back). Keys
+  // pressed in here, such as Enter on the button or in the key box, belong to this widget, not to the screen.
+  return (
+    <div className="contents" onKeyDown={(e) => e.stopPropagation()}>
+      <AiAskInner {...props} />
+    </div>
+  );
+}
+
+function AiAskInner({ label, system, prompt }: { label: string; system: string; prompt: string }) {
   const cfg = useAiConfig();
   const [state, setState] = useState<State>("idle");
   const [text, setText] = useState("");
