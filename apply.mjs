@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 /**
- * AI update: Groq, automatic model choice, guided key setup, onboarding step.
+ * Drawing tutor + 16 new reading questions.
  *
  *   node apply.mjs <path-to-scholarsat-repo> [--dry]
  *
- * All-or-nothing, safe to run twice, preserves CRLF. Needs the earlier BYOK patch to be in the repo already.
+ * All-or-nothing, safe to run twice, preserves CRLF. Needs the earlier BYOK and AI-setup patches in the repo already.
+ * `node apply.mjs --manual` prints every edit so you can make them by hand if an anchor does not match.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -13,47 +14,95 @@ import { fileURLToPath } from "node:url";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
 /** New files: never overwrite a different file. */
-const NEW_FILES = ["src/components/AiConnect.tsx", "src/components/AiOnboardingStep.tsx", "tests/ai-connect.test.ts"];
-
-/** Files from the first BYOK patch that this update replaces. Only replaced if they still look like our earlier version. */
-const REPLACE = [
-  { file: "src/lib/ai.ts", was: "Bring-your-own-key AI." },
-  { file: "src/components/AiSettings.tsx", was: "Provider, key and model for the optional AI helpers" },
-  { file: "src/components/AiAsk.tsx", was: 'An optional "ask AI" button' },
+const NEW_FILES = [
+  "src/lib/tutor-lesson.ts",
+  "src/lib/tutor-anchor.ts",
+  "src/lib/tutor-store.ts",
+  "src/components/tutor/TutorTray.tsx",
+  "src/components/tutor/TutorMarks.tsx",
+  "src/components/tutor/Whiteboard.tsx",
+  "src/components/tutor/TeachButton.tsx",
+  "scripts/rw-reading-more.ts",
+  "scripts/gen-rw-more.ts",
+  "tests/tutor-lesson.test.ts",
+  "tests/rw-more.test.ts",
 ];
+const REPLACE = [];
 
 const EDITS = [
   {
-    file: "src/components/onboarding/Onboarding.tsx",
+    file: "src/lib/ai.ts",
+    why: "Let a request ask for a longer reply (the tutor's replies are JSON and need more room than the 1024-token default).",
     edits: [
-      { op: "after", anchor: 'import { ScoreCurve } from "./ScoreCurve";', text: 'import { AiOnboardingStep } from "../AiOnboardingStep";' },
-      { op: "sub", find: '"focus", "plan"] as const', replace: '"focus", "ai", "plan"] as const' },
-      { op: "after", anchor: "focus: a.focus.length > 0 || notSure,", text: "ai: true," },
       {
-        op: "before",
-        anchor: 'case "plan":',
-        text: [
-          'case "ai":',
-          '  return { mood: "idle", text: "Totally optional. If you want an AI helper, I\'ll walk you through it. You can also skip this and do it later." };',
+        op: "sub",
+        find: "export function buildRequest(cfg: AiConfig, system: string, messages: ChatMessage[], signal?: AbortSignal): Req {",
+        replace: [
+          "/** Reply length cap. Only Groq and Anthropic need one sent; for Gemini and OpenAI it would also cut into the model's thinking. */",
+          "export const DEFAULT_MAX_TOKENS = 1024;",
+          "",
+          "export function buildRequest(cfg: AiConfig, system: string, messages: ChatMessage[], signal?: AbortSignal, maxTokens: number = DEFAULT_MAX_TOKENS): Req {",
         ].join("\n"),
       },
+      { op: "sub", find: "stream: true, max_completion_tokens: 1024 }", replace: "stream: true, max_completion_tokens: maxTokens }" },
+      { op: "sub", find: "max_tokens: 1024, system, messages, stream: true }", replace: "max_tokens: maxTokens, system, messages, stream: true }" },
       {
-        op: "before",
-        anchor: "welcome: {",
-        text: [
-          "ai: {",
-          '  title: "Want an AI study helper?",',
-          '  sub: "Optional. It can be free, and you can set it up later.",',
-          "  body: <AiOnboardingStep />,",
-          "},",
+        op: "sub",
+        find: "  signal?: AbortSignal;\n  fetchImpl?: typeof fetch;\n};",
+        replace: "  signal?: AbortSignal;\n  fetchImpl?: typeof fetch;\n  /** Longest reply to allow (default 1024). The drawing tutor asks for more because its replies are JSON. */\n  maxTokens?: number;\n};",
+      },
+      { op: "sub", find: "buildRequest(cfg, opts.system, opts.messages, opts.signal);", replace: "buildRequest(cfg, opts.system, opts.messages, opts.signal, opts.maxTokens);" },
+    ],
+  },
+  {
+    file: "src/components/AiAsk.tsx",
+    why: "Bug fix: pressing Enter on the Explain button, or in the key box inside it, also moved to the next question, because the practice screen listens for Enter on the whole window.",
+    edits: [
+      {
+        op: "sub",
+        find: "export function AiAsk({ label, system, prompt }: { label: string; system: string; prompt: string }) {",
+        replace: [
+          "export function AiAsk(props: { label: string; system: string; prompt: string }) {",
+          "  // The practice screen listens for Enter and the arrow keys on the whole window (check / next / back). Keys",
+          "  // pressed in here, such as Enter on the button or in the key box, belong to this widget, not to the screen.",
+          "  return (",
+          '    <div className="contents" onKeyDown={(e) => e.stopPropagation()}>',
+          "      <AiAskInner {...props} />",
+          "    </div>",
+          "  );",
+          "}",
+          "",
+          "function AiAskInner({ label, system, prompt }: { label: string; system: string; prompt: string }) {",
         ].join("\n"),
       },
-      { op: "sub", find: 'step === "focus" ? "Build my plan"', replace: 'step === "ai" ? "Build my plan"' },
+    ],
+  },
+  {
+    file: "src/components/PracticePlayer.tsx",
+    why: "Add the Teach me button (result card) and the tutor tray (between the question and the bottom bar).",
+    edits: [
+      { op: "after", anchor: 'import { AiAsk } from "./AiAsk";', text: 'import { TeachButton } from "./tutor/TeachButton";\nimport { TutorTray } from "./tutor/TutorTray";' },
+      { op: "before", marker: "<TeachButton qid={q.id} />", anchor: "{!result.saved && (", text: ['<div className="mt-3">', "  <TeachButton qid={q.id} />", "</div>"].join("\n") },
+      {
+        op: "before",
+        marker: "<TutorTray",
+        anchor: "{/* Bottom bar */}",
+        text: ["{q && result && (", "  <TutorTray", "    key={q.id}", "    q={q}", "    response={resp}", "    answer={result.answer}", "    explanation={result.explanation}", "    correct={result.correct}", "  />", ")}"].join("\n"),
+      },
+    ],
+  },
+  {
+    file: "scripts/build-bank.ts",
+    why: "Include the new reading questions.",
+    edits: [
+      { op: "after", anchor: 'import { generateRWExtra } from "./gen-rw-extra";', text: 'import { generateRWMore } from "./gen-rw-more";' },
+      { op: "sub", find: "const rw = [...generateRW(), ...generateRWExtra()];", replace: "const rw = [...generateRW(), ...generateRWExtra(), ...generateRWMore()];" },
     ],
   },
   {
     file: "package.json",
-    edits: [{ op: "sub", find: 'tests/ai.test.ts"', replace: 'tests/ai.test.ts tests/ai-connect.test.ts"' }],
+    why: "Run the new tests as part of `npm run typecheck`.",
+    edits: [{ op: "sub", find: 'tests/ai-connect.test.ts"', replace: 'tests/ai-connect.test.ts tests/tutor-lesson.test.ts tests/rw-more.test.ts"' }],
   },
 ];
 

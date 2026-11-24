@@ -114,3 +114,69 @@ yes first. Prompt for your coding agent, if approved:
   warnings, Enter not leaking to the surrounding screen (with a control run proving the check can fail), a retired model
   being repaired with exactly one retry, and the key never staying in the page.
 - Strict type check against stand-in React types.
+
+
+
+
+
+# ScholarSAT: AI tutor that draws on the question + 16 more reading questions
+
+Suggested branch: `feat/ai-tutor-more-reading-qs`
+
+## Apply
+From the repo root, on a fresh branch:
+
+    node /path/to/tutor-update/apply.mjs --dry     # shows what it would do, changes nothing
+    node /path/to/tutor-update/apply.mjs           # all-or-nothing, safe to run twice
+    node /path/to/tutor-update/apply.mjs --manual  # prints the 5 edits if an anchor doesn't match
+
+Then:
+
+    npm run test:logic
+    npm run build:bank      # or however you regenerate the bank (scripts/build-bank.ts)
+    npm run typecheck && npm run build
+
+## What you get
+1. **Tutor on practice questions.** After a student checks an answer, a "Teach me" button opens a tray.
+   The AI walks through the question in up to 7 steps. Each step has spoken text, marks drawn directly on the
+   passage / stem / choices (highlight, underline, circle, strike, check) and optional whiteboard lines for math.
+   Students can step Back/Next, ask quick follow-ups or type their own. Uses the student's own AI key (BYOK).
+2. **Safety rules in code, not just the prompt.** Only the correct choice can get a check, strike on the correct
+   choice is dropped, unknown mark kinds and nonexistent choices are dropped, LaTeX/markdown is stripped.
+   If a quote can't be found on the page the note still shows, just without a drawing.
+3. **Bug fix:** in the earlier AiAsk, pressing Enter on "Explain this" (or in the key box) also advanced the question.
+4. **16 new hand-written reading questions** for the thinnest skills: 8 Rhetorical Synthesis, 4 Cross-Text
+   Connections, 4 Text Structure and Purpose. Each has an explanation naming why each wrong choice fails.
+   Correct answers are balanced across A-D, and the correct choice is the longest only at chance rate.
+
+## Verified here
+- 19 tutor logic tests and 5 question tests; all 84 logic tests pass in a reconstructed repo.
+- 20 headless-Chromium tests on a mini player with real KaTeX: marks land on the quoted words, stay glued on
+  scroll/resize/stacking, streaming, follow-ups, keyboard isolation, errors, phone layout, reduced motion, StrictMode.
+  Deliberately breaking the code was caught in 4 of 5 mutation checks. A fifth (ignoring scroll offset) is
+  caught only by my earlier, stricter resize test, not by the final run, so treat scroll-glue as lightly covered.
+- Strict tsc on the new files is clean.
+The browser harness is not part of the repo.
+
+## Not verified (please check)
+- Real model output quality. Weaker/free models may quote badly. Try it with a real free Gemini or Groq key.
+- Real provider CORS and free-tier limits.
+- Your live `PracticePlayer.tsx` markup: the edits are anchored to text from an older copy. `--manual` covers a miss.
+- Your real `npm run build` and lint.
+- The questions deserve a second human read before launch.
+
+## Heads up
+- New non-easy questions change the daily-question pool, so the daily question changes on deploy.
+  Deploy just after 00:00 UTC so students don't see it flip mid-day.
+
+## Sign in with ChatGPT: not built
+OpenAI only allows hosted apps that applied and were approved. Form:
+https://openai.com/form/sign-in-with-chatgpt-interest/
+
+Draft answer:
+> ScholarSAT is a free, open-source SAT prep app by CodeStarters Foundation (Next.js). Students bring their own AI
+> access today. We'd like paying ChatGPT users to sign in so the in-app tutor and explanations run on their plan, at
+> no cost to us or to students who don't use it. No account is required to use the app.
+
+## Onboarding
+Untouched. Send screenshots or what bothers you (too long, wrong order, unclear AI step) and I'll do it properly.
