@@ -2,9 +2,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "./ui";
 import { ISparkle } from "./icons";
-import { AiKeyForm } from "./AiSettings";
+import { AiConnect } from "./AiConnect";
 import { useAiConfig } from "@/lib/use-ai-config";
-import { AiError, PROVIDERS, streamChat } from "@/lib/ai";
+import { AiError, PROVIDERS, repairModel, saveAiConfig, streamChat, type AiConfig } from "@/lib/ai";
 
 type State = "idle" | "loading" | "done" | "error";
 
@@ -30,13 +30,25 @@ export function AiAsk({ label, system, prompt }: { label: string; system: string
     setState("loading");
     setText("");
     setErr("");
-    try {
-      await streamChat(cfg, {
+    const attempt = (c: AiConfig) =>
+      streamChat(c, {
         system,
         messages: [{ role: "user", content: prompt }],
         signal: ac.signal,
         onText: (d) => setText((t) => t + d),
       });
+    try {
+      try {
+        await attempt(cfg);
+      } catch (e) {
+        // Providers retire models. If ours is gone, quietly switch to one that works and try once more.
+        if (!(e instanceof AiError) || e.kind !== "model" || ac.signal.aborted) throw e;
+        const fixed = await repairModel(cfg);
+        if (!fixed || ac.signal.aborted) throw e;
+        saveAiConfig(fixed);
+        setText("");
+        await attempt(fixed);
+      }
       if (!ac.signal.aborted) setState("done");
     } catch (e) {
       if (ac.signal.aborted) return;
@@ -56,9 +68,9 @@ export function AiAsk({ label, system, prompt }: { label: string; system: string
     return setup ? (
       <div className="rounded-xl border border-line bg-surface p-4">
         <p className="mb-3 text-sm text-ink-2">
-          Use your own AI key to get this. It stays in this browser and is optional.
+          Connect your own AI account to get this. It can be free, it stays in this browser, and it is optional.
         </p>
-        <AiKeyForm onSaved={() => setSetup(false)} />
+        <AiConnect onConnected={() => setSetup(false)} />
       </div>
     ) : (
       <button
@@ -66,7 +78,7 @@ export function AiAsk({ label, system, prompt }: { label: string; system: string
         onClick={() => setSetup(true)}
         className="inline-flex items-center gap-1.5 text-left text-xs text-muted transition-colors hover:text-red"
       >
-        <ISparkle className="h-3.5 w-3.5" /> {label} with AI · add your own key
+        <ISparkle className="h-3.5 w-3.5" /> {label} with AI · set up free AI
       </button>
     );
   }
@@ -84,15 +96,15 @@ export function AiAsk({ label, system, prompt }: { label: string; system: string
           </Button>
         )}
         <span className="text-xs text-faint">
-          {PROVIDERS[cfg.provider].label} · {cfg.model}
+          {PROVIDERS[cfg.provider].label}
         </span>
         <button type="button" onClick={() => setSetup((s) => !s)} className="text-xs text-muted hover:text-red">
-          {setup ? "Close" : "Change key"}
+          {setup ? "Close" : "Settings"}
         </button>
       </div>
       {setup && (
         <div className="rounded-xl border border-line bg-surface p-4">
-          <AiKeyForm onSaved={() => setSetup(false)} />
+          <AiConnect onConnected={() => setSetup(false)} />
         </div>
       )}
       {(text || state === "loading") && (
