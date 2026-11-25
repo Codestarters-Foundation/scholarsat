@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * Drawing tutor + 16 new reading questions.
+ * 30 Reading and Writing + 30 math questions + 30 vocabulary words.
  *
  *   node apply.mjs <path-to-scholarsat-repo> [--dry]
  *
- * All-or-nothing, safe to run twice, preserves CRLF. Needs the earlier BYOK and AI-setup patches in the repo already.
+ * All-or-nothing, safe to run twice, preserves CRLF. Needs the tutor + reading-questions patch applied first.
  * `node apply.mjs --manual` prints every edit so you can make them by hand if an anchor does not match.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -15,101 +15,53 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 
 /** New files: never overwrite a different file. */
 const NEW_FILES = [
-  "src/lib/tutor-lesson.ts",
-  "src/lib/tutor-anchor.ts",
-  "src/lib/tutor-store.ts",
-  "src/components/tutor/TutorTray.tsx",
-  "src/components/tutor/TutorMarks.tsx",
-  "src/components/tutor/Whiteboard.tsx",
-  "src/components/tutor/TeachButton.tsx",
-  "scripts/rw-reading-more.ts",
-  "scripts/gen-rw-more.ts",
-  "tests/tutor-lesson.test.ts",
-  "tests/rw-more.test.ts",
+  "scripts/rw-more2.ts",
+  "scripts/math-more2.ts",
+  "scripts/gen-more2.ts",
+  "src/data/vocab-more.ts",
+  "tests/more-questions.test.ts",
 ];
 const REPLACE = [];
 
+const VOCAB_TAIL = [
+  "/** Classic words first, then the words with a second meaning, as before. The newer words slot into their group. */",
+  "export const VOCAB: Vocab[] = [",
+  '  ...VOCAB_BASE.filter((v) => v.kind !== "context"),',
+  '  ...VOCAB_MORE.filter((v) => v.kind !== "context"),',
+  '  ...VOCAB_BASE.filter((v) => v.kind === "context"),',
+  '  ...VOCAB_MORE.filter((v) => v.kind === "context"),',
+  "];",
+].join("\n");
+
 const EDITS = [
   {
-    file: "src/lib/ai.ts",
-    why: "Let a request ask for a longer reply (the tutor's replies are JSON and need more room than the 1024-token default).",
-    edits: [
-      {
-        op: "sub",
-        find: "export function buildRequest(cfg: AiConfig, system: string, messages: ChatMessage[], signal?: AbortSignal): Req {",
-        replace: [
-          "/** Reply length cap. Only Groq and Anthropic need one sent; for Gemini and OpenAI it would also cut into the model's thinking. */",
-          "export const DEFAULT_MAX_TOKENS = 1024;",
-          "",
-          "export function buildRequest(cfg: AiConfig, system: string, messages: ChatMessage[], signal?: AbortSignal, maxTokens: number = DEFAULT_MAX_TOKENS): Req {",
-        ].join("\n"),
-      },
-      { op: "sub", find: "stream: true, max_completion_tokens: 1024 }", replace: "stream: true, max_completion_tokens: maxTokens }" },
-      { op: "sub", find: "max_tokens: 1024, system, messages, stream: true }", replace: "max_tokens: maxTokens, system, messages, stream: true }" },
-      {
-        op: "sub",
-        find: "  signal?: AbortSignal;\n  fetchImpl?: typeof fetch;\n};",
-        replace: "  signal?: AbortSignal;\n  fetchImpl?: typeof fetch;\n  /** Longest reply to allow (default 1024). The drawing tutor asks for more because its replies are JSON. */\n  maxTokens?: number;\n};",
-      },
-      { op: "sub", find: "buildRequest(cfg, opts.system, opts.messages, opts.signal);", replace: "buildRequest(cfg, opts.system, opts.messages, opts.signal, opts.maxTokens);" },
-    ],
-  },
-  {
-    file: "src/components/AiAsk.tsx",
-    why: "Bug fix: pressing Enter on the Explain button, or in the key box inside it, also moved to the next question, because the practice screen listens for Enter on the whole window.",
-    edits: [
-      {
-        op: "sub",
-        find: "export function AiAsk({ label, system, prompt }: { label: string; system: string; prompt: string }) {",
-        replace: [
-          "export function AiAsk(props: { label: string; system: string; prompt: string }) {",
-          "  // The practice screen listens for Enter and the arrow keys on the whole window (check / next / back). Keys",
-          "  // pressed in here, such as Enter on the button or in the key box, belong to this widget, not to the screen.",
-          "  return (",
-          '    <div className="contents" onKeyDown={(e) => e.stopPropagation()}>',
-          "      <AiAskInner {...props} />",
-          "    </div>",
-          "  );",
-          "}",
-          "",
-          "function AiAskInner({ label, system, prompt }: { label: string; system: string; prompt: string }) {",
-        ].join("\n"),
-      },
-    ],
-  },
-  {
-    file: "src/components/PracticePlayer.tsx",
-    why: "Add the Teach me button (result card) and the tutor tray (between the question and the bottom bar).",
-    edits: [
-      { op: "after", anchor: 'import { AiAsk } from "./AiAsk";', text: 'import { TeachButton } from "./tutor/TeachButton";\nimport { TutorTray } from "./tutor/TutorTray";' },
-      { op: "before", marker: "<TeachButton qid={q.id} />", anchor: "{!result.saved && (", text: ['<div className="mt-3">', "  <TeachButton qid={q.id} />", "</div>"].join("\n") },
-      {
-        op: "before",
-        marker: "<TutorTray",
-        anchor: "{/* Bottom bar */}",
-        text: ["{q && result && (", "  <TutorTray", "    key={q.id}", "    q={q}", "    response={resp}", "    answer={result.answer}", "    explanation={result.explanation}", "    correct={result.correct}", "  />", ")}"].join("\n"),
-      },
-    ],
-  },
-  {
     file: "scripts/build-bank.ts",
-    why: "Include the new reading questions.",
+    why: "Include the new reading and math questions.",
     edits: [
-      { op: "after", anchor: 'import { generateRWExtra } from "./gen-rw-extra";', text: 'import { generateRWMore } from "./gen-rw-more";' },
-      { op: "sub", find: "const rw = [...generateRW(), ...generateRWExtra()];", replace: "const rw = [...generateRW(), ...generateRWExtra(), ...generateRWMore()];" },
+      { op: "after", anchor: 'import { generateRWMore } from "./gen-rw-more";', text: 'import { generateMathMore2, generateRWMore2 } from "./gen-more2";' },
+      { op: "sub", find: "const math = generateMath(Number(process.env.PER_CELL ?? 60));", replace: "const math = [...generateMath(Number(process.env.PER_CELL ?? 60)), ...generateMathMore2()];" },
+      { op: "sub", find: "...generateRWExtra(), ...generateRWMore()];", replace: "...generateRWExtra(), ...generateRWMore(), ...generateRWMore2()];" },
+    ],
+  },
+  {
+    file: "src/data/vocab.ts",
+    why: "Add the 30 new words. The original list is renamed VOCAB_BASE and VOCAB is rebuilt from it at the bottom, so nothing that imports VOCAB changes.",
+    edits: [
+      { op: "sub", find: "export const VOCAB: Vocab[] = [", replace: 'import { VOCAB_MORE } from "./vocab-more";\n\nexport const VOCAB_BASE: Vocab[] = [' },
+      { op: "append", marker: "export const VOCAB: Vocab[] = [", text: VOCAB_TAIL },
     ],
   },
   {
     file: "package.json",
     why: "Run the new tests as part of `npm run typecheck`.",
-    edits: [{ op: "sub", find: 'tests/ai-connect.test.ts"', replace: 'tests/ai-connect.test.ts tests/tutor-lesson.test.ts tests/rw-more.test.ts"' }],
+    edits: [{ op: "sub", find: 'tests/rw-more.test.ts"', replace: 'tests/rw-more.test.ts tests/more-questions.test.ts"' }],
   },
 ];
 
 if (process.argv.includes("--manual")) {
   for (const f of EDITS) {
     console.log(`### ${f.file}`);
-    for (const e of f.edits) console.log(e.op === "sub" ? `Replace \`${e.find}\` with \`${e.replace}\`\n` : `Insert ${e.op} the line \`${e.anchor}\`:\n\`\`\`\n${e.text}\n\`\`\`\n`);
+    for (const e of f.edits) console.log(e.op === "sub" ? `Replace \`${e.find}\` with:\n\`\`\`\n${e.replace}\n\`\`\`\n` : e.op === "append" ? `Add at the very end of the file:\n\`\`\`\n${e.text}\n\`\`\`\n` : `Insert ${e.op} the line \`${e.anchor}\`:\n\`\`\`\n${e.text}\n\`\`\`\n`);
   }
   process.exit(0);
 }
@@ -142,7 +94,11 @@ for (const f of EDITS) {
   const original = readFileSync(dest, "utf8"), eol = original.includes("\r\n") ? "\r\n" : "\n";
   let text = original.replace(/\r\n/g, "\n"), changed = 0;
   for (const e of f.edits) {
-    const label = `${f.file}: ${e.op === "sub" ? JSON.stringify(e.find.slice(0, 50)) : `${e.op} ${JSON.stringify(e.anchor.slice(0, 50))}`}`;
+    const label = `${f.file}: ${e.op === "sub" ? JSON.stringify(e.find.slice(0, 50)) : e.op === "append" ? "append at end" : `${e.op} ${JSON.stringify(e.anchor.slice(0, 50))}`}`;
+    if (e.op === "append") {
+      if (text.includes(e.marker)) { notes.push(`= ${label} (already applied)`); continue; }
+      text = text.replace(/\s*$/, "") + "\n\n" + e.text + "\n"; changed++; continue;
+    }
     if (e.op === "sub") {
       if (text.includes(e.replace)) { notes.push(`= ${label} (already applied)`); continue; }
       const n = text.split(e.find).length - 1;
