@@ -20,6 +20,7 @@ const verify = async () => {
       await page.goto("/practice");
       for (const section of ["Math", "Reading and Writing"]) {
         await page.getByRole("navigation", {name:"Practice subject"}).getByRole("link", {name:new RegExp(section)}).click();
+        await page.waitForURL(url=>url.searchParams.get("section")===(section==="Math" ? "math" : "rw"));
         await page.getByRole("navigation", {name:"Practice subject"}).locator('a[aria-current="page"]').filter({hasText:section}).waitFor();
         await page.getByRole("heading", {name:section === "Math" ? "Algebra" : "Information and Ideas",exact:true}).waitFor();
         const topics = page.getByRole("navigation", {name:"Topics"});
@@ -27,6 +28,7 @@ const verify = async () => {
         assert.equal(await links.count(), 4);
         const names = await links.allTextContents();
         for (const name of names) {
+          if (await page.getByRole("heading",{name:name.trim(),exact:true}).isVisible()) continue;
           if (await topics.getByRole("combobox").isVisible()) {
             await topics.getByRole("combobox").selectOption(name.trim());
           } else {
