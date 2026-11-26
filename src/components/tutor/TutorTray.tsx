@@ -45,7 +45,7 @@ export function TutorTray(props: TutorProps) {
 function Tray({ q, response, answer, explanation, correct }: TutorProps) {
   const cfg = useAiConfig();
   const connection = useTutorConnection();
-  const viaStudy = connection.mode !== "provider" && (connection.chosen || cfg === null);
+  const viaStudy = connection.mode !== "provider";
   const [planReady,setPlanReady] = useState<boolean | null>(null);
   useEffect(() => {
     if (!viaStudy || connection.mode !== "plan") return;

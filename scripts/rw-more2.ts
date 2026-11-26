@@ -2,7 +2,7 @@
  *  Each `why` says why the right choice works and why the others do not. */
 import type { Difficulty } from "../src/lib/types";
 
-export type Item = { skill: string; domain: string; stem: string; passage: string; right: string; wrong: [string, string, string]; why: string; d: Difficulty };
+export type Item = { id?: string; skill: string; domain: string; stem: string; passage: string; right: string; wrong: [string, string, string]; why: string; d: Difficulty };
 
 const WIC = "Which choice completes the text with the most logical and precise word or phrase?";
 const TRANS = "Which choice completes the text with the most logical transition?";
@@ -66,6 +66,7 @@ export const RW_MORE2: Item[] = [
     right: "Nevertheless,", wrong: ["Therefore,", "Similarly,", "In particular,"],
     why: "Agreement on one point is followed by disagreement on another, so a concession such as \"Nevertheless\" fits. \"Therefore\" and \"Similarly\" would suggest the disagreement follows from or matches the agreement, and \"In particular\" introduces a detail of it." },
   { skill: "Transitions", domain: EI, stem: TRANS, d: "H",
+    id: "r75d91510",
     passage: "Researchers predicted that a longer time limit would improve proofreading accuracy. They randomly assigned equally skilled readers either a short or a long time limit for the same passage. ______ the readers with the longer limit overlooked more errors, even though they reread more sentences.",
     right: "Instead,", wrong: ["Specifically,", "Likewise,", "Accordingly,"],
     why: "Compare the observed result with the prediction, even though a sentence about methods separates them. More errors under the longer limit reverses the prediction. A transition that introduces a detail, a consequence, or a parallel result misses that reversal." },
@@ -76,10 +77,12 @@ export const RW_MORE2: Item[] = [
     right: "greenhouse:", wrong: ["greenhouse;", "greenhouse.", "greenhouse, which"],
     why: "A colon can follow a complete sentence to introduce a list. A semicolon needs a complete sentence on each side, a period would leave a fragment, and \"which\" makes the list a broken clause." },
   { skill: "Boundaries", domain: SEC, stem: STD, d: "E",
+    id: "r1402c617",
     passage: "The museum's oldest ______ drawn in 1573, shows the coastline as a single unbroken curve.",
     right: "map, which was", wrong: ["map, it was", "map which was", "map was"],
     why: "\"Which was drawn in 1573\" is extra information about the map, so it needs commas on both sides; the comma after \"1573\" is already there. \"It was\" would splice two sentences, and without the first comma the clause is not set off." },
   { skill: "Boundaries", domain: SEC, stem: STD, d: "M",
+    id: "rf86dbd04",
     passage: "The team repeated its trial in a cooler room. The readings still varied ______ the researchers replaced the sensor before collecting more data.",
     right: "widely, so", wrong: ["widely, then", "widely; so that", "widely so,"],
     why: "Read each side on its own: the readings varied widely, and the researchers replaced the sensor. A comma before the coordinating conjunction \"so\" joins those clauses and shows the reason for the replacement. A comma before \"then\" alone cannot join them." },
@@ -88,10 +91,12 @@ export const RW_MORE2: Item[] = [
     right: "island;", wrong: ["island,", "island that", "island, and,"],
     why: "A semicolon can join two complete sentences. A comma alone splices them, \"that\" makes the second clause a broken fragment, and \"and,\" with an extra comma is not standard punctuation." },
   { skill: "Boundaries", domain: SEC, stem: STD, d: "M",
+    id: "r8e3cc2c0",
     passage: "Dr. Okafor's research on how birds navigate over open ______ a surprising role for smell.",
     right: "water reveals", wrong: ["water, reveals", "water; reveals", "water, and reveals"],
     why: "A comma, semicolon or \"and\" should not separate the subject (\"research\") from its verb (\"reveals\"). The sentence needs no punctuation there." },
   { skill: "Boundaries", domain: SEC, stem: STD, d: "H",
+    id: "r8b2b0217",
     passage: "The village's single bakery—a tiny shop with a wood-fired ______ bread to the entire valley.",
     right: "oven—supplies", wrong: ["oven, supplies", "oven; supplies", "oven: supplies"],
     why: "Take out the description between dashes and the core sentence reads: the bakery supplies bread. The second dash marks where that description ends and the main verb resumes." },
@@ -129,6 +134,7 @@ export const RW_MORE2: Item[] = [
     wrong: ["Students who practiced in short daily sessions said they enjoyed studying more.", "Students who practiced for one hour in a single sitting covered more words in that session.", "Students who practiced in short daily sessions spent more total hours studying."],
     why: "The claim is about retention after a delay, and only the right choice measures it for both schedules. Enjoyment and the number of words covered do not measure retention, and more total hours would be another explanation for better results." },
   { skill: "Command of Evidence", domain: II, stem: "Which finding, if true, would most directly weaken the official's argument?", d: "M",
+    id: "rddc0a527",
     passage: "Morning trips on Harbor Street became shorter in the month after a bus lane opened. A city official argues that the bus lane accounts for the improvement.",
     right: "Commute times along nearby streets without bus lanes fell by the same amount over the same period.",
     wrong: ["Bus ridership along Harbor Street increased after the lane opened.", "On Harbor Street, buses spent less time waiting behind cars after the lane opened.", "Bus riders on Harbor Street reported shorter trips in the month after the lane opened."],
@@ -139,6 +145,7 @@ export const RW_MORE2: Item[] = [
     wrong: ["\"The house stood at the end of Cobb Lane, three stories of gray stone under a slate roof.\"", "\"My mother kept the kitchen warm all winter, and neighbors often stopped by for bread.\"", "\"When the house was finally sold, I did not attend the closing.\""],
     why: "Only the right choice shows both fondness (\"loved them\") and confinement (\"wishing the glass were not there\"). The others describe the house, show warmth only, or show distance only." },
   { skill: "Command of Evidence", domain: II, stem: "Which choice uses the data to support both parts of the student's argument?", d: "H",
+    id: "rdbc06d83",
     passage: "A student spent the same amount of time surveying birds in each of five parks. The parks measured 4, 10, 25, 60, and 110 hectares. In order from smallest to largest park, the student counted 18, 27, 34, 31, and 52 species. The student argues that the counts generally rose with park area, although the pattern had an exception.",
     right: "The count rose from 18 to 52 between the smallest and largest parks, but it dropped from 34 to 31 between the 25- and 60-hectare parks.",
     wrong: ["The smallest park had 18 species and the largest had 52, so every increase in park area coincided with an increase in the count.", "The 25-hectare park had 34 species and the 60-hectare park had 31, showing that counts generally fell as parks grew larger.", "The count rose from 18 to 27 and then to 34 in the smallest three parks, and the largest park had the highest count."],

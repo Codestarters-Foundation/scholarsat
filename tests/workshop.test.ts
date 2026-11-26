@@ -17,7 +17,9 @@ function numeric(s:string) {
 test("all 29 skills gain 200 unique playable exercises without altering earlier attempts",()=>{
   const earlier = bank.filter(q=>q.collection!=="skill-workshop");
   assert.equal(earlier.length,3317);
-  assert.equal(createHash("sha256").update(JSON.stringify(earlier)).digest("hex"),"13cc6f2af459c19edaad4a9312e9005adbe4a947831a0ffdf65ee41abb981d72");
+  const digest = (value: unknown) => createHash("sha256").update(JSON.stringify(value)).digest("hex");
+  assert.equal(digest(earlier.filter(q => !q.collection)), "a77141d35d1dc2912efa70aba29257e8ab0aa7a7f89006d28aa7f8c35dc25ccd");
+  assert.equal(digest(earlier.filter(q => q.collection === "november-set").map(q => [q.id, q.answer])), "53f0f1de6d4df680229204ecd10dd988a8d2937e8a2939adb9c82fb78c27b7af");
   const seen = new Set(earlier.map(surface));
   assert.equal(added.length,5800);
   for (const [section, domains] of Object.entries(TAXONOMY))
@@ -27,6 +29,7 @@ test("all 29 skills gain 200 unique playable exercises without altering earlier 
     assert.ok(!seen.has(surface(q)),q.id+" duplicate visible question"); seen.add(surface(q));
     assert.doesNotMatch(JSON.stringify(q),/undefined|NaN|Infinity/);
     assert.ok(q.explanation.length>35,q.id);
+    if (q.type==="spr" && /^\d+$/.test(q.answer)) assert.ok(q.answer.length<=5,q.id);
     if (q.type==="mcq") {
       assert.match(q.answer,/^[A-D]$/);
       assert.equal(new Set(q.choices!.map(s=>s.toLowerCase().trim())).size,4,q.id);
@@ -58,7 +61,7 @@ test("reconstruct every numerical math key and reject equivalent distractors",()
       [n,k*2+1,n,k*a],[k,(k+5*a)+2*((k+5*a)-(k+2*a))/3,k+5*a,n+a*(b+4)],
       [n-b,n,b,n+a*b],[n,k+a*b,n,b*a],[n,n,n+1,b+1],
       [n+a,a*b-k,k,2*a*n],[n,(a+b)**2-k,k,k*k],[n*2**3,k+a,n*625*.8**2,(a+2)**2-(a+1)**2],
-      [n*a,n*a/2*1000,n*a,k*a],[n*100,a,100*n*1.2*.75,n*a],
+      [n*a,n*a/10*1000,n*a,k*a],[n*100,a,100*n*1.2*.75,n*a],
       [5*n-((n-4)+(n-2)+(n+1)+(n+2)),(n+3+n+6)/2,(b*n+2*b*(n+6))/(3*b),2*(n-b)],
       [i%11-5,3*a,n+a*b,a],[b/(n+b),n/(n+a-1),(3*n-b)/(4*n),1-(b+a)/(3*n)],
       [n+12+a,2*b,n*(a+b),n+a],[],[a*b*n,(2*a)**2*n/3,(n+2)*(a+2)-n*a,3*n],

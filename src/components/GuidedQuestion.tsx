@@ -36,7 +36,13 @@ export function GuidedQuestion({ q, planFirst = false }: { q: PublicQuestion; pl
   return <div className="guided-spread">
     <section className="exercise-sheet" aria-labelledby="exercise-skill">
       <header><h2 id="exercise-skill">{q.skill}</h2><DiffBadge d={q.difficulty} /></header>
-      <a className="exercise-hint-link" href="#question-tutor" onClick={()=>help.current?.querySelector<HTMLButtonElement>("button[data-ask]:enabled")?.click()}>{result ? "Explore the explanation" : "Get a hint"} <IArrowR /></a>
+      <a className="exercise-hint-link" href="#question-tutor" onClick={() => {
+        const panel = help.current?.querySelector("details");
+        if (panel) {
+          panel.open = true;
+          panel.querySelector<HTMLButtonElement>("button[data-ask]:enabled")?.click();
+        }
+      }}>{result ? "Explore the explanation" : "Get a hint"} <IArrowR /></a>
       <Passage q={q} /><Rich className="exercise-stem" text={q.stem} />
       {q.type === "mcq"
         ? <Choices q={q} selected={response} onSelect={setResponse} disabled={!!result || busy} reveal={result} />

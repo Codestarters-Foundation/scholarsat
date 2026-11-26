@@ -3,6 +3,7 @@
 import type { Difficulty, Table } from "../src/lib/types";
 
 export type MathItem = {
+  id?: string;
   domain: string; skill: string; d: Difficulty;
   stem: string; table?: Table;
   /** mcq: right + 3 wrong; spr: only `answer` */
@@ -78,6 +79,7 @@ export const MATH_MORE2: MathItem[] = [
     why: `Set the expressions equal: ${m("x^2 - 5x + 4 = 0")}, so ${m("x = 1")} or ${m("x = 4")}. At ${m("x = 4")}, ${m("y = 3")}. Each other pair fails the first equation.`,
     check: { value: 1, of: (c) => { const [x, y] = (c.match(/-?\d+/g) ?? []).map(Number); return y === x * x - 4 * x + 3 && y === x - 1 ? 1 : 0; } } },
   { domain: AM, skill: "Nonlinear functions", d: "M",
+    id: "mddb5460e",
     stem: `A bacterial culture doubles every 3 hours. It contains 500 bacteria at ${m("t = 0")}. Which function gives the number of bacteria ${m("t")} hours later?`,
     right: m("500(2)^{t/3}"), wrong: [m("500(2)^{3t}"), m("500(3)^{t/2}"), m("1000(2)^{t/3}")],
     why: `Doubling every 3 hours means the exponent grows by 1 for every 3 hours, so ${m("500(2)^{t/3}")}. At ${m("t = 3")} it equals 1000. The other choices give the wrong starting value or the wrong growth rate.`,

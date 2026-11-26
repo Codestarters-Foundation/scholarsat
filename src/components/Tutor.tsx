@@ -9,13 +9,13 @@ import {
   type ReactNode,
 } from "react";
 
+import { useAiConfig } from "@/lib/use-ai-config";
 import { AiAsk } from "./AiAsk";
 import { TUTOR_SYSTEM } from "@/lib/ai-prompts";
 import { IArrowR, ICheck, IChevD, IKey, ILink, ISparkle } from "./icons";
 import "./study-connection.css";
 
 const Credentials = createContext<{
-  chosen: boolean;
   mode: string;
   setMode: (mode: string) => void;
   key: string;
@@ -25,22 +25,22 @@ const Credentials = createContext<{
 export function useTutorConnection() { return useContext(Credentials)!; }
 
 export function TutorSession({ children }: { children: ReactNode }) {
-  const [chosen, setChosen] = useState(false);
-  const [mode, updateMode] = useState("plan");
+  const config = useAiConfig();
+  const [preference, updateMode] = useState<string | null>(null);
+  const mode = preference ?? (config ? "provider" : "plan");
   useEffect(() => {
     try {
       const saved = sessionStorage.getItem("ss_tutor_mode");
-      if (saved && ["plan", "key", "provider"].includes(saved)) { updateMode(saved); setChosen(true); }
+      if (saved && ["plan", "key", "provider"].includes(saved)) updateMode(saved);
     } catch { /* Private browsing can disable storage. */ }
   }, []);
   const setMode = useCallback((value: string) => {
     updateMode(value);
-    setChosen(true);
     try { sessionStorage.setItem("ss_tutor_mode", value); } catch { /* Tab state still works. */ }
   },[]);
   const [key, setKey] = useState("");
   return (
-    <Credentials.Provider value={{ chosen, mode, setMode, key, setKey }}>
+    <Credentials.Provider value={{ mode, setMode, key, setKey }}>
       {children}
     </Credentials.Provider>
   );
@@ -133,7 +133,7 @@ export function Tutor({ item, hint = false, expanded = false, providerPrompt }: 
         </label>
         <div className="connection-view" key={mode}>
           {mode === "provider" && providerPrompt ? <AiAsk label={askLabel} system={TUTOR_SYSTEM} prompt={providerPrompt}/> : <>
-            <p className="connection-note">{mode === "key" ? "Your key stays in this tab. Each request uses your OpenAI API billing." : connected ? "Hints and explanations use your connected ChatGPT plan." : waiting ? "Finish signing in to OpenAI in the other tab, then return to this exercise." : "Sign in with OpenAI to use your ChatGPT plan for hints and explanations."}</p>
+            <p className="connection-note">{mode === "key" ? "This tab holds your key in memory. ScholarSAT forwards it to OpenAI when you ask for help. OpenAI API billing applies." : connected ? "Hints and explanations use your connected ChatGPT plan." : waiting ? "Finish signing in to OpenAI in the other tab, then return to this exercise." : "Sign in with OpenAI to use your ChatGPT plan for hints and explanations."}</p>
             {mode === "key" && <label className="connection-key">OpenAI API key<input type="password" autoComplete="off" spellCheck={false} value={key} onChange={e=>setKey(e.target.value)}/></label>}
             {mode === "plan" && !connected ? connectionError ? <button onClick={refresh}>Retry connection check</button> : connected !== null && (localTab ?
               <form method="POST" action="/api/study/connect" target="_blank" rel="noopener" onSubmit={()=>{ setMode("plan"); setWaiting(true); }}>

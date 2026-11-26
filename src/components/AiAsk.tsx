@@ -85,6 +85,7 @@ function AiAskInner({ label, system, prompt }: { label: string; system: string; 
     ) : (
       <button
         type="button"
+        data-ask
         onClick={() => setSetup(true)}
         className="inline-flex items-center gap-1.5 text-left text-xs text-muted transition-colors hover:text-red"
       >
@@ -101,7 +102,7 @@ function AiAskInner({ label, system, prompt }: { label: string; system: string; 
             Stop
           </Button>
         ) : (
-          <Button type="button" variant="secondary" size="sm" onClick={run}>
+          <Button type="button" variant="secondary" size="sm" data-ask onClick={run}>
             <ISparkle className="h-4 w-4" /> {state === "done" || state === "error" ? "Ask again" : label}
           </Button>
         )}

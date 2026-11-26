@@ -47,14 +47,32 @@ async function run() {
     await page.getByRole("link",{name:/Open the AI tutor/}).click();
     await page.getByText("Connected",{exact:true}).waitFor();
     // Annotated lessons must honor the same plan, without asking the learner for a separate provider key.
-    await page.goto("/practice/play?ids=m56bc0dd7");
+    let lessonRequests = 0;
+    page.on("request", request => {
+      if (request.url().endsWith("/api/study/tutor") && request.postDataJSON()?.task === "lesson") lessonRequests++;
+    });
+    await page.goto("/practice/play?ids=m56bc0dd7,r5f0e707a");
     await page.locator(".study-tutor summary").click();
     await page.getByLabel("Connection",{exact:true}).selectOption("plan");
+    let releaseGrade;
+    const gradeGate = new Promise(resolve => { releaseGrade = resolve; });
+    await page.route("**/api/attempt", async route => {
+      await gradeGate;
+      await route.continue();
+    });
     await page.getByLabel("Your answer").fill("8");
     await page.getByRole("button",{name:"Check",exact:true}).click();
+    await page.getByRole("button",{name:"Checking…"}).waitFor();
+    assert.equal(await page.getByLabel("Your answer").isDisabled(),true);
+    releaseGrade();
     await page.getByRole("button",{name:"Annotated AI lesson"}).click();
     await page.getByText("Check the constant term first.").waitFor();
-    await page.getByRole("button",{name:"Close tutor",exact:true}).last().click();
+    await page.locator("footer").getByRole("button",{name:"Next",exact:true}).click();
+    await page.getByText("Question 2 of 2",{exact:true}).waitFor();
+    await page.locator("footer").getByRole("button",{name:"Back",exact:true}).click();
+    await page.getByRole("button",{name:"Annotated AI lesson"}).waitFor();
+    assert.equal(await page.getByRole("region",{name:"Tutor",exact:true}).count(),0);
+    assert.equal(lessonRequests,1);
     await page.goto("/tutor?connection=plan");
     await page.getByRole("button",{name:"Disconnect ChatGPT"}).click();
     await page.getByRole("button",{name:"Continue with ChatGPT"}).waitFor();

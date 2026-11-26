@@ -56,6 +56,9 @@ const verify = async () => {
     await page.getByText("Question 25 of 200",{exact:true}).waitFor();
     await page.goto("/tutor?section=math");
     const tutor = page.locator(".guided-margin .tutor");
+    await tutor.locator("summary").click();
+    await page.getByRole("link",{name:"Get a hint"}).click();
+    await tutor.getByLabel("Connection").waitFor();
     await tutor.getByLabel("Connection").selectOption("key");
     assert.ok(await tutor.getByRole("button", {name:"Give me a hint"}).isDisabled());
     await tutor.getByLabel("Connection").selectOption("provider");

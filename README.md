@@ -36,7 +36,7 @@ and a mascot who judges your wrong answers. Open source, MIT licensed, and free 
 
 SAT prep shouldn't depend on what your family can afford. The good platforms charge hundreds of dollars, and the free ones are usually a PDF and good luck.
 
-ScholarSAT is a full prep platform, not a teaser for a paid one. Every question, every mock test, every feature is unlocked for everyone, and the whole thing is open source so anyone can read it, improve it, or run their own copy for a school or club.
+ScholarSAT is a full prep platform, not a teaser for a paid one. Every question and mock test is free. The optional AI tutor uses each student’s own connection. Anyone can read the source, improve it, or run a copy for a school or club.
 
 It is built by [**CodeStarters**](https://codestarters.org), a student-led nonprofit that makes computer science and AI accessible to every young student.
 
@@ -44,19 +44,19 @@ It is built by [**CodeStarters**](https://codestarters.org), a student-led nonpr
 
 | | |
 |---|---|
-| **3,317** | original practice questions: **2,878** Math and **439** Reading & Writing |
+| **9,117** | practice questions, including **6,678** Math and **2,439** Reading & Writing |
 | **29** | skills across **8** domains, covering the digital SAT's published structure |
-| **1,705 / 1,497** | multiple-choice and student-produced-response (type-in) questions |
-| **1,079 / 1,159 / 964** | easy, medium, and hard questions |
+| **4,533 / 4,584** | multiple-choice and student-produced-response (type-in) questions |
+| **1,928 / 4,847 / 2,342** | easy, medium, and hard questions |
 | **98** | questions in a full mock test: 4 timed modules, **2h 14m**, module 2 adapts to module 1 |
 | **979** | vocabulary words: 638 classic hard words plus 341 everyday words used in the senses the SAT tests |
-| **$0** | what any of it costs, forever |
+| **$0** | to use ScholarSAT practice, mock tests, and written explanations |
 
 ## A quick tour
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/question-bank.png" alt="Question bank" /><br /><sub><b>Question bank.</b> Pick a skill, see your accuracy ring, practice a skill, a whole domain, or any mix you tick.</sub></td>
+    <td width="50%"><img src="docs/screenshots/question-bank.png" alt="Skill selection in Practice" /><br /><sub><b>Practice.</b> Choose a subject, open a topic, and practice one skill or a set of your own.</sub></td>
     <td width="50%"><img src="docs/screenshots/practice-feedback.png" alt="Answer feedback with crowd percentages" /><br /><sub><b>Answer feedback.</b> Right and wrong are obvious, plus what share of other students picked each choice, and a worked explanation.</sub></td>
   </tr>
   <tr>
@@ -79,7 +79,7 @@ It is built by [**CodeStarters**](https://codestarters.org), a student-led nonpr
 ## ✨ Features
 
 **Practice**
-- **Question bank** with every domain and skill on the digital SAT. Filter by skill, difficulty, and your own history (unanswered, missed, saved). Practice one skill, a whole domain, or a custom mix.
+- **Practice** covers every domain and skill on the digital SAT. Filter by skill, difficulty, and your own history (unanswered, missed, saved). Practice one skill, a whole domain, or a custom mix.
 - **Full-screen practice player** with a question list, per-question timer, answer elimination, a math reference sheet, an optional embedded Desmos calculator, and keyboard shortcuts (`A`–`D`, `Enter`, arrows).
 - **Crowd stats after every answer.** See what percentage of students chose each option, so you can tell a trap answer from a common mistake.
 - **Type-in answers that accept any equivalent form.** `1/2`, `.5`, and `0.5` are all correct.
@@ -271,7 +271,7 @@ Found a vulnerability? Please don't open a public issue. Contact the maintainers
 This project gets better one question at a time, and you don't need to be a developer to help.
 
 **Add questions.**
-- *Reading & Writing:* add frames or passages to [`scripts/rw-conventions.ts`](scripts/rw-conventions.ts) or [`scripts/rw-reading.ts`](scripts/rw-reading.ts). The R&W bank (439 questions) is the smaller side and the best place to make a big difference.
+- *Reading & Writing:* add frames or passages to [`scripts/rw-conventions.ts`](scripts/rw-conventions.ts) or [`scripts/rw-reading.ts`](scripts/rw-reading.ts). The workshop also includes original passages and parallel exercises in the workshop generators.
 - *Math:* add a template to [`scripts/gen-math.ts`](scripts/gen-math.ts). Compute the answer in code, and compute the wrong choices from realistic mistakes.
 - Run `npm run bank`, look at the new questions in the app, and open a PR.
 
@@ -314,7 +314,7 @@ Not promises, just good places to start if you want to build something:
 
 **How accurate is the predicted score?** It's an estimate from your accuracy on ScholarSAT questions. Use it to track direction, not to predict test day to the point.
 
-**Do I need an account?** No. You can practice from the question bank right away. An account adds progress tracking, saved questions, mistake review, mock tests, and your study plan.
+**Do I need an account?** No. You can open Practice right away. An account adds progress tracking, saved questions, mistake review, mock tests, and your study plan.
 
 **Can I run it for my school?** Please do. It's MIT licensed, runs on a small server, and has no external dependencies.
 

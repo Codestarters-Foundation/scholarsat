@@ -11,6 +11,7 @@ import { Rich } from "./Rich";
 import { Logo } from "./Logo";
 import { Owl } from "./Owl";
 import { TeachButton } from "./tutor/TeachButton";
+import { setTutorOpen } from "@/lib/tutor-store";
 import { TutorTray } from "./tutor/TutorTray";
 import { Button, DiffBadge, EmptyState, LinkButton } from "./ui";
 import { IArrowL, IArrowR, IBookmark, ICalc, ICheckCircle, IFormula, IList, IStrike, IX, IXCircle } from "./icons";
@@ -61,7 +62,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
   useEffect(() => {
     const controller = new AbortController();
     if(n) void load(idx,controller.signal);
-    return () => controller.abort();
+    return () => { controller.abort(); setTutorOpen(null); };
   },[idx,n,load,retry]);
 
   useEffect(() => {
@@ -102,7 +103,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.defaultPrevented || (e.target instanceof Element && e.target.closest("button, a, summary, textarea"))) return;
+      if (busy || e.defaultPrevented || (e.target instanceof Element && e.target.closest("button, a, summary, textarea"))) return;
       if ((e.target as HTMLElement)?.tagName === "INPUT") {
         if (e.key === "Enter") {
           if (result) next();
@@ -239,10 +240,10 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
                       : undefined
                   }
                   reveal={result ? { answer: result.answer, dist: result.dist } : null}
-                  disabled={!!result}
+                  disabled={!!result || busy}
                 />
               ) : (
-                <SprInput value={resp} onChange={setResp} disabled={!!result} reveal={result ? { answer: result.answer, correct: result.correct } : null} />
+                <SprInput value={resp} onChange={setResp} disabled={!!result || busy} reveal={result ? { answer: result.answer, correct: result.correct } : null} />
               )}
 
               {!result && <Tutor key={q.id + "-hint"} item={q.id} hint providerPrompt={questionHintPrompt(q)} />}

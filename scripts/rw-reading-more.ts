@@ -6,7 +6,7 @@
  *  changes the answer order of any other question. */
 import type { ReadingItem } from "./rw-reading";
 
-export type SynthItem = { notes: string[]; goal: string; right: string; wrong: string[]; why: string; d: ReadingItem["d"] };
+export type SynthItem = { id?: string; notes: string[]; goal: string; right: string; wrong: string[]; why: string; d: ReadingItem["d"] };
 
 /** Notes + a goal → the sentence that best does the job. Each wrong choice is accurate or plausible but misses the goal. */
 export const SYNTH_MORE: SynthItem[] = [
@@ -45,6 +45,7 @@ export const SYNTH_MORE: SynthItem[] = [
     d: "M",
   },
   {
+    id: "r9a096277",
     notes: [
       "Suspension bridges hang their roadways from cables strung between tall towers.",
       "Arch bridges carry loads through a curved structure that pushes outward at its ends.",
@@ -205,7 +206,7 @@ export const CROSS_MORE: ReadingItem[] = [
 ];
 
 /** Text Structure and Purpose. */
-export const PURPOSE_MORE: ReadingItem[] = [
+export const PURPOSE_MORE: (ReadingItem & { id?: string })[] = [
   {
     passage: "Many people assume that the loudest sounds in a forest come from its largest animals. Yet researchers who recorded a woodland at dawn found that the most intense sounds came from insects no longer than a thumbnail. These insects produce sound by vibrating a drum-like membrane on their abdomens, a method that is far more efficient than a mammal's vocal cords.",
     stem: "Which choice best describes the function of the second sentence in the text as a whole?",
@@ -219,6 +220,7 @@ export const PURPOSE_MORE: ReadingItem[] = [
     d: "M",
   },
   {
+    id: "rd1c4bc91",
     passage: "The following passage is from an original short story.\nWhen the ferry finally docked, Mireille did not hurry to the gangway as the other passengers did. She stayed where she was, her suitcase between her feet, and watched strangers embrace on the pier. For weeks she had rehearsed this arrival—what she would say, how she would stand—but now every sentence seemed to have left her. When a porter asked whether she needed help, she heard herself answer, a little too brightly, that she was only waiting for someone.",
     stem: "Which choice best states the main purpose of the text?",
     right: "To convey a character's nervousness by contrasting her careful preparation with her behavior on arrival.",
