@@ -5,29 +5,46 @@ import {
   useCallback,
   useEffect,
   useState,
+  useRef,
   type ReactNode,
 } from "react";
 
+import { AiAsk } from "./AiAsk";
+import { TUTOR_SYSTEM } from "@/lib/ai-prompts";
+import { IChevD, ISparkle } from "./icons";
+
 const Credentials = createContext<{
+  local: boolean;
   mode: string;
   setMode: (mode: string) => void;
   key: string;
   setKey: (key: string) => void;
 } | null>(null);
 
-export function TutorSession({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState("plan");
+export function TutorSession({ children, local }: { children: ReactNode; local: boolean }) {
+  const [mode, updateMode] = useState(local ? "local" : "plan");
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem("ss_tutor_mode");
+      if (saved && ["plan", "key", "provider", ...(local ? ["local"] : [])].includes(saved)) updateMode(saved);
+    } catch { /* Private browsing can disable storage. */ }
+  }, [local]);
+  function setMode(value: string) {
+    updateMode(value);
+    try { sessionStorage.setItem("ss_tutor_mode", value); } catch { /* Tab state still works. */ }
+  }
   const [key, setKey] = useState("");
   return (
-    <Credentials.Provider value={{ mode, setMode, key, setKey }}>
+    <Credentials.Provider value={{ local, mode, setMode, key, setKey }}>
       {children}
     </Credentials.Provider>
   );
 }
 
-export function Tutor({ item }: { item: string }) {
-  const [open, setOpen] = useState(false);
-  const { mode, setMode, key, setKey } = useContext(Credentials)!;
+export function Tutor({ item, hint = false, expanded = false, providerPrompt }: { item: string; hint?: boolean; expanded?: boolean; providerPrompt?: string }) {
+  const [open, setOpen] = useState(expanded);
+  const { local, mode: preferredMode, setMode, key, setKey } = useContext(Credentials)!;
+  const mode = preferredMode === "provider" && !providerPrompt ? (local ? "local" : "plan") : preferredMode;
   const [connected, setConnected] = useState(false);
   const [origin, setOrigin] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -48,16 +65,23 @@ export function Tutor({ item }: { item: string }) {
     void refresh();
     window.addEventListener("focus", refresh);
     return () => window.removeEventListener("focus", refresh);
-  }, [open, refresh]);
+  }, [open, mode, refresh]);
+  const pending = useRef<AbortController | null>(null);
+  useEffect(() => () => pending.current?.abort(), []);
   async function explain() {
+    if (pending.current) return;
+    const controller = new AbortController();
+    pending.current = controller;
     setBusy(true);
     setMessage("");
     try {
       const response = await fetch("/api/study/tutor", {
         method: "POST",
+        signal: controller.signal,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           item,
+          task: hint ? "hint" : "explain",
           mode,
           key: mode === "key" ? key : undefined,
         }),
@@ -66,16 +90,18 @@ export function Tutor({ item }: { item: string }) {
       setMessage(response.ok ? data.explanation : data.error);
       if (response.status === 401) await refresh();
     } catch {
-      setMessage("Could not reach the tutor. Try again.");
+      if (!controller.signal.aborted) setMessage("Could not reach the tutor. Try again.");
     } finally {
-      setBusy(false);
+      pending.current = null;
+      if (!controller.signal.aborted) setBusy(false);
     }
   }
   return (
-    <details className="tutor" onToggle={(e) => setOpen(e.currentTarget.open)}>
-      <summary>Ask the AI tutor</summary>
+    <details className="tutor" open={open} onToggle={e => setOpen(e.currentTarget.open)} onKeyDown={e => e.stopPropagation()}>
+      <summary><ISparkle /> AI tutor <IChevD /></summary>
+      <div className="tutor-body">
       <label>
-        Use{" "}
+        Connection{" "}
         <select
           value={mode}
           disabled={busy}
@@ -84,11 +110,18 @@ export function Tutor({ item }: { item: string }) {
             setMessage("");
           }}
         >
+          {local && <option value="local">Local model</option>}
           <option value="plan">My ChatGPT plan</option>
           <option value="key">My OpenAI API key</option>
+          {providerPrompt && <option value="provider">Other AI providers</option>}
         </select>
       </label>
-      {mode === "key" ? (
+      {mode === "provider" && providerPrompt ? <AiAsk label={hint ? "Give me a hint" : "Explain this answer"} system={TUTOR_SYSTEM} prompt={providerPrompt} /> : mode === "local" ? (
+        connected ? <button onClick={() => setMode("plan")}>Use my connected ChatGPT plan</button>
+          : origin && origin === window.location.origin ? <form method="POST" action="/api/study/connect" target="_blank" onSubmit={() => setMode("plan")}>
+              <button>Continue with ChatGPT</button>
+            </form> : origin ? <a href={origin + "/tutor"}>Link my ChatGPT plan</a> : null
+      ) : mode === "key" ? (
         <label>
           OpenAI API key
           <input
@@ -126,8 +159,8 @@ export function Tutor({ item }: { item: string }) {
         </form>
       ) : (
         <p>
-          {origin ? (
-            <a href={origin + "/vocab"}>
+          {origin && typeof window !== "undefined" ? (
+            <a href={origin + window.location.pathname + window.location.search}>
               Open the local preview to connect ChatGPT
             </a>
           ) : (
@@ -135,21 +168,20 @@ export function Tutor({ item }: { item: string }) {
           )}
         </p>
       )}
-      <p>
-        {mode === "key"
-          ? "Your key stays in this tab until you reload or clear it. It is forwarded to OpenAI when you ask. Standard API charges apply."
-          : "An explanation uses your connected ChatGPT plan allowance."}{" "}
-        Only the exercise is sent.
-      </p>
+      {mode !== "provider" && <><p>{mode === "local" ? "Runs on this computer. No account or credits needed." : mode === "key"
+        ? "Your key stays in this tab. Asking sends the exercise to OpenAI and uses API billing."
+        : "Asking sends the exercise to OpenAI and uses your connected plan."}</p>
       <button
-        disabled={busy || (mode === "plan" ? !connected : !key.trim())}
+        className="tutor-ask"
+        disabled={busy || (mode === "plan" && !connected) || (mode === "key" && !key.trim())}
         onClick={explain}
       >
-        {busy ? "Asking OpenAI…" : "Explain this answer"}
-      </button>
+        {busy ? "Thinking…" : hint ? "Give me a hint" : "Explain this answer"}
+      </button></>}
       <p role="status" className="whitespace-pre-line">
         {message}
       </p>
+      </div>
     </details>
   );
 }

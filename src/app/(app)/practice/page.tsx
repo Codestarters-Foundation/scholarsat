@@ -5,15 +5,17 @@ import { userStats } from "@/lib/stats";
 import type { Difficulty } from "@/lib/types";
 import { PracticeFilters, type SkillInfo } from "@/components/PracticeFilters";
 
-export const metadata: Metadata = { title: "Question Bank" };
+export const metadata: Metadata = { title: "Practice" };
 
-export default async function PracticePage({ searchParams }: { searchParams: Promise<{ section?: string }> }) {
+export default async function PracticePage({ searchParams }: { searchParams: Promise<{ section?: string; topic?: string }> }) {
   const sp = await searchParams;
   const user = await getUser();
   const stats = user ? userStats(user.id) : null;
 
+  const newCounts = { math: 0, rw: 0 };
   const skills: Record<string, SkillInfo> = {};
   for (const q of QUESTIONS) {
+    if (q.collection === "november-set") newCounts[q.section]++;
     const s = (skills[q.skill] ??= { total: 0, byDiff: { E: 0, M: 0, H: 0 } as Record<Difficulty, number>, answered: 0, correct: 0, wrong: 0 });
     s.total++;
     s.byDiff[q.difficulty]++;
@@ -28,6 +30,6 @@ export default async function PracticePage({ searchParams }: { searchParams: Pro
   }
 
   return (
-    <PracticeFilters initialSection={sp.section === "rw" ? "rw" : "math"} skills={skills} />
+    <PracticeFilters key={sp.section === "rw" ? "rw" : "math"} section={sp.section === "rw" ? "rw" : "math"} topic={sp.topic} newCounts={newCounts} skills={skills} />
   );
 }

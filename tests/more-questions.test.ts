@@ -1,6 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { generateRWMore2, generateMathMore2 } from "../scripts/gen-more2";
+import bank from "../src/data/questions.json";
+import { generateRWMore } from "../scripts/gen-rw-more";
 import { RW_MORE2 } from "../scripts/rw-more2";
 import { MATH_MORE2 } from "../scripts/math-more2";
 import { VOCAB_MORE } from "../src/data/vocab-more";
@@ -10,6 +12,11 @@ import { TAXONOMY } from "../src/lib/types";
 const rw = generateRWMore2();
 const math = generateMathMore2();
 const known = (section: "rw" | "math") => new Set(TAXONOMY[section].flatMap((d) => d.skills.map((s) => d.domain + "|" + s)));
+
+test("the built practice bank includes the extra reading and math sets", () => {
+  const ids = new Set(bank.filter(q => "collection" in q && q.collection === "november-set").map(q => q.id));
+  for (const q of [...generateRWMore(), ...rw, ...math]) assert.ok(ids.has(q.id), q.id);
+});
 
 test("30 reading and writing + 30 math questions, with unique ids", () => {
   assert.equal(rw.length, 30);

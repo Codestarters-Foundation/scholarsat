@@ -2,18 +2,23 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type CSSProperties } from "react";
-import { IBook, ICards, IChart, IExam, IHome, ILink, IMenu, IRefresh, IX } from "./icons";
+import { IBook, ICards, IChart, IExam, IHome, ISparkle, IMenu, IRefresh, IX } from "./icons";
 import { Logo } from "./Logo";
 
 const LINKS = [
   { href: "/dashboard", label: "Home", Icon: IHome },
-  { href: "/practice", label: "Question Bank", Icon: IBook },
+  { href: "/practice", label: "Practice", Icon: IBook },
+  { href: "/tutor", label: "AI tutor", Icon: ISparkle },
   { href: "/tests", label: "Practice Tests", Icon: IExam },
   { href: "/review", label: "Review", Icon: IRefresh },
   { href: "/diagnostics", label: "Diagnostics", Icon: IChart },
   { href: "/vocab", label: "Vocab", Icon: ICards },
-  { href: "/resources", label: "Resources", Icon: ILink },
 ];
+
+export function WorkspaceSkipLink() {
+  const practice = usePathname() === "/practice";
+  return <a className="workspace-skip" href={practice ? "#practice-skills" : "#workspace-content"}>{practice ? "Skip to practice" : "Skip to content"}</a>;
+}
 
 export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const path = usePathname();

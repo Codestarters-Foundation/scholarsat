@@ -53,7 +53,7 @@ export function StudyDesk({ counts, total, modules, signedIn, response, solved }
     {
       front: <section className="press-page" aria-labelledby="tools-title"><h3 id="tools-title">Study tools</h3>
         {response && <p className="answer-imprint"><span>{solved ? "Correct answer" : "Your answer"}</span> {response}</p>}
-        <div className="review-links">{[["Mistake review","/review"],["Skill diagnostics","/diagnostics"],["Vocabulary","/vocab"]].map(([label,href]) =>
+        <div className="review-links">{[["AI tutor","/tutor"],["Mistake review","/review"],["Skill diagnostics","/diagnostics"],["Vocabulary","/vocab"]].map(([label,href]) =>
           <Link href={href} key={href}>{label}<span aria-hidden="true">↗</span></Link>)}</div>
         <Link className="page-foot" href="/#passage">{response ? (solved ? "Review your answer" : "Retry the passage") : "Try the lunar passage"} <span>↗</span></Link>
       </section>,
@@ -61,9 +61,9 @@ export function StudyDesk({ counts, total, modules, signedIn, response, solved }
         <div className="end-orbit" aria-hidden="true"/>
         <div className="end-title"><h3>ScholarSAT</h3>{destination && <p>{destination.selected} · {destination.n} questions</p>}</div>
         <Link className="press-action" href={destination?.href ?? (signedIn ? "/dashboard" : questionBankSession)}>
-          {destination ? "Start my set" : signedIn ? "Open my dashboard" : "Open the question bank"} <span>↗</span>
+          {destination ? "Start my set" : signedIn ? "Open my dashboard" : "Start practicing"} <span>↗</span>
         </Link>
-        {destination && <Link className="end-bank" href={questionBankSession}>Open the question bank</Link>}
+        {destination && <Link className="end-bank" href={questionBankSession}>Start practicing</Link>}
       </section>,
     },
   ];

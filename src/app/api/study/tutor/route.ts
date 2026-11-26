@@ -1,7 +1,7 @@
-import { BY_ID } from "@/lib/bank";
+import { BY_ID, toPublic } from "@/lib/bank";
 import { lessons } from "@/data/context-lessons";
 import { bad, json, rateLimit, clientIp } from "@/lib/http";
-import { planToken, resource } from "@/lib/study-connect";
+import { localOrigin, planToken, resource } from "@/lib/study-connect";
 
 export async function POST(req: Request) {
   const origin = req.headers.get("origin") ?? "";
@@ -17,12 +17,42 @@ export async function POST(req: Request) {
   if (
     !body ||
     typeof body.item !== "string" ||
-    !["key", "plan"].includes(body.mode)
+    !["key", "plan", "local"].includes(body.mode)
   )
     return bad("Choose a passage and an AI connection.");
   const q = BY_ID.get(body.item);
   const lesson = lessons.find((l) => "word:" + l.word === body.item);
   if (!lesson && !q) return bad("Exercise unavailable.", 404);
+  const hint = body.task === "hint" && !!q;
+  const instruction = hint
+    ? "Give one short hint for the first step. Do not solve the problem, name an answer choice, or give the final value or word. Address the student directly in plain text."
+    : "Explain this SAT exercise in under 90 words. Use the supplied answer and explanation. Show the decisive step in plain text.";
+  const prompt = instruction + " Use ordinary text: write x and 2x, without Markdown, dollar signs, or LaTeX.\n" + JSON.stringify(hint && q ? toPublic(q) : lesson ?? q);
+
+  if (body.mode === "local") {
+    const model = process.env.SCHOLARSAT_OLLAMA_MODEL;
+    const site = localOrigin();
+    const url = new URL(origin);
+    if (!model || model.endsWith(":cloud") || !site || url.protocol !== "http:" ||
+        !["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== new URL(site).port)
+      return bad("The local model is available only on the configured localhost preview.", 403);
+    try {
+      const r = await fetch("http://127.0.0.1:11434/api/chat", {
+        method: "POST", cache: "no-store", headers: { "Content-Type": "application/json" },
+        signal: AbortSignal.any([req.signal, AbortSignal.timeout(90000)]),
+        body: JSON.stringify({ model, stream: false, think: false,
+          options: { temperature: 0.2, num_predict: 180 },
+          messages: [{ role: "user", content: prompt }] }),
+      });
+      if (r.ok) {
+        const data = await r.json();
+        const reply = data.message?.content;
+        if (typeof reply === "string" && reply.trim()) return json({ explanation: reply.trim() });
+      }
+    } catch { /* A stopped model and a timed-out model both allow a retry. */ }
+    return bad("The local tutor did not respond. Check that Ollama is running, then try again.", 503);
+  }
+
   const key = body.mode === "key" ? body.key : await planToken();
   if (
     typeof key !== "string" ||
@@ -68,9 +98,7 @@ export async function POST(req: Request) {
         input: [
           {
             role: "user",
-            content:
-              "Explain this SAT exercise in under 100 words. Show the decisive step and why a tempting alternative fails. Use plain text.\n" +
-              JSON.stringify(lesson ?? q),
+            content: prompt,
           },
         ],
       }),

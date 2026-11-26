@@ -1,5 +1,6 @@
 "use client";
 import "./practice.css";
+import { explainQuestionPrompt, questionHintPrompt } from "@/lib/ai-prompts";
 import { Tutor } from "./Tutor";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -9,8 +10,8 @@ import { DESMOS_URL, ReferenceSheet, ToolButton } from "./MathTools";
 import { Rich } from "./Rich";
 import { Logo } from "./Logo";
 import { Owl } from "./Owl";
-import { AiAsk } from "./AiAsk";
-import { TUTOR_SYSTEM, explainQuestionPrompt } from "@/lib/ai-prompts";
+import { TeachButton } from "./tutor/TeachButton";
+import { TutorTray } from "./tutor/TutorTray";
 import { Button, DiffBadge, EmptyState, LinkButton } from "./ui";
 import { IArrowL, IArrowR, IBookmark, ICalc, ICheckCircle, IFormula, IList, IStrike, IX, IXCircle } from "./icons";
 
@@ -81,6 +82,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || (e.target instanceof Element && e.target.closest("button, a, summary, textarea"))) return;
       if ((e.target as HTMLElement)?.tagName === "INPUT") {
         if (e.key === "Enter") {
           if (result) next();
@@ -180,7 +182,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
             )}
           </div>
         </header>
-        <div className="sr-only">ScholarSAT question bank</div>
+        <div className="sr-only">ScholarSAT practice</div>
 
         {/* Body */}
         {!q ? (
@@ -221,6 +223,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
                 <SprInput value={resp} onChange={setResp} disabled={!!result} reveal={result ? { answer: result.answer, correct: result.correct } : null} />
               )}
 
+              {!result && <Tutor key={q.id + "-hint"} item={q.id} hint providerPrompt={questionHintPrompt(q)} />}
               {result && (
                 <div className={`mt-6 animate-rise border-t-2 py-5 ${result.correct ? "border-ok-500" : "border-bad"}`} role="status">
                   <div className="flex items-center gap-3">
@@ -231,14 +234,9 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
                   </div>
                   <div className="mt-3 text-[15px] text-ink"><Rich text={result.explanation} /></div>
                   <div className="mt-4">
-                    <AiAsk
-                      key={q.id}
-                      label="Explain this"
-                      system={TUTOR_SYSTEM}
-                      prompt={explainQuestionPrompt(q, resp, result.answer, result.explanation, result.correct)}
-                    />
+                    <TeachButton qid={q.id} correct={result.correct} saved={result.saved} />
                   </div>
-                  <Tutor key={q.id} item={q.id}/>
+                  <Tutor key={q.id} item={q.id} providerPrompt={explainQuestionPrompt(q, resp, result.answer, result.explanation, result.correct)} />
                   {!result.saved && (
                     <p className="mt-3 text-xs text-muted">
                       <Link href="/signup" className="font-medium text-red hover:underline">Create a free account</Link> to save progress and track weak spots.
@@ -250,6 +248,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
           </div>
         )}
 
+        {q && result && <TutorTray key={q.id} q={q} response={resp} answer={result.answer} explanation={result.explanation} correct={result.correct} />}
         {/* Bottom bar */}
         <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-line bg-bg px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6">
           <p className="hidden text-xs text-muted md:block">A–D to choose · Enter to check · ← → to move</p>

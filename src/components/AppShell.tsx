@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { User } from "@/lib/auth";
 import { Logo } from "./Logo";
-import { NavLinks, MobileNav } from "./NavLinks";
+import { NavLinks, MobileNav, WorkspaceSkipLink } from "./NavLinks";
 import { UserMenu } from "./UserMenu";
 import { LinkButton } from "./ui";
 import { IGithub } from "./icons";
@@ -21,6 +21,7 @@ export function AppShell({ user, answered = 0, children }: { user: User | null; 
 
   return (
     <div className="scholar-workspace min-h-dvh lg:grid lg:grid-cols-[256px_1fr]">
+      <WorkspaceSkipLink />
       <aside className="sticky top-0 hidden h-dvh flex-col border-r border-line bg-bg px-3 pb-3 pt-5 lg:flex">
         <div className="px-2">
           <Logo href={user ? "/dashboard" : "/"} size={40} />
@@ -35,7 +36,7 @@ export function AppShell({ user, answered = 0, children }: { user: User | null; 
       </aside>
       <div className="min-w-0">
         <MobileNav signedIn={!!user} footer={account} />
-        <main className="mx-auto w-full max-w-[1240px] px-4 py-6 sm:px-6 lg:px-10 lg:py-9 2xl:max-w-[1380px]">{children}</main>
+        <main id="workspace-content" tabIndex={-1} className="mx-auto w-full max-w-[1240px] px-4 py-6 sm:px-6 lg:px-10 lg:py-9 2xl:max-w-[1380px]">{children}</main>
       </div>
     </div>
   );

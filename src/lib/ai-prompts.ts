@@ -39,6 +39,12 @@ export function explainQuestionPrompt(q: Explainable, response: string, answer: 
   return parts.join("\n\n");
 }
 
+/** A hint uses only the public question and stops before the answer. */
+export function questionHintPrompt(q: Explainable): string {
+  return "Give one short hint for a first step. Do not identify a choice or give the answer.\n" +
+    JSON.stringify({ stem: q.stem, passage: q.passage, passage2: q.passage2, table: q.table, choices: q.choices });
+}
+
 /** A memory aid for one vocabulary word. */
 export function memoryTrickPrompt(v: Pick<Vocab, "word" | "pos" | "def" | "ex">): string {
   return (

@@ -23,6 +23,7 @@ export default async function Play({ searchParams }: { searchParams: Promise<SP>
     const skills = sp.skills?.split("|").filter(Boolean);
     const difficulty = sp.difficulty ? ([...sp.difficulty].filter((d) => "EMH".includes(d)) as Difficulty[]) : undefined;
     let pool = filterQuestions({ section, domain: sp.domain, skill: sp.skill, difficulty });
+    if (sp.collection === "november-set") pool = pool.filter(q => q.collection === "november-set");
     if (skills?.length) pool = pool.filter((q) => skills.includes(q.skill));
     if (user && sp.status && sp.status !== "all") {
       const st = statusSets(user.id);
@@ -38,10 +39,12 @@ export default async function Play({ searchParams }: { searchParams: Promise<SP>
     }
     const limit = Number(sp.limit ?? 20);
     ids = limit > 0 ? arr.slice(0, limit) : arr;
-    title = sp.skill ?? sp.domain ?? (skills?.length === 1 ? skills[0] : `${SECTION_LABEL[section]} practice`);
+    title = sp.collection === "november-set" ? `New ${SECTION_LABEL[section]} questions` : sp.skill ?? sp.domain ?? (skills?.length === 1 ? skills[0] : `${SECTION_LABEL[section]} practice`);
   }
 
   const items = ids.map((id) => ({ id, difficulty: BY_ID.get(id)!.difficulty }));
-  const backHref = sp.section === "rw" ? "/practice?section=rw" : "/practice";
+  const back = new URLSearchParams({ section: sp.section === "rw" ? "rw" : "math" });
+  if (sp.topic) back.set("topic", sp.topic);
+  const backHref = "/practice?" + back;
   return <PracticePlayer items={items} signedIn={!!user} title={title} backHref={backHref} />;
 }

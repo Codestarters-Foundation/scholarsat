@@ -5,6 +5,7 @@ export type Table = { caption?: string; headers: string[]; rows: (string | numbe
 
 export interface Question {
   id: string;
+  collection?: "november-set";
   section: Section;
   domain: string;
   skill: string;

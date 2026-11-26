@@ -5,11 +5,11 @@ import Link from "next/link";
 import { Logo } from "./Logo";
 import { IGithub } from "./icons";
 import { LinkButton } from "./ui";
-import { questionBankSession } from "./landing-navigation";
 
 export function LandingNav({ signedIn, repo }: { signedIn: boolean; repo: string }) {
   const links = <>
-    <Link href={questionBankSession}>Question bank</Link>
+    <Link href="/practice">Practice</Link>
+    <Link href="/tutor">AI tutor</Link>
     <a href="#tests">Mock tests</a>
     <a href="#tools">Tools</a>
     <a href="#faq">FAQ</a>

@@ -44,7 +44,7 @@ It is built by [**CodeStarters**](https://codestarters.org), a student-led nonpr
 
 | | |
 |---|---|
-| **3,202** | original practice questions: **2,848** Math and **354** Reading & Writing |
+| **3,317** | original practice questions: **2,878** Math and **439** Reading & Writing |
 | **29** | skills across **8** domains, covering the digital SAT's published structure |
 | **1,705 / 1,497** | multiple-choice and student-produced-response (type-in) questions |
 | **1,079 / 1,159 / 964** | easy, medium, and hard questions |
@@ -271,7 +271,7 @@ Found a vulnerability? Please don't open a public issue. Contact the maintainers
 This project gets better one question at a time, and you don't need to be a developer to help.
 
 **Add questions.**
-- *Reading & Writing:* add frames or passages to [`scripts/rw-conventions.ts`](scripts/rw-conventions.ts) or [`scripts/rw-reading.ts`](scripts/rw-reading.ts). The R&W bank (354 questions) is the smaller side and the best place to make a big difference.
+- *Reading & Writing:* add frames or passages to [`scripts/rw-conventions.ts`](scripts/rw-conventions.ts) or [`scripts/rw-reading.ts`](scripts/rw-reading.ts). The R&W bank (439 questions) is the smaller side and the best place to make a big difference.
 - *Math:* add a template to [`scripts/gen-math.ts`](scripts/gen-math.ts). Compute the answer in code, and compute the wrong choices from realistic mistakes.
 - Run `npm run bank`, look at the new questions in the app, and open a PR.
 
@@ -335,7 +335,9 @@ SAT® is a trademark registered by the College Board, which is not affiliated wi
 
 ### Local vocabulary studio and AI tutor
 
-Open Vocabulary for two-step word and evidence practice. Missed passages return later in the session. In the studio or after answering a question in the practice player, expand **Ask the AI tutor** for an optional explanation.
+Open **AI tutor** for a guided Math or Reading and Writing question. You can also ask for a hint before checking any practice question and for an explanation afterward. Vocabulary includes two-step word and evidence practice.
+
+For no-key local inference, run Ollama with an installed model and launch ScholarSAT with `SCHOLARSAT_OLLAMA_MODEL=qwen3.5:9b SITE_URL=http://127.0.0.1:3187 npm run dev -- -H 127.0.0.1 -p 3187`. Choose the name of a locally installed model. The app sends exercises to Ollama on loopback only.
 
 To enable the local ChatGPT plan connection, launch with `SITE_URL=http://127.0.0.1:3187 npm run dev -- -H 127.0.0.1 -p 3187` and open that exact origin. Continue with ChatGPT opens OpenAI's consent flow. The loopback callback verifies PKCE state, nonce, signed identity and grant scopes. The connection lasts until token expiry, disconnect or server restart. Use the tutor to reconnect. For a remotely hosted deployment, check OpenAI's requirements for hosted apps before enabling plan usage.
 
