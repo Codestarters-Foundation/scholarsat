@@ -7,21 +7,28 @@ import "./practice.css";
 import { Button } from "./ui";
 import { IArrowR, IBook, ICalc, ICheck, IChevR, ISparkle } from "./icons";
 
-export type SkillInfo = { total: number; byDiff: Record<Difficulty, number>; answered: number; correct: number; wrong: number };
+export type SkillInfo = { total: number; fresh: number; byDiff: Record<Difficulty, number>; answered: number; correct: number; wrong: number };
 
 export function PracticeFilters({
   section,
   topic,
-  newCounts,
+  workshop,
   skills,
 }: {
   section: Section;
   topic?: string;
-  newCounts: Record<Section, number>;
+  workshop: boolean;
   skills: Record<string, SkillInfo>;
 }) {
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [limit, setLimit] = useState("10");
+  const catalog = (section: Section, topic?: string, fresh=workshop) => {
+    const params = new URLSearchParams({section});
+    if (topic) params.set("topic",topic);
+    if (fresh) params.set("collection","skill-workshop");
+    return "/practice?" + params;
+  };
   const domains = TAXONOMY[section];
   const active = domains.find(group => group.domain === topic) ?? domains[0];
   const count = (names: string[]) => names.reduce((sum, name) => sum + (skills[name]?.total ?? 0), 0);
@@ -29,7 +36,7 @@ export function PracticeFilters({
   const subjectCount = (s: Section) => count(TAXONOMY[s].flatMap(d => d.skills));
 
   const go = (p: Record<string, string>) => {
-    const q = new URLSearchParams({ section, topic: active.domain, status: "all", limit: "0", ...p }); // limit 0 = every question in the skill or domain
+    const q = new URLSearchParams({ section, topic: active.domain, status: "all", limit, ...(workshop ? {collection:"skill-workshop"} : {}), ...p });
     router.push(`/practice/play?${q}`);
   };
 
@@ -45,25 +52,38 @@ export function PracticeFilters({
   return (
     <div className="practice-index pb-24">
       <header className="practice-heading">
-        <div><h1>Practice</h1><p>Choose a topic, then practice one skill or build a set.</p></div>
-        <Link className="tutor-invite" href="/tutor"><ISparkle /> Try the AI tutor <IArrowR /></Link>
+        <div><h1>Practice</h1><p>{(subjectCount("math")+subjectCount("rw")).toLocaleString("en-US")} questions across {Object.keys(skills).length} skills.</p></div>
+        <div className="practice-header-actions"><button className="quick-practice" onClick={()=>go({domain:active.domain})}>Start {limit==="0" ? count(active.skills).toLocaleString("en-US") : limit} questions <IArrowR /></button>
+        <Link className="tutor-invite" href="/tutor"><ISparkle /> AI tutor <IArrowR /></Link></div>
       </header>
       <nav className="subject-switch" aria-label="Practice subject">
-        {(["math", "rw"] as const).map(sec => <Link key={sec} href={`/practice?section=${sec}`} scroll={false} aria-current={section === sec ? "page" : undefined}>
+        {(["math", "rw"] as const).map(sec => <Link key={sec} href={catalog(sec)} scroll={false} aria-current={section === sec ? "page" : undefined}>
           {sec === "math" ? <ICalc /> : <IBook />} <span>{SECTION_LABEL[sec]}</span>
           <small>{subjectCount(sec).toLocaleString("en-US")} questions</small>
         </Link>)}
       </nav>
+      <div className="practice-controls">
+        <nav aria-label="Question collection" className="collection-switch">
+          <Link scroll={false} aria-current={!workshop ? "page" : undefined} href={catalog(section,active.domain,false)}>Full library</Link>
+          <Link scroll={false} aria-current={workshop ? "page" : undefined} href={catalog(section,active.domain,true)}>New questions</Link>
+        </nav>
+        <label className="session-size">Set length <select value={limit} onChange={e=>setLimit(e.target.value)}>
+          <option value="10">10 questions</option><option value="20">20 questions</option><option value="0">All questions</option>
+        </select></label>
+      </div>
       <div className="practice-spread">
         <nav className="topic-index" aria-label="Topics"><h2>Topics</h2>
-          {domains.map(group => <Link key={group.domain} scroll={false} href={`/practice?${new URLSearchParams({ section, topic: group.domain })}`}
+          <label className="compact-topic">Topic<select value={active.domain} onChange={e=>router.push(catalog(section,e.target.value),{scroll:false})}>
+            {domains.map(group=><option key={group.domain}>{group.domain}</option>)}
+          </select></label>
+          {domains.map(group => <Link key={group.domain} scroll={false} href={catalog(section,group.domain)}
             aria-current={group === active ? "true" : undefined}><span>{group.domain}</span><IChevR /></Link>)}
-          <Link className="new-set" href={`/practice/play?section=${section}&collection=november-set&limit=0`}>Practice {newCounts[section]} new questions <IArrowR /></Link>
+
         </nav>
-        <section className="skill-domain" id="practice-skills" tabIndex={-1} aria-labelledby="active-topic">
+        <section key={active.domain+workshop} className="skill-domain" id="practice-skills" tabIndex={-1} aria-labelledby="active-topic">
           <header><div><h2 id="active-topic">{active.domain}</h2>
             <p>{active.skills.length} skills · {count(active.skills).toLocaleString("en-US")} questions</p></div>
-            <button className="topic-start" onClick={() => go({ domain: active.domain })}>Practice topic <IArrowR /></button>
+            <button className="topic-start" onClick={() => go({ domain: active.domain })}>Start topic <IArrowR /></button>
           </header>
           <button className="select-domain" aria-pressed={allOn} onClick={() => {
             const next = new Set(selected);
@@ -76,7 +96,7 @@ export function PracticeFilters({
             return <li key={skill}>
               <button className="skill-select" aria-pressed={on} onClick={() => setSelected(toggle(selected, skill))}>
                 <span className="skill-check" aria-hidden="true">{on && <ICheck />}</span>
-                <span>{skill}<small>{stats?.total ?? 0} questions{stats?.answered ? ` · ${stats.correct} correct, ${stats.wrong} missed` : ""}</small></span>
+                <span>{skill}<small>{stats?.total ?? 0} questions{!workshop && stats?.fresh ? ` · ${stats.fresh} new` : ""}{stats?.answered ? ` · ${stats.correct} correct, ${stats.wrong} missed` : ""}</small></span>
               </button>
               <button className="skill-start" aria-label={`Practice ${skill}`} onClick={() => go({ skill })}>Practice <IArrowR /></button>
             </li>;

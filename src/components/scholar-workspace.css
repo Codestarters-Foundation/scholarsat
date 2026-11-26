@@ -51,3 +51,22 @@
 }
 @keyframes ink-arrive { from { transform:translateY(.3em); clip-path:inset(0 0 30% 0); } to { transform:none; clip-path:inset(0); } }
 @keyframes ink-rule { from {transform:scaleX(0)} to {transform:scaleX(1)} }
+
+.workspace-index-link { border-radius:7px; }
+.workspace-index-link[aria-current] { background:var(--red-50); font-weight:580; }
+.workspace-index:has([aria-current])::before { width:3px; border-radius:2px; }
+.scholar-workspace .workspace-title p { color:var(--ink-2); max-width:62ch; line-height:1.5; }
+.scholar-workspace .study-section > header { min-height:58px; }
+.scholar-workspace :is(.workspace-index-link,.source-link,.record-link):focus-visible { outline:2px solid var(--red); outline-offset:-2px; }
+.workspace-phone { max-height:100dvh; overflow:auto; }
+.workspace-phone .mobile-nav-trigger { display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;min-width:44px; }
+.workspace-phone .mobile-current { color:var(--ink-2);font-size:14px;font-weight:550; }
+.workspace-phone #workspace-mobile-links { background:var(--bg); }
+@media (hover:hover) and (pointer:fine) {
+  .workspace-index-link:not([aria-current]):hover { background:var(--surface); }
+}
+@media(prefers-reduced-motion:no-preference) {
+  html:not(.reduce-motion) .workspace-index-link { transition:color 120ms var(--ease-out),background-color 120ms var(--ease-out); }
+  html:not(.reduce-motion) .workspace-phone #workspace-mobile-links { transform-origin:top; animation:menu-in 160ms var(--ease-out); }
+}
+@keyframes menu-in { from { opacity:0;transform:translateY(-4px); } }

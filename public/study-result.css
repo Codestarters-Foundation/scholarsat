@@ -1,0 +1,8 @@
+@font-face{font-family:Mona;src:url("/fonts/mona-sans-wdth.woff2") format("woff2");font-weight:200 900;font-display:swap}
+:root{color-scheme:light dark;--paper:#faf8f3;--ink:#252520;--line:#c9c7c0;--accent:#9e3328}
+@media(prefers-color-scheme:dark){:root{--paper:#1e201e;--ink:#f3f1eb;--line:#52554e;--accent:#ff9a89}}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.55 Mona,system-ui,sans-serif}
+main{width:min(100% - 40px,38rem);margin:clamp(2rem,12vh,8rem) auto}.brand{font-weight:670;letter-spacing:-.045em;font-size:24px;border-bottom:1px solid var(--line);padding-bottom:20px}
+.result{padding-block:clamp(1.25rem,5vh,4rem)}.mark{display:grid;place-items:center;width:48px;height:48px;color:var(--accent);border:1px solid currentColor;border-radius:50%;font-size:24px}
+h1{font-size:clamp(34px,6vw,52px);line-height:1.07;letter-spacing:-.055em;font-weight:590;margin:22px 0 10px}p{max-width:44ch}a{display:inline-flex;gap:14px;align-items:center;min-height:46px;color:var(--accent);font-weight:600;text-underline-offset:4px}
+@media(prefers-reduced-motion:no-preference){.result{animation:arrive 180ms ease-out}@keyframes arrive{from{opacity:0;transform:translateY(4px)}}}

@@ -25,10 +25,14 @@ const verify = async () => {
         const topics = page.getByRole("navigation", {name:"Topics"});
         const links = topics.locator("a:not(.new-set)");
         assert.equal(await links.count(), 4);
-        for (const link of await links.all()) {
-          const label = await link.innerText();
-          await link.click();
-          await page.getByRole("heading", { name: label.trim(), exact: true }).waitFor();
+        const names = await links.allTextContents();
+        for (const name of names) {
+          if (await topics.getByRole("combobox").isVisible()) {
+            await topics.getByRole("combobox").selectOption(name.trim());
+          } else {
+            await topics.getByRole("link",{name:name.trim(),exact:true}).click();
+          }
+          await page.getByRole("heading", { name: name.trim(), exact: true }).waitFor();
           assert.ok(await page.locator("button.skill-start").count() > 0);
         }
       }
@@ -40,8 +44,14 @@ const verify = async () => {
     await page.locator(".practice-player .tutor summary").waitFor();
     await page.getByRole("link", {name:"Exit practice"}).click();
     await page.getByRole("heading", {name:"Standard English Conventions",exact:true}).waitFor();
-    await page.getByRole("link", {name:"Practice 46 new questions"}).click();
-    await page.getByText("Question 1 of 46", {exact:true}).waitFor();
+    await page.getByRole("link", {name:"New questions",exact:true}).click();
+    await page.getByText("2 skills · 400 questions").waitFor();
+    await page.getByLabel("Set length").selectOption("0");
+    await page.locator("button.skill-start").first().click();
+    await page.getByText("Question 1 of 200", {exact:true}).waitFor();
+    await page.getByRole("button",{name:"Next page of questions"}).click();
+    await page.getByRole("button",{name:/Q25 /}).click();
+    await page.getByText("Question 25 of 200",{exact:true}).waitFor();
     await page.goto("/tutor?section=math");
     const tutor = page.locator(".guided-margin .tutor");
     await tutor.getByLabel("Connection").selectOption("key");
@@ -56,6 +66,8 @@ const verify = async () => {
     await page.getByLabel("Your answer").fill("8");
     await page.getByRole("button", {name:"Check answer"}).click();
     await page.getByText("Correct", {exact:true}).waitFor();
+    await tutor.getByRole("button",{name:"Continue with ChatGPT"}).waitFor();
+    await tutor.getByLabel("Connection").selectOption("local");
     await tutor.getByRole("button", {name:"Explain this answer"}).waitFor();
     await page.getByRole("link", {name:"Practice this skill"}).click();
     await page.getByText("Question 1 of 5", {exact:true}).waitFor();

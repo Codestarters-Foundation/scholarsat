@@ -20,13 +20,15 @@ export type TestState = {
 
 const W: Record<Difficulty, number> = { E: 1, M: 1.4, H: 1.8 };
 
-function pickBalanced(section: Section, n: number, mix: Record<Difficulty, number>, exclude: Set<string>, rnd: () => number): string[] {
+function pickBalanced(section: Section, n: number, mix: Record<Difficulty, number>, exclude: Set<string>, rnd: () => number, priorInTest: string[] = []): string[] {
   const pool = QUESTIONS.filter((q) => q.section === section && !exclude.has(q.id));
   // spread across domains in proportion, then fill by difficulty mix
   const byDomain = new Map<string, Question[]>();
   for (const q of pool) (byDomain.get(q.domain) ?? byDomain.set(q.domain, []).get(q.domain)!).push(q);
   const domains = [...byDomain.keys()];
   const picked: string[] = [];
+  const families = new Set(priorInTest.map(id=>BY_ID.get(id)?.family).filter(Boolean));
+  const select = (q:Question) => { picked.push(q.id); if(q.family) families.add(q.family); };
   const diffs: Difficulty[] = [];
   (Object.keys(mix) as Difficulty[]).forEach((d) => {
     for (let i = 0; i < Math.round(mix[d] * n); i++) diffs.push(d);
@@ -36,9 +38,9 @@ function pickBalanced(section: Section, n: number, mix: Record<Difficulty, numbe
   for (const d of diffs.slice(0, n)) {
     for (let tries = 0; tries < domains.length * 2; tries++) {
       const dom = domains[(k + tries) % domains.length];
-      const cands = byDomain.get(dom)!.filter((q) => q.difficulty === d && !picked.includes(q.id));
+      const cands = byDomain.get(dom)!.filter((q) => q.difficulty === d && !picked.includes(q.id) && (!q.family || !families.has(q.family)));
       if (cands.length) {
-        picked.push(cands[Math.floor(rnd() * cands.length)].id);
+        select(cands[Math.floor(rnd() * cands.length)]);
         break;
       }
     }
@@ -111,7 +113,7 @@ export function submitModule(userId: number, id: number): TestState | null {
     const harder = perf >= 0.6;
     const used = new Set(s.modules.flatMap((m) => m.ids));
     const n = MODULES[s.current + 1].n;
-    s.modules[s.current + 1].ids = pickBalanced(section, n, harder ? { E: 0.15, M: 0.4, H: 0.45 } : { E: 0.5, M: 0.4, H: 0.1 }, used, Math.random);
+    s.modules[s.current + 1].ids = pickBalanced(section, n, harder ? { E: 0.15, M: 0.4, H: 0.45 } : { E: 0.5, M: 0.4, H: 0.1 }, used, Math.random, [...used]);
     s.modules[s.current + 1].path = harder ? "harder" : "easier";
   }
   if (s.current < 3) {

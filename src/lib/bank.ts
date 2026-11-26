@@ -68,7 +68,9 @@ export function counts() {
 /** Deterministic daily question so everyone sees the same one each day. */
 export function dailyQuestion(section: Section, date = new Date()): Question {
   // Multiple choice only: the daily question is a poll on which answer people pick.
-  const pool = QUESTIONS.filter((q) => q.section === section && q.type === "mcq" && q.difficulty !== "E");
+  // Existing daily votes identify the UTC day and section. Keep their original question.
+  const workshopLive = date.getTime() >= Date.UTC(2026, 10, 27);
+  const pool = QUESTIONS.filter((q) => q.section === section && q.type === "mcq" && q.difficulty !== "E" && (workshopLive || q.collection !== "skill-workshop"));
   const day = Math.floor(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) / 86400000);
   return pool[(day * 2654435761) % pool.length];
 }

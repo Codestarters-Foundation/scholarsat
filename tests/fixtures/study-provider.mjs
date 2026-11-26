@@ -68,6 +68,11 @@ globalThis.fetch = async (input, init) => {
       body.model,
       token === "Bearer test-plan" ? "fixture-sol" : "gpt-4.1-mini",
     );
+    if (body.input[0].content.includes("teach by drawing")) {
+      assert.match(body.input[0].content,/Correct answer:/);
+      const text = JSON.stringify({steps:[{say:"Check the constant term first.",marks:[],board:["x = 8"]}]});
+      return new Response("data: "+JSON.stringify({type:"response.completed",response:{output:[{content:[{type:"output_text",text}]}]}})+"\n\n");
+    }
     assert.match(body.input[0].content, /provisional/);
     return new Response(
       'data: {"type":"response.completed","response":{"output":[{"content":[{"type":"output_text","text":"Fixture explanation."}]}]}}\n\n',

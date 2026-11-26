@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { IKey } from "./icons";
 import { AiConnect } from "./AiConnect";
 
@@ -19,6 +20,7 @@ export function AiSettings() {
         <p className="mt-1 text-sm text-muted">
           Optional. Connect your own AI account to get explanations on practice questions and memory tricks for vocabulary. It can be free. ScholarSAT works fully without it.
         </p>
+        <Link className="record-link" href="/tutor?connection=plan#question-tutor">Connect my ChatGPT plan →</Link>
       </div>
       <AiConnect />
     </section>

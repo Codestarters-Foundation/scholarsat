@@ -27,29 +27,42 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
   const [struck, setStruck] = useState<Set<string>>(new Set());
   const [strikeMode, setStrikeMode] = useState(false);
   const [refOpen, setRefOpen] = useState(false);
+  const [listPage, setListPage] = useState(0);
+  const pageSize = 24;
   const [listOpen, setListOpen] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
   const [outcomes, setOutcomes] = useState<Record<number, boolean>>({});
   const [busy, setBusy] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const start = useRef(Date.now());
+  const graded = useRef(new Map<string,{result:Result;response:string;elapsed:number}>());
+  const activeId = useRef("");
+  const [loadError,setLoadError] = useState("");
+  const [retry,setRetry] = useState(0);
   const n = items.length;
 
-  const load = useCallback(async (i: number) => {
-    setQ(null);
-    setResult(null);
-    setResp("");
-    setStruck(new Set());
-    const r = await fetch(`/api/q/${items[i].id}`).then((x) => x.json());
-    setQ(r.question);
-    setBookmarked(r.bookmarked);
-    start.current = Date.now();
-    setElapsed(0);
-  }, [items]);
+  const load = useCallback(async (i:number, signal:AbortSignal) => {
+    const id = items[i].id;
+    activeId.current = id;
+    const saved = graded.current.get(id);
+    setQ(null); setLoadError(""); setBusy(false);
+    setResult(saved?.result ?? null); setResp(saved?.response ?? ""); setStruck(new Set());
+    try {
+      const response = await fetch(`/api/q/${id}`,{signal});
+      if (!response.ok) throw new Error();
+      const data = await response.json();
+      if (signal.aborted) return;
+      setQ(data.question); setBookmarked(data.bookmarked);
+      start.current = Date.now() - (saved?.elapsed ?? 0);
+      setElapsed(saved?.elapsed ?? 0);
+    } catch { if (!signal.aborted) setLoadError("Could not load this question."); }
+  },[items]);
 
   useEffect(() => {
-    if (n) load(idx);
-  }, [idx, n, load]);
+    const controller = new AbortController();
+    if(n) void load(idx,controller.signal);
+    return () => controller.abort();
+  },[idx,n,load,retry]);
 
   useEffect(() => {
     if (result) return;
@@ -60,10 +73,16 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
   const check = async () => {
     if (!q || !resp || busy || result) return;
     setBusy(true);
-    const r: Result = await fetch("/api/attempt", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: q.id, response: resp, timeMs: Date.now() - start.current }) }).then((x) => x.json());
-    setResult(r);
-    setOutcomes((o) => ({ ...o, [idx]: r.correct }));
-    setBusy(false);
+    const timeMs = Date.now()-start.current;
+    try {
+      const request = await fetch("/api/attempt", { method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id:q.id,response:resp,timeMs}) });
+      if (!request.ok) throw new Error();
+      const r:Result = await request.json();
+      graded.current.set(q.id,{result:r,response:resp,elapsed:timeMs});
+      setOutcomes(o=>({...o,[idx]:r.correct}));
+      if (activeId.current===q.id) { setResult(r); setElapsed(timeMs); setLoadError(""); }
+    } catch { if(activeId.current===q.id) setLoadError("Could not check this answer. Try again."); }
+    finally { if(activeId.current===q.id) setBusy(false); }
   };
 
   const toggleBookmark = async () => {
@@ -73,8 +92,9 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
   };
 
   const go = (i: number) => {
-    if (i < 0 || i >= n) return;
+    if (i < 0 || i >= n || busy) return;
     setIdx(i);
+    setListPage(Math.floor(i / pageSize));
     setListOpen(false);
   };
   const next = () => go(idx + 1);
@@ -121,12 +141,13 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
 
   const list = (
     <ul className="grid gap-1 p-3">
-      {items.map((it, i) => {
+      {items.slice(listPage*pageSize,(listPage+1)*pageSize).map((it, offset) => {
+        const i = listPage*pageSize+offset;
         const o = outcomes[i];
         const active = i === idx;
         return (
           <li key={it.id}>
-            <button onClick={() => go(i)} aria-current={active ? "true" : undefined} className={`flex w-full items-center gap-3 border-b px-3 py-2 text-left transition-colors ${active ? "border-red-200 bg-red-50" : "border-transparent hover:bg-surface-2"}`}>
+            <button onClick={() => go(i)} disabled={busy} aria-current={active ? "true" : undefined} className={`flex w-full items-center gap-3 border-b px-3 py-2 text-left transition-colors ${active ? "border-red-200 bg-red-50" : "border-transparent hover:bg-surface-2"}`}>
               <span className={`w-9 text-[15px] tabular-nums ${active ? "font-medium text-red" : "text-ink-2"}`}>Q{i + 1}</span>
               <DiffBadge d={it.difficulty} />
               <span className="ml-auto">
@@ -156,6 +177,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
           </div>
         </div>
         <nav className="scroll-thin mt-3 flex-1 overflow-y-auto border-t border-line" aria-label="Questions">{list}</nav>
+        {n > pageSize && <div className="question-pages"><button aria-label="Previous page of questions" disabled={!listPage} onClick={()=>setListPage(listPage-1)}><IArrowL /></button><span aria-live="polite">{listPage*pageSize+1}–{Math.min((listPage+1)*pageSize,n)} of {n}</span><button aria-label="Next page of questions" disabled={(listPage+1)*pageSize>=n} onClick={()=>setListPage(listPage+1)}><IArrowR /></button></div>}
         <div className="border-t border-line p-3">
           <LinkButton href={backHref} className="w-full text-[13px] tracking-[0.08em] uppercase">Exit practice</LinkButton>
         </div>
@@ -186,7 +208,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
 
         {/* Body */}
         {!q ? (
-          <div className="flex flex-1 items-center justify-center"><Owl size={72} mood="loading" title="Loading question" /></div>
+          <div className="flex flex-1 items-center justify-center">{loadError ? <div role="alert"><p>{loadError}</p><Button onClick={()=>setRetry(x=>x+1)}>Try again</Button></div> : <Owl size={72} mood="loading" title="Loading question" />}</div>
         ) : (
           <div key={q.id} className="question-leaf scroll-thin flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
             <section className="scroll-thin border-b border-line px-6 py-7 lg:w-1/2 lg:overflow-y-auto lg:border-b-0 lg:border-r-4 lg:border-r-surface-2 lg:px-9 lg:py-9" aria-label={split ? "Passage" : "Question"}>
@@ -249,6 +271,7 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
         )}
 
         {q && result && <TutorTray key={q.id} q={q} response={resp} answer={result.answer} explanation={result.explanation} correct={result.correct} />}
+        {q && loadError && <p role="alert" className="px-5 text-bad">{loadError}</p>}
         {/* Bottom bar */}
         <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-line bg-bg px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6">
           <p className="hidden text-xs text-muted md:block">A–D to choose · Enter to check · ← → to move</p>

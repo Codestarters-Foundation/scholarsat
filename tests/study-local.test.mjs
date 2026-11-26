@@ -75,6 +75,11 @@ test("local AI sign-in, browser isolation, consent failure, BYOK and completed i
       (await callback(one, one.params.get("state"), code)).status,
       400,
     );
+    const lesson = await fetch(origin+"/api/study/tutor", { method:"POST",
+      headers:{origin,cookie:one.cookie,"Content-Type":"application/json"},
+      body:JSON.stringify({item:"m56bc0dd7", mode:"plan",task:"lesson",response:"8",followup:"Explain this step"}) });
+    assert.equal(lesson.status,200);
+    assert.match(JSON.parse((await lesson.json()).explanation).steps[0].say,/constant/);
     const denied = await start();
     assert.equal(
       (
