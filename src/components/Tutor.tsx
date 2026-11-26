@@ -11,11 +11,10 @@ import {
 
 import { AiAsk } from "./AiAsk";
 import { TUTOR_SYSTEM } from "@/lib/ai-prompts";
-import { IArrowR, ICheck, IChevD, IKey, ILaptop, ILink, ISparkle } from "./icons";
+import { IArrowR, ICheck, IChevD, IKey, ILink, ISparkle } from "./icons";
 import "./study-connection.css";
 
 const Credentials = createContext<{
-  local: boolean;
   chosen: boolean;
   mode: string;
   setMode: (mode: string) => void;
@@ -25,15 +24,15 @@ const Credentials = createContext<{
 
 export function useTutorConnection() { return useContext(Credentials)!; }
 
-export function TutorSession({ children, local }: { children: ReactNode; local: boolean }) {
+export function TutorSession({ children }: { children: ReactNode }) {
   const [chosen, setChosen] = useState(false);
-  const [mode, updateMode] = useState(local ? "local" : "plan");
+  const [mode, updateMode] = useState("plan");
   useEffect(() => {
     try {
       const saved = sessionStorage.getItem("ss_tutor_mode");
-      if (saved && ["plan", "key", "provider", ...(local ? ["local"] : [])].includes(saved)) { updateMode(saved); setChosen(true); }
+      if (saved && ["plan", "key", "provider"].includes(saved)) { updateMode(saved); setChosen(true); }
     } catch { /* Private browsing can disable storage. */ }
-  }, [local]);
+  }, []);
   const setMode = useCallback((value: string) => {
     updateMode(value);
     setChosen(true);
@@ -41,7 +40,7 @@ export function TutorSession({ children, local }: { children: ReactNode; local: 
   },[]);
   const [key, setKey] = useState("");
   return (
-    <Credentials.Provider value={{ local, chosen, mode, setMode, key, setKey }}>
+    <Credentials.Provider value={{ chosen, mode, setMode, key, setKey }}>
       {children}
     </Credentials.Provider>
   );
@@ -49,8 +48,8 @@ export function TutorSession({ children, local }: { children: ReactNode; local: 
 
 export function Tutor({ item, hint = false, expanded = false, providerPrompt }: { item: string; hint?: boolean; expanded?: boolean; providerPrompt?: string }) {
   const [open, setOpen] = useState(expanded);
-  const { local, mode: preferredMode, setMode, key, setKey } = useTutorConnection();
-  const mode = preferredMode === "provider" && !providerPrompt ? (local ? "local" : "plan") : preferredMode;
+  const { mode: preferredMode, setMode, key, setKey } = useTutorConnection();
+  const mode = preferredMode === "provider" && !providerPrompt ? "plan" : preferredMode;
   const [connected, setConnected] = useState<boolean | null>(null);
   const [waiting, setWaiting] = useState(false);
   const [connectionError, setConnectionError] = useState(false);
@@ -84,7 +83,7 @@ export function Tutor({ item, hint = false, expanded = false, providerPrompt }: 
   }, [waiting, open, refresh]);
   const pending = useRef<AbortController | null>(null);
   useEffect(() => () => pending.current?.abort(), []);
-  async function explain(usingMode = mode) {
+  async function explain() {
     if (pending.current) return;
     const controller = new AbortController();
     pending.current = controller;
@@ -98,8 +97,8 @@ export function Tutor({ item, hint = false, expanded = false, providerPrompt }: 
         body: JSON.stringify({
           item,
           task: hint ? "hint" : "explain",
-          mode: usingMode,
-          key: usingMode === "key" ? key : undefined,
+          mode,
+          key: mode === "key" ? key : undefined,
         }),
       });
       const data = await response.json();
@@ -112,9 +111,9 @@ export function Tutor({ item, hint = false, expanded = false, providerPrompt }: 
       if (!controller.signal.aborted) setBusy(false);
     }
   }
-  const modeNames: Record<string,string> = {local:"On this computer", plan:"My ChatGPT plan", key:"OpenAI API key", provider:"Other AI providers"};
-  const status = mode === "local" ? "Local model" : mode === "key" ? (key.trim() ? "Key entered in this tab" : "Enter a key below") : mode === "provider" ? "Use a provider key" : connectionError ? "Connection check failed" : connected === null ? "Checking connection…" : connected ? "Connected" : waiting ? "Waiting for sign-in…" : "Sign-in required";
-  const Icon = mode === "local" ? ILaptop : mode === "key" ? IKey : mode === "plan" && connected ? ICheck : ILink;
+  const modeNames: Record<string,string> = {plan:"My ChatGPT plan", key:"OpenAI API key", provider:"Other AI providers"};
+  const status = mode === "key" ? (key.trim() ? "Key entered in this tab" : "Enter a key below") : mode === "provider" ? "Use a provider key" : connectionError ? "Connection check failed" : connected === null ? "Checking connection…" : connected ? "Connected" : waiting ? "Waiting for sign-in…" : "Sign-in required";
+  const Icon = mode === "key" ? IKey : mode === "plan" && connected ? ICheck : ILink;
   const localTab = typeof window !== "undefined" && origin === window.location.origin;
   const select = (next: string) => { setMode(next); setWaiting(false); setMessage(""); };
   const askLabel = hint ? "Give me a hint" : "Explain this answer";
@@ -127,7 +126,6 @@ export function Tutor({ item, hint = false, expanded = false, providerPrompt }: 
           <span className="connection-pick">
             <Icon /><span aria-hidden="true"><strong>{modeNames[mode]}</strong><small>{status}</small></span><IChevD />
             <select aria-label="Connection" value={mode} disabled={busy} onChange={e=>select(e.target.value)}>
-              {local && <option value="local">On this computer</option>}
               <option value="plan">My ChatGPT plan</option><option value="key">OpenAI API key</option>
               {providerPrompt && <option value="provider">Other AI providers</option>}
             </select>
@@ -135,7 +133,7 @@ export function Tutor({ item, hint = false, expanded = false, providerPrompt }: 
         </label>
         <div className="connection-view" key={mode}>
           {mode === "provider" && providerPrompt ? <AiAsk label={askLabel} system={TUTOR_SYSTEM} prompt={providerPrompt}/> : <>
-            <p className="connection-note">{mode === "local" ? "Your question stays on this computer." : mode === "key" ? "Your key stays in this tab. Each request uses your OpenAI API billing." : connected ? "Hints and explanations use your connected ChatGPT plan." : waiting ? "Finish signing in to OpenAI in the other tab, then return to this exercise." : "Sign in with OpenAI to use your ChatGPT plan for hints and explanations."}</p>
+            <p className="connection-note">{mode === "key" ? "Your key stays in this tab. Each request uses your OpenAI API billing." : connected ? "Hints and explanations use your connected ChatGPT plan." : waiting ? "Finish signing in to OpenAI in the other tab, then return to this exercise." : "Sign in with OpenAI to use your ChatGPT plan for hints and explanations."}</p>
             {mode === "key" && <label className="connection-key">OpenAI API key<input type="password" autoComplete="off" spellCheck={false} value={key} onChange={e=>setKey(e.target.value)}/></label>}
             {mode === "plan" && !connected ? connectionError ? <button onClick={refresh}>Retry connection check</button> : connected !== null && (localTab ?
               <form method="POST" action="/api/study/connect" target="_blank" rel="noopener" onSubmit={()=>{ setMode("plan"); setWaiting(true); }}>
@@ -145,7 +143,6 @@ export function Tutor({ item, hint = false, expanded = false, providerPrompt }: 
           </>}
         </div>
         <div className="connection-foot">
-          {mode === "local" && <button type="button" className="connection-link" disabled={busy} onClick={()=>select("plan")}><ILink />{connected ? "Use my ChatGPT plan" : "Connect my ChatGPT plan"}</button>}
           {mode === "plan" && connected && <button type="button" className="connection-link" disabled={busy} onClick={async()=>{
             try {
               const r = await fetch("/api/study/connect",{method:"DELETE"});
@@ -153,7 +150,6 @@ export function Tutor({ item, hint = false, expanded = false, providerPrompt }: 
               setConnected(false); setWaiting(false); setMessage("ChatGPT disconnected.");
             } catch { setMessage("Could not disconnect. Try again."); }
           }}>Disconnect ChatGPT</button>}
-          {mode === "plan" && !connected && local && <button type="button" className="connection-link" onClick={()=>{select("local");void explain("local");}}><ILaptop/>{hint ? "Get a hint on this computer" : "Explain on this computer"}</button>}
         </div>
         <p role="status" aria-live="polite" className="connection-answer whitespace-pre-line">{message}</p>
       </div>

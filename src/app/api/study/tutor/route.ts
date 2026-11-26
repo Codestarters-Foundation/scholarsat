@@ -2,7 +2,7 @@ import { followUpRequest, lessonRequest, TUTOR_DRAW_SYSTEM } from "@/lib/tutor-l
 import { BY_ID, isCorrect, toPublic } from "@/lib/bank";
 import { lessons } from "@/data/context-lessons";
 import { bad, json, rateLimit, clientIp } from "@/lib/http";
-import { localOrigin, planToken, resource } from "@/lib/study-connect";
+import { planToken, resource } from "@/lib/study-connect";
 
 export async function POST(req: Request) {
   const origin = req.headers.get("origin") ?? "";
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   if (
     !body ||
     typeof body.item !== "string" ||
-    !["key", "plan", "local"].includes(body.mode)
+    !["key", "plan"].includes(body.mode)
   )
     return bad("Choose a passage and an AI connection.");
   const q = BY_ID.get(body.item);
@@ -35,30 +35,6 @@ export async function POST(req: Request) {
     : "Explain this SAT exercise in under 90 words. Use the supplied answer and explanation. Show the decisive step in plain text.";
   const prompt = annotated && q ? TUTOR_DRAW_SYSTEM + "\n\n" + lessonRequest(q, body.response, q.answer, q.explanation, isCorrect(q, body.response)) +
     (body.followup ? "\nPrior lesson shown to the student: "+JSON.stringify(body.previous ?? "")+"\n\n" + followUpRequest(body.followup) : "") : instruction + " Use ordinary text: write x and 2x, without Markdown, dollar signs, or LaTeX.\n" + JSON.stringify(hint && q ? toPublic(q) : lesson ?? q);
-
-  if (body.mode === "local") {
-    const model = process.env.SCHOLARSAT_OLLAMA_MODEL;
-    const site = localOrigin();
-    const url = new URL(origin);
-    if (!model || model.endsWith(":cloud") || !site || url.protocol !== "http:" ||
-        !["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== new URL(site).port)
-      return bad("The local model is available only on the configured localhost preview.", 403);
-    try {
-      const r = await fetch("http://127.0.0.1:11434/api/chat", {
-        method: "POST", cache: "no-store", headers: { "Content-Type": "application/json" },
-        signal: AbortSignal.any([req.signal, AbortSignal.timeout(90000)]),
-        body: JSON.stringify({ model, stream: false, think: false,
-          options: { temperature: 0.2, num_predict: annotated ? 850 : 180 },
-          messages: [{ role: "user", content: prompt }] }),
-      });
-      if (r.ok) {
-        const data = await r.json();
-        const reply = data.message?.content;
-        if (typeof reply === "string" && reply.trim()) return json({ explanation: reply.trim() });
-      }
-    } catch { /* A stopped model and a timed-out model both allow a retry. */ }
-    return bad("The local tutor did not respond. Check that Ollama is running, then try again.", 503);
-  }
 
   const key = body.mode === "key" ? body.key : await planToken();
   if (

@@ -98,6 +98,8 @@ test("local AI sign-in, browser isolation, consent failure, BYOK and completed i
         headers: { origin, cookie, "Content-Type": "application/json" },
         body: JSON.stringify({ item: "word:provisional", mode, key }),
       });
+    assert.equal((await tutor("local")).status, 400);
+    assert.equal((await tutor("key")).status, 401);
     assert.equal((await tutor("plan")).status, 401);
     assert.deepEqual(await (await tutor("plan", one.cookie)).json(), {
       explanation: "Fixture explanation.",

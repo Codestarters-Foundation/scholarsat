@@ -46,7 +46,17 @@ function Tray({ q, response, answer, explanation, correct }: TutorProps) {
   const cfg = useAiConfig();
   const connection = useTutorConnection();
   const viaStudy = connection.mode !== "provider" && (connection.chosen || cfg === null);
-  const hasCfg = viaStudy || !!cfg;
+  const [planReady,setPlanReady] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (!viaStudy || connection.mode !== "plan") return;
+    const ac = new AbortController();
+    fetch("/api/study/connect",{cache:"no-store",signal:ac.signal}).then(async r=>{
+      const connected = r.ok && (await r.json()).connected === true;
+      if (!ac.signal.aborted) setPlanReady(connected);
+    }).catch(()=>{ if(!ac.signal.aborted) setPlanReady(false); });
+    return ()=>ac.abort();
+  },[viaStudy,connection.mode]);
+  const hasCfg = viaStudy ? (connection.mode==="plan" ? planReady === true : !!connection.key.trim()) : !!cfg;
   function changeConnection() {
     setTutorOpen(null);
     const panel = document.querySelector<HTMLDetailsElement>(".practice-player .study-tutor");
@@ -269,7 +279,7 @@ function Tray({ q, response, answer, explanation, correct }: TutorProps) {
               <ISparkle className="h-4 w-4" />
             </span>
             <p className="text-[15px] font-medium text-ink">Tutor</p>
-            {hasCfg && <span className="text-xs text-ink-2">{viaStudy ? ({local:"On this computer",plan:"My ChatGPT plan",key:"OpenAI API key"}[connection.mode]) : cfg && PROVIDERS[cfg.provider].label}</span>}
+            {hasCfg && <span className="text-xs text-ink-2">{viaStudy ? ({plan:"My ChatGPT plan",key:"OpenAI API key"}[connection.mode]) : cfg && PROVIDERS[cfg.provider].label}</span>}
             <span className="flex-1" />
             {nav}
             <button type="button" onClick={() => setTutorOpen(null)} aria-label="Close tutor" className="rounded-lg p-1.5 text-muted hover:bg-surface-2">
@@ -280,9 +290,9 @@ function Tray({ q, response, answer, explanation, correct }: TutorProps) {
           {!hasCfg ? (
             <div className="rounded-xl border border-line bg-surface p-4">
               <p className="mb-3 text-sm text-ink-2">
-                The tutor draws on the question and walks you through it. It uses your own AI account, which can be free and stays in this browser.
+                Connect your ChatGPT plan or enter a personal API key to get an annotated lesson.
               </p>
-              {cfg === null && <AiConnect />}
+              {viaStudy ? <Button type="button" variant="secondary" onClick={changeConnection}>Choose AI connection</Button> : cfg === null && <AiConnect />}
             </div>
           ) : (
             <>

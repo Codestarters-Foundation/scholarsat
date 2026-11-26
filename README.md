@@ -337,7 +337,7 @@ SAT® is a trademark registered by the College Board, which is not affiliated wi
 
 Open **AI tutor** for a guided Math or Reading and Writing question. You can also ask for a hint before checking any practice question and for an explanation afterward. Vocabulary includes two-step word and evidence practice.
 
-For no-key local inference, run Ollama with an installed model and launch ScholarSAT with `SCHOLARSAT_OLLAMA_MODEL=qwen3.5:9b SITE_URL=http://127.0.0.1:3187 npm run dev -- -H 127.0.0.1 -p 3187`. Choose the name of a locally installed model. The app sends exercises to Ollama on loopback only.
+AI requests require a connected ChatGPT plan or a personal provider API key.
 
 To enable the local ChatGPT plan connection, launch with `SITE_URL=http://127.0.0.1:3187 npm run dev -- -H 127.0.0.1 -p 3187` and open that exact origin. Continue with ChatGPT opens OpenAI's consent flow. The loopback callback verifies PKCE state, nonce, signed identity and grant scopes. The connection lasts until token expiry, disconnect or server restart. Use the tutor to reconnect. For a remotely hosted deployment, check OpenAI's requirements for hosted apps before enabling plan usage.
 

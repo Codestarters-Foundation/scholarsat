@@ -67,8 +67,8 @@ const verify = async () => {
     await page.getByRole("button", {name:"Check answer"}).click();
     await page.getByText("Correct", {exact:true}).waitFor();
     await tutor.getByRole("button",{name:"Continue with ChatGPT"}).waitFor();
-    await tutor.getByLabel("Connection").selectOption("local");
-    await tutor.getByRole("button", {name:"Explain this answer"}).waitFor();
+    assert.equal(await tutor.locator('option[value="local"]').count(),0);
+    assert.equal(await tutor.getByRole("button",{name:"Explain this answer"}).count(),0);
     await page.getByRole("link", {name:"Practice this skill"}).click();
     await page.getByText("Question 1 of 5", {exact:true}).waitFor();
     assert.deepEqual(errors, []);
