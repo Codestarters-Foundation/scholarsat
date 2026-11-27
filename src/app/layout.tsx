@@ -1,12 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { getUser } from "@/lib/auth";
 import { ThemeProvider, type Theme, type AccentColor } from "@/components/ThemeProvider";
 
 // Typography matches Cramzo: CursorGothic for UI, berkeleyMono for timers/code.
 // Inter (400/500) is the fallback until the licensed files are dropped into public/fonts.
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", weight: ["400", "500"], display: "swap" });
+const inter = localFont({
+  src: "./fonts/InterVariable.woff2",
+  variable: "--font-inter",
+  weight: "100 900",
+  display: "swap",
+});
 
 const BRAND_FACES: Record<string, { family: string; weight: number }> = {
   "CursorGothic-Regular.woff2": { family: "CursorGothic", weight: 400 },

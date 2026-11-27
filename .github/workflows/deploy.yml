@@ -23,6 +23,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - name: Block Google Fonts during the production build
+        run: echo '127.0.0.1 fonts.googleapis.com fonts.gstatic.com' | sudo tee -a /etc/hosts
       - run: npm run build
 
   deploy:
