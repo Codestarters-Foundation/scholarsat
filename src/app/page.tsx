@@ -28,7 +28,7 @@ export default async function Landing({searchParams}: {searchParams: Promise<{mo
       </main>
       <footer className="lunar-footer measure">
         <div><strong>ScholarSAT</strong><span>Free SAT practice by <a href="https://codestarters.org">CodeStarters</a>.</span></div>
-        <div className="footer-fine"><details><summary>Access &amp; costs</summary><p id="faq">The question bank and vocabulary practice are free. A free account adds timed tests and saved progress. Optional AI explanations use your own plan or API billing.</p></details><nav aria-label="Footer"><Link href="/resources">SAT resources</Link><a href={repo}>GitHub</a><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></nav></div>
+        <div className="footer-fine"><details><summary>Access &amp; costs</summary><p id="faq">Practice and vocabulary are free. A free account adds timed tests and saved progress. AI costs depend on the provider you choose.</p></details><nav aria-label="Footer"><Link href="/tutor">AI tutor</Link><a href={repo}>GitHub</a><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></nav></div>
       </footer>
     </div>
   );

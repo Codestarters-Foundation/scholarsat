@@ -1,4 +1,5 @@
-import { BY_ID } from "@/lib/bank";
+import { followUpRequest, lessonRequest, TUTOR_DRAW_SYSTEM } from "@/lib/tutor-lesson";
+import { BY_ID, isCorrect, toPublic } from "@/lib/bank";
 import { lessons } from "@/data/context-lessons";
 import { bad, json, rateLimit, clientIp } from "@/lib/http";
 import { planToken, resource } from "@/lib/study-connect";
@@ -23,6 +24,18 @@ export async function POST(req: Request) {
   const q = BY_ID.get(body.item);
   const lesson = lessons.find((l) => "word:" + l.word === body.item);
   if (!lesson && !q) return bad("Exercise unavailable.", 404);
+  const annotated = body.task === "lesson";
+  if (annotated && (!q || typeof body.response !== "string" || body.response.length > 20 ||
+      (body.followup !== undefined && (typeof body.followup !== "string" || body.followup.length > 500)) ||
+      (body.previous !== undefined && (typeof body.previous !== "string" || body.previous.length > 8000))))
+    return bad("Choose a completed exercise and a shorter follow-up.");
+  const hint = body.task === "hint" && !!q;
+  const instruction = hint
+    ? "Give one short hint for the first step. Do not solve the problem, name an answer choice, or give the final value or word. Address the student directly in plain text."
+    : "Explain this SAT exercise in under 90 words. Use the supplied answer and explanation. Show the decisive step in plain text.";
+  const prompt = annotated && q ? TUTOR_DRAW_SYSTEM + "\n\n" + lessonRequest(q, body.response, q.answer, q.explanation, isCorrect(q, body.response)) +
+    (body.followup ? "\nPrior lesson shown to the student: "+JSON.stringify(body.previous ?? "")+"\n\n" + followUpRequest(body.followup) : "") : instruction + " Use ordinary text: write x and 2x, without Markdown, dollar signs, or LaTeX.\n" + JSON.stringify(hint && q ? toPublic(q) : lesson ?? q);
+
   const key = body.mode === "key" ? body.key : await planToken();
   if (
     typeof key !== "string" ||
@@ -55,7 +68,7 @@ export async function POST(req: Request) {
     }
     const result = await fetch(resource + "/responses", {
       method: "POST",
-      signal: AbortSignal.timeout(45000),
+      signal: AbortSignal.any([req.signal, AbortSignal.timeout(45000)]),
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
@@ -68,9 +81,7 @@ export async function POST(req: Request) {
         input: [
           {
             role: "user",
-            content:
-              "Explain this SAT exercise in under 100 words. Show the decisive step and why a tempting alternative fails. Use plain text.\n" +
-              JSON.stringify(lesson ?? q),
+            content: prompt,
           },
         ],
       }),

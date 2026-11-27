@@ -14,12 +14,12 @@ export function generateRWMore(seed = 7171): Question[] {
   const total = SYNTH_MORE.length + CROSS_MORE.length + PURPOSE_MORE.length;
   const slots = r.shuffle(Array.from({ length: total }, (_, i) => i % 4));
   let n = 0;
-  const add = (o: Omit<Question, "id" | "section" | "type" | "choices" | "answer" | "explanation"> & { right: string; wrong: string[]; why: string }) => {
+  const add = (o: Omit<Question, "id" | "section" | "type" | "choices" | "answer" | "explanation"> & { id?: string; right: string; wrong: string[]; why: string }) => {
     const others = r.shuffle(o.wrong.slice(0, 3));
     const slot = slots[n++];
     const choices = [...others.slice(0, slot), o.right, ...others.slice(slot)];
     out.push({
-      id: hashId("r", (o.passage ?? "") + "|" + o.stem + "|" + o.right),
+      id: o.id ?? hashId("r", (o.passage ?? "") + "|" + o.stem + "|" + o.right),
       section: "rw", domain: o.domain, skill: o.skill, difficulty: o.difficulty, type: "mcq",
       passage: o.passage, passage2: o.passage2, stem: o.stem, choices,
       answer: LETTERS[choices.indexOf(o.right)], explanation: o.why,
@@ -27,13 +27,13 @@ export function generateRWMore(seed = 7171): Question[] {
   };
   for (const s of SYNTH_MORE) {
     add({
-      domain: "Expression of Ideas", skill: "Rhetorical Synthesis", difficulty: s.d,
+      id: s.id, domain: "Expression of Ideas", skill: "Rhetorical Synthesis", difficulty: s.d,
       passage: SYNTH_INTRO + s.notes.map((n) => "• " + n).join("\n"),
       stem: `The student wants to ${s.goal}. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
       right: s.right, wrong: s.wrong, why: s.why,
     });
   }
   for (const it of CROSS_MORE) add({ domain: "Craft and Structure", skill: "Cross-Text Connections", difficulty: it.d, passage: it.passage, passage2: it.passage2, stem: it.stem, right: it.right, wrong: it.wrong, why: it.why });
-  for (const it of PURPOSE_MORE) add({ domain: "Craft and Structure", skill: "Text Structure and Purpose", difficulty: it.d, passage: it.passage, stem: it.stem, right: it.right, wrong: it.wrong, why: it.why });
+  for (const it of PURPOSE_MORE) add({ id: it.id, domain: "Craft and Structure", skill: "Text Structure and Purpose", difficulty: it.d, passage: it.passage, stem: it.stem, right: it.right, wrong: it.wrong, why: it.why });
   return out;
 }

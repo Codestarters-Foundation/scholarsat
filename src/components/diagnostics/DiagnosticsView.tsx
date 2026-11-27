@@ -289,7 +289,7 @@ function History({ rows, total, truncated, now }: { rows: HistoryRow[]; total: n
   return (
     <section>
       <div className="grid grid-cols-2 gap-3 rounded-2xl border border-line bg-bg p-4 shadow-card sm:grid-cols-3 lg:grid-cols-[repeat(5,minmax(0,1fr))_auto] lg:items-end">
-        <Select label="Source" value={source} onChange={setSource}><option value="all">All Sources</option><option value="practice">Question Bank</option><option value="test">Practice Tests</option></Select>
+        <Select label="Source" value={source} onChange={setSource}><option value="all">All Sources</option><option value="practice">Practice</option><option value="test">Practice Tests</option></Select>
         <Select label="Subject" value={subject} onChange={setSubject}><option value="all">All Subjects</option><option value="math">Math</option><option value="rw">Reading &amp; Writing</option></Select>
         <Select label="Result" value={result} onChange={setResult}><option value="all">All Results</option><option value="correct">Correct</option><option value="incorrect">Incorrect</option></Select>
         <label className="grid min-w-0 gap-1.5 text-sm font-medium">From Date<input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="w-full min-w-0 rounded-lg border border-line-strong px-3 py-1.5 text-sm font-normal outline-none focus:border-red" /></label>
@@ -321,7 +321,7 @@ function History({ rows, total, truncated, now }: { rows: HistoryRow[]; total: n
                 <article className="overflow-hidden rounded-2xl border border-line bg-bg shadow-card">
                   <button onClick={() => setClosed((c) => { const n = new Set(c); if (n.has(s.key)) n.delete(s.key); else n.add(s.key); return n; })} aria-expanded={open} className={`flex w-full items-center gap-3 border-t-4 px-5 py-3 text-left text-white ${s.source === "test" ? "border-black bg-inverse" : "border-red-700 bg-accent-fill"}`}>
                     <IChevD className={`h-5 w-5 shrink-0 transition-transform ${open ? "" : "-rotate-90"}`} />
-                    <span className="text-[16px] font-medium uppercase tracking-[0.02em]">{s.source === "test" ? "Practice test" : "Question bank"}</span>
+                    <span className="text-[16px] font-medium uppercase tracking-[0.02em]">{s.source === "test" ? "Practice test" : "Practice"}</span>
                     <span className="rounded-md bg-black/15 px-2 py-0.5 text-xs font-medium">{SECTION_LABEL[s.section]}</span>
                     <span className="ml-auto whitespace-nowrap text-[13px] text-white/85">{fmtTime(s.rows[0].t)} <span className="hidden sm:inline">({ago(s.rows[0].t, now)})</span></span>
                   </button>
@@ -342,7 +342,7 @@ function History({ rows, total, truncated, now }: { rows: HistoryRow[]; total: n
                         <li key={`${r.id}-${i}`} className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-1 px-5 py-3 text-sm xl:grid-cols-[110px_80px_150px_110px_minmax(0,1fr)_170px]">
                           <span>{r.correct ? <Badge tone="ok"><ICheckCircle className="mr-1 h-3.5 w-3.5" />Correct</Badge> : <Badge tone="bad"><IXCircle className="mr-1 h-3.5 w-3.5" />Incorrect</Badge>}</span>
                           <span className="text-xs text-muted xl:text-sm"><Badge tone={r.section === "math" ? "red" : "gold"}>{r.section === "math" ? "Math" : "R&W"}</Badge></span>
-                          <span className="col-span-2 min-w-0 truncate xl:col-span-1"><span className="block truncate font-medium">{r.source === "test" ? "Practice test" : "Question bank"}</span><span className="block truncate text-xs text-muted">{r.skill}</span></span>
+                          <span className="col-span-2 min-w-0 truncate xl:col-span-1"><span className="block truncate font-medium">{r.source === "test" ? "Practice test" : "Practice"}</span><span className="block truncate text-xs text-muted">{r.skill}</span></span>
                           <button onClick={() => copy(r.id)} title="Copy a link to this question" className="w-fit rounded-md font-mono text-[13px] text-ink-2 hover:bg-surface-2">{copied === r.id ? "Copied!" : r.id}</button>
                           <Link prefetch={false} href={`/practice/play?ids=${r.id}&title=Review`} className="group col-span-2 flex min-w-0 items-center gap-1.5 xl:col-span-1">
                             <span className="min-w-0 truncate text-ink-2 group-hover:text-red">{r.preview}</span>

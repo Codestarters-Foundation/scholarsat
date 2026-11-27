@@ -4,7 +4,7 @@ import { useSyncExternalStore } from "react";
 /**
  * Which question has its tutor open. A tiny shared store so the "Teach me" button (inside the result card)
  * and the tutor tray (below the question) can talk without PracticePlayer holding any new state.
- * Storing the question id means moving to the next question closes the tutor with no cleanup code.
+ * PracticePlayer clears the open lesson when the student leaves the question.
  */
 let openFor: string | null = null;
 const subs = new Set<() => void>();

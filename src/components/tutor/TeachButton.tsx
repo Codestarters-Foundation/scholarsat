@@ -15,7 +15,7 @@ export function TeachButton({ qid, correct = true, saved = false }: { qid: strin
       {!correct && saved && <MissReason key={qid} qid={qid} />}
       <div className="flex">
         <Button type="button" variant="secondary" size="sm" aria-expanded={open} onClick={() => setTutorOpen(open ? null : qid)}>
-          <ISparkle className="h-4 w-4" /> {open ? "Close tutor" : "Teach me this"}
+          <ISparkle className="h-4 w-4" /> {open ? "Close tutor" : "Annotated AI lesson"}
         </Button>
       </div>
     </div>

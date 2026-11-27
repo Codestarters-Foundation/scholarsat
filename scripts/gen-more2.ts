@@ -18,7 +18,7 @@ function place<T extends { right: string; wrong: string[] }>(items: T[], seed: n
 export function generateRWMore2(seed = 9191): Question[] {
   const choices = place(RW_MORE2, seed);
   return RW_MORE2.map((it, i) => ({
-    id: hashId("r", it.passage + "|" + it.stem + "|" + it.right),
+    id: it.id ?? hashId("r", it.passage + "|" + it.stem + "|" + it.right),
     section: "rw", domain: it.domain, skill: it.skill, difficulty: it.d, type: "mcq",
     passage: it.passage, stem: it.stem, choices: choices[i],
     answer: LETTERS[choices[i].indexOf(it.right)], explanation: it.why,
@@ -33,8 +33,8 @@ export function generateMathMore2(seed = 9292): Question[] {
     const base = { section: "math" as const, domain: it.domain, skill: it.skill, difficulty: it.d, stem: it.stem, table: it.table, explanation: it.why };
     if (it.right) {
       const choices = placed[k++];
-      return { ...base, id: hashId("m", it.stem + "|" + it.right), type: "mcq" as const, choices, answer: LETTERS[choices.indexOf(it.right)] };
+      return { ...base, id: it.id ?? hashId("m", it.stem + "|" + it.right), type: "mcq" as const, choices, answer: LETTERS[choices.indexOf(it.right)] };
     }
-    return { ...base, id: hashId("m", it.stem + "|" + it.answer), type: "spr" as const, answer: it.answer! };
+    return { ...base, id: it.id ?? hashId("m", it.stem + "|" + it.answer), type: "spr" as const, answer: it.answer! };
   });
 }

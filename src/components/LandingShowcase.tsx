@@ -14,9 +14,9 @@ const TABS = [
   },
   {
     id: "bank",
-    label: "Question bank",
+    label: "Practice",
     src: "/landing/bank.webp",
-    alt: "The question bank, with an accuracy ring and a practice button on every math skill",
+    alt: "Practice, with an accuracy ring and a practice button on every math skill",
     Icon: IBook,
   },
   {

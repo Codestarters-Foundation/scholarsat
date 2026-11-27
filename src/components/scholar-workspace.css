@@ -1,5 +1,7 @@
 @import "./practice-type.css";
 
+.workspace-skip { position:fixed; left:12px; top:12px; z-index:80; transform:translateY(calc(-100% - 16px)); background:var(--bg); color:var(--ink); border:2px solid var(--red); border-radius:6px; padding:10px 14px; }
+.workspace-skip:focus { transform:none; }
 .scholar-workspace { font-family:"Mona Sans",system-ui,sans-serif; }
 .scholar-workspace > aside { border-inline-start:5px solid var(--accent-fill); }
 .workspace-index { display:grid; position:relative; }
@@ -40,8 +42,8 @@
   html:not(.reduce-motion) .workspace-index::before { transition:transform .28s cubic-bezier(.22,.75,.2,1); }
   html:not(.reduce-motion) :is(.workspace-title h1,.practice-index h1,.account-signature,.question-leaf > section > div:first-child) { animation:ink-arrive .32s cubic-bezier(.2,.72,.22,1) backwards; }
   @supports(animation-timeline:view()) {
-    html:not(.reduce-motion) :is(.skill-domain header,.exam-program li,.study-section > header) { position:relative; }
-    html:not(.reduce-motion) :is(.skill-domain header,.exam-program li,.study-section > header)::before {
+    html:not(.reduce-motion) :is(.exam-program li,.study-section > header) { position:relative; }
+    html:not(.reduce-motion) :is(.exam-program li,.study-section > header)::before {
       content:""; position:absolute; left:0; right:0; top:0; height:1px; background:var(--line-strong); transform-origin:left;
       animation:ink-rule linear both; animation-timeline:view(); animation-range:entry 0% cover 18%;
     }
@@ -49,3 +51,22 @@
 }
 @keyframes ink-arrive { from { transform:translateY(.3em); clip-path:inset(0 0 30% 0); } to { transform:none; clip-path:inset(0); } }
 @keyframes ink-rule { from {transform:scaleX(0)} to {transform:scaleX(1)} }
+
+.workspace-index-link { border-radius:7px; }
+.workspace-index-link[aria-current] { background:var(--red-50); font-weight:580; }
+.workspace-index:has([aria-current])::before { width:3px; border-radius:2px; }
+.scholar-workspace .workspace-title p { color:var(--ink-2); max-width:62ch; line-height:1.5; }
+.scholar-workspace .study-section > header { min-height:58px; }
+.scholar-workspace :is(.workspace-index-link,.source-link,.record-link):focus-visible { outline:2px solid var(--red); outline-offset:-2px; }
+.workspace-phone { max-height:100dvh; overflow:auto; }
+.workspace-phone .mobile-nav-trigger { display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;min-width:44px; }
+.workspace-phone .mobile-current { color:var(--ink-2);font-size:14px;font-weight:550; }
+.workspace-phone #workspace-mobile-links { background:var(--bg); }
+@media (hover:hover) and (pointer:fine) {
+  .workspace-index-link:not([aria-current]):hover { background:var(--surface); }
+}
+@media(prefers-reduced-motion:no-preference) {
+  html:not(.reduce-motion) .workspace-index-link { transition:color 120ms var(--ease-out),background-color 120ms var(--ease-out); }
+  html:not(.reduce-motion) .workspace-phone #workspace-mobile-links { transform-origin:top; animation:menu-in 160ms var(--ease-out); }
+}
+@keyframes menu-in { from { opacity:0;transform:translateY(-4px); } }

@@ -1,4 +1,5 @@
 // Run against the local build with Playwright on NODE_PATH and Chrome installed.
+/* eslint-disable @typescript-eslint/no-require-imports -- CommonJS runner resolves Playwright from NODE_PATH. */
 const assert = require("node:assert/strict");
 const { chromium } = require("playwright");
 
@@ -46,8 +47,8 @@ async function verify() {
       assert.equal(await page.getByText(/Several ancient cultures developed calendars/).count(),1);
       const headerNav = page.getByRole("navigation", {name:width < 1024 ? "Mobile navigation" : "Main navigation"});
       if (width < 1024) await page.getByLabel("Navigation menu").click();
-      assert.deepEqual(await headerNav.getByRole("link").allTextContents(), ["Question bank", "Mock tests", "Tools", "FAQ", " GitHub", ...(width < 1024 ? ["Log in"] : [])]);
-      assert.equal(await headerNav.getByRole("link", {name:"Question bank"}).getAttribute("href"), "/practice/play?section=rw&limit=5");
+      assert.deepEqual(await headerNav.getByRole("link").allTextContents(), ["Practice", "AI tutor", "Mock tests", "Tools", "FAQ", " GitHub", ...(width < 1024 ? ["Log in"] : [])]);
+      assert.equal(await headerNav.getByRole("link", {name:"Practice"}).getAttribute("href"), "/practice");
       if (width < 1024) await page.keyboard.press("Escape");
       const plate = page.locator(".exposure-origin figure").last();
       const transform = () => plate.evaluate(el => getComputedStyle(el).transform);
@@ -190,7 +191,7 @@ async function verify() {
       await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
       await settle(page);
       assert.equal(await folio.getAttribute("data-spread"),"4");
-      const entry = page.getByRole("link",{name:"Open the question bank"});
+      const entry = page.getByRole("link",{name:"Start practicing"});
       assert.equal(await entry.getAttribute("href"), "/practice/play?section=rw&limit=5");
       await entry.click();
       await page.waitForURL("**/practice/play?**");
@@ -225,7 +226,7 @@ async function verify() {
     assert.equal(await cinema.locator(".atlas-stage").evaluate(el => getComputedStyle(el).position),"sticky");
     await cinema.goto(full.href + "#enter");
     await cinema.locator('.folio-stage[data-spread="4"]').waitFor();
-    await cinema.getByRole("link",{name:/Open the question bank/}).click();
+    await cinema.getByRole("link",{name:/Start practicing/}).click();
     await cinema.getByText("Question 1 of 5",{exact:true}).first().waitFor();
     console.log("Full-motion visit and direct question-bank entry passed");
     await cinema.close();

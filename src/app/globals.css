@@ -670,3 +670,22 @@ html.reduce-motion *:not(:where(.lunar-home[data-full-motion] *))::after {
 .studio button:hover:enabled,.tutor button:hover:enabled{border-color:var(--red)}.studio button[data-answer=true]{border-color:var(--ok);background:var(--ok-50)}
 .studio-feedback,.tutor{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}.studio-feedback button{margin-top:10px}
 .tutor{font-size:14px}.tutor summary{cursor:pointer;font-weight:600}.tutor p,.tutor label{display:block;margin:10px 0}.tutor input{width:100%}.tutor-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.tutor a{text-decoration:underline}
+.tutor { background:var(--bg); border:1px solid var(--line-strong); border-radius:9px; padding:0; color:var(--ink); }
+.tutor > summary { display:flex; align-items:center; gap:9px; list-style:none; min-height:46px; padding:10px 15px; font-size:16px; }
+.tutor summary::-webkit-details-marker { display:none; }
+.tutor summary svg { width:18px; height:18px; color:var(--red); }
+.tutor summary svg:last-child { margin-left:auto; }
+.tutor[open] summary svg:last-child { transform:rotate(180deg); }
+.tutor-body { padding:0 15px 14px; }
+.tutor-body > label:first-child { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+.tutor-body select { color:var(--ink); background:var(--surface); max-width:100%; font-size:16px; }
+.tutor-body .tutor-ask { background:var(--accent-fill); color:white; border-color:var(--accent-fill); min-height:44px; font-weight:550; }
+.tutor-ask:disabled { opacity:.55; }
+.tutor-body [role="status"]:empty { margin:0; }
+.tutor-body [role="status"]:not(:empty) { border-left:2px solid var(--red); padding-left:12px; line-height:1.55; font-size:16px; }
+.guided-margin > .tutor { margin-top:0; border-top:3px solid var(--accent-fill); }
+@media(prefers-reduced-motion:no-preference) {
+  html:not(.reduce-motion) .tutor summary:not(:focus-visible) svg:last-child { transition:transform 160ms var(--ease-out); }
+  html:not(.reduce-motion) .tutor-ask:active:not(:focus-visible) { transform:scale(.98); }
+  html:not(.reduce-motion) .tutor-ask { transition:transform 120ms var(--ease-out); }
+}

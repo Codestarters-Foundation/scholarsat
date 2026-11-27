@@ -12,7 +12,7 @@ export default function Privacy() {
       <h2>What we don&apos;t do</h2>
       <p>We don&apos;t sell your data, run advertising, or use third-party tracking scripts. A session cookie keeps you logged in.</p>
       <h2>Optional AI tutor</h2>
-      <p>When you request an AI explanation, ScholarSAT sends the exercise to OpenAI using your selected credential. API keys stay in tab memory and pass through the server for that request. The local ChatGPT connection uses a separate HTTP-only cookie. Its credentials stay in server memory for this session. Disconnect from the tutor or manage access in ChatGPT settings.</p>
+      <p>If you choose a ChatGPT plan or an OpenAI key in the tutor, ScholarSAT sends the exercise to OpenAI. API keys stay in tab memory and pass through the server for that request. The local ChatGPT connection uses a separate HTTP-only cookie. Its credentials stay in server memory for this session. Disconnect from the tutor or manage access in ChatGPT settings. When you choose Other AI providers, the browser sends the exercise and follow-ups directly to your selected provider using the key saved in that browser.</p>
       <h2>Deleting your data</h2>
       <p>You can reset your progress or permanently delete your account at any time from Settings. Deletion removes your account and all associated data.</p>
       <h2>Open source</h2>

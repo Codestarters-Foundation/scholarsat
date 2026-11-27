@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../ui";
 import { IArrowL, IArrowR, IRefresh, ISparkle, IX } from "../icons";
+import { useTutorConnection } from "../Tutor";
 import { AiConnect } from "../AiConnect";
 import { MARK_CSS, MarkLayers, type Placed } from "./TutorMarks";
 import { Whiteboard } from "./Whiteboard";
@@ -43,7 +44,24 @@ export function TutorTray(props: TutorProps) {
 
 function Tray({ q, response, answer, explanation, correct }: TutorProps) {
   const cfg = useAiConfig();
-  const hasCfg = !!cfg;
+  const connection = useTutorConnection();
+  const viaStudy = connection.mode !== "provider";
+  const [planReady,setPlanReady] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (!viaStudy || connection.mode !== "plan") return;
+    const ac = new AbortController();
+    fetch("/api/study/connect",{cache:"no-store",signal:ac.signal}).then(async r=>{
+      const connected = r.ok && (await r.json()).connected === true;
+      if (!ac.signal.aborted) setPlanReady(connected);
+    }).catch(()=>{ if(!ac.signal.aborted) setPlanReady(false); });
+    return ()=>ac.abort();
+  },[viaStudy,connection.mode]);
+  const hasCfg = viaStudy ? (connection.mode==="plan" ? planReady === true : !!connection.key.trim()) : !!cfg;
+  function changeConnection() {
+    setTutorOpen(null);
+    const panel = document.querySelector<HTMLDetailsElement>(".practice-player .study-tutor");
+    if (panel) { panel.open = true; panel.scrollIntoView({block:"center"}); panel.querySelector("select")?.focus({preventScroll:true}); }
+  }
   const ctx = useMemo(() => ({ answer, choices: q.choices?.length ?? 0 }), [answer, q.choices]);
 
   const [turn, setTurn] = useState<Turn | null>(null);
@@ -69,7 +87,7 @@ function Tray({ q, response, answer, explanation, correct }: TutorProps) {
   const ask = useCallback(
     async (label: string, content: string) => {
       const c = cfgRef.current;
-      if (!c) return;
+      if (!c && !viaStudy) return;
       abort.current?.abort();
       const ac = new AbortController();
       abort.current = ac;
@@ -92,7 +110,17 @@ function Tray({ q, response, answer, explanation, correct }: TutorProps) {
           },
         });
       try {
-        try {
+        if (viaStudy) {
+          const r = await fetch("/api/study/tutor", {
+            method:"POST", headers:{"Content-Type":"application/json"}, signal:ac.signal,
+            body:JSON.stringify({item:q.id, task:"lesson", response, followup:label || undefined,
+              previous:label ? history.current.filter(m=>m.role==="assistant").at(-1)?.content.slice(0,8000) : undefined, mode:connection.mode,
+              key:connection.mode==="key" ? connection.key : undefined}),
+          });
+          const data = await r.json();
+          if (!r.ok) throw new AiError(data.error || "Unable to get the lesson.");
+          acc = data.explanation;
+        } else if (c) try {
           await attempt(c);
         } catch (e) {
           // Providers retire models. If ours is gone, switch to one that works and try once more.
@@ -114,7 +142,7 @@ function Tray({ q, response, answer, explanation, correct }: TutorProps) {
         setTurn((t) => ({ key, label, status: "error", steps: t && t.key === key ? t.steps : [], error: msg }));
       }
     },
-    [ctx],
+    [ctx, viaStudy, q.id, response, connection.mode, connection.key],
   );
 
   const start = useRef(() => {});
@@ -251,7 +279,7 @@ function Tray({ q, response, answer, explanation, correct }: TutorProps) {
               <ISparkle className="h-4 w-4" />
             </span>
             <p className="text-[15px] font-medium text-ink">Tutor</p>
-            {cfg && <span className="hidden text-xs text-faint sm:inline">{PROVIDERS[cfg.provider].label}</span>}
+            {hasCfg && <span className="text-xs text-ink-2">{viaStudy ? ({plan:"My ChatGPT plan",key:"OpenAI API key"}[connection.mode]) : cfg && PROVIDERS[cfg.provider].label}</span>}
             <span className="flex-1" />
             {nav}
             <button type="button" onClick={() => setTutorOpen(null)} aria-label="Close tutor" className="rounded-lg p-1.5 text-muted hover:bg-surface-2">
@@ -259,16 +287,16 @@ function Tray({ q, response, answer, explanation, correct }: TutorProps) {
             </button>
           </div>
 
-          {!cfg ? (
+          {!hasCfg ? (
             <div className="rounded-xl border border-line bg-surface p-4">
               <p className="mb-3 text-sm text-ink-2">
-                The tutor draws on the question and walks you through it. It uses your own AI account, which can be free and stays in this browser.
+                Connect your ChatGPT plan or enter a personal API key to get an annotated lesson.
               </p>
-              {cfg === null && <AiConnect />}
+              {viaStudy ? <Button type="button" variant="secondary" onClick={changeConnection}>Choose AI connection</Button> : cfg === null && <AiConnect />}
             </div>
           ) : (
             <>
-              {settings && (
+              {settings && !viaStudy && (
                 <div className="rounded-xl border border-line bg-surface p-4">
                   <AiConnect onConnected={() => setSettings(false)} />
                 </div>
@@ -360,7 +388,7 @@ function Tray({ q, response, answer, explanation, correct }: TutorProps) {
                 )}
                 <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
                   <p className="text-[11px] text-faint">AI can be wrong. If it disagrees with the official explanation, trust the official one.</p>
-                  <button type="button" onClick={() => setSettings((v) => !v)} aria-expanded={settings} className="text-[11px] text-muted hover:text-red">
+                  <button type="button" onClick={viaStudy ? changeConnection : () => setSettings((v) => !v)} aria-expanded={viaStudy ? undefined : settings} className="text-[11px] text-muted hover:text-red">
                     AI settings
                   </button>
                 </div>

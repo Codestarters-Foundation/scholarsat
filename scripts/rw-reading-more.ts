@@ -6,7 +6,7 @@
  *  changes the answer order of any other question. */
 import type { ReadingItem } from "./rw-reading";
 
-export type SynthItem = { notes: string[]; goal: string; right: string; wrong: string[]; why: string; d: ReadingItem["d"] };
+export type SynthItem = { id?: string; notes: string[]; goal: string; right: string; wrong: string[]; why: string; d: ReadingItem["d"] };
 
 /** Notes + a goal → the sentence that best does the job. Each wrong choice is accurate or plausible but misses the goal. */
 export const SYNTH_MORE: SynthItem[] = [
@@ -45,20 +45,21 @@ export const SYNTH_MORE: SynthItem[] = [
     d: "M",
   },
   {
+    id: "r9a096277",
     notes: [
       "Suspension bridges hang their roadways from cables strung between tall towers.",
       "Arch bridges carry loads through a curved structure that pushes outward at its ends.",
-      "The longest suspension bridges span more than 2,000 meters.",
-      "The longest arch bridges span about 550 meters.",
+      "A design catalog lists a suspension bridge with a main span of 2,000 meters.",
+      "The same catalog lists an arch bridge with a main span of 550 meters.",
     ],
-    goal: "contrast the greatest lengths of two types of bridges",
-    right: "The longest arch bridges span about 550 meters, while the longest suspension bridges span more than 2,000.",
+    goal: "contrast the main spans of the two bridges in the catalog",
+    right: "The catalog’s suspension bridge has a main span of 2,000 meters, compared with 550 meters for its arch bridge.",
     wrong: [
       "Suspension bridges hang their roadways from cables, while arch bridges carry loads through a curved structure that pushes outward.",
-      "The longest suspension bridges, which hang their roadways from cables strung between tall towers, span more than 2,000 meters.",
+      "The suspension bridge in the catalog has a main span of 2,000 meters and hangs its roadway from cables.",
       "Arch bridges cannot span long distances because their curved structure pushes outward at its ends.",
     ],
-    why: "The goal is a contrast in length. One choice contrasts the designs instead, one gives the length of only one type, and one claims a cause the notes do not state.",
+    why: "Compare the same measurement for both examples. The two span lengths meet that goal. The structural comparison describes how bridges carry loads, and the notes do not establish a limit on all arch bridges.",
     d: "E",
   },
   {
@@ -109,7 +110,7 @@ export const SYNTH_MORE: SynthItem[] = [
       "Lakeport and Dunmore each launched a bike-share program in 2021, and their systems have 40 and 38 stations, respectively.",
       "Lakeport's program has more stations than Dunmore's, so it is probably used more often.",
     ],
-    why: "How often the programs are used is shown by rides per day. The other choices are about who runs them, when they started and how many stations they have, and the last one draws a conclusion the notes do not support.",
+    why: "Use the measure that matches the goal: each program records about 1,500 rides per day. A larger station network need not attract more riders. Launch dates and operators do not measure use.",
     d: "M",
   },
   {
@@ -143,7 +144,7 @@ export const SYNTH_MORE: SynthItem[] = [
       "Wanjiru Kamau, an engineer from Kenya, has contributed to improving life in many communities.",
       "Kenya has many engineers working on water problems, including Wanjiru Kamau, who designed a filter that is now widely used.",
     ],
-    why: "A good introduction says who she is and what she accomplished. One choice never says who she is, and the other two are vague or make claims (many communities, many engineers) that the notes do not support.",
+    why: "Look for both the person's role and the specific innovation. The strongest introduction identifies Kamau as an engineer and explains what her filter does. A description of the filter alone omits her profession, and a general statement about improving lives omits the invention.",
     d: "M",
   },
 ];
@@ -182,11 +183,11 @@ export const CROSS_MORE: ReadingItem[] = [
     stem: "Based on the texts, what would Pérez and Oda most likely agree on?",
     right: "Preparing to explain material to someone else can help a student learn it.",
     wrong: [
-      "Students learn best when teachers avoid giving quizzes and rely on classroom discussion instead.",
-      "Re-reading a text is a waste of time for every student in every subject.",
-      "Students should study alone because working with a classmate is distracting.",
+      "Teaching helps mainly because a classmate can immediately correct the student's mistakes.",
+      "Rereading prepares students to teach by helping them notice gaps in their understanding.",
+      "Recognizing a gap in understanding matters more than organizing material for someone else.",
     ],
-    why: "Both texts connect explaining or teaching material to another person with better learning. Neither says anything about avoiding quizzes, neither claims re-reading is useless for everyone (Oda only found that re-readers scored lower in one test), and neither discourages studying with others.",
+    why: "Both writers connect preparing an explanation with learning. Pérez emphasizes noticing gaps; Oda suggests organizing ideas. Neither compares those mechanisms, credits a partner's corrections, or claims that rereading itself produces the improvement.",
     d: "E",
   },
   {
@@ -199,13 +200,13 @@ export const CROSS_MORE: ReadingItem[] = [
       "Text 1 treats the rail line as irrelevant to the town's growth, whereas Text 2 treats it as the only cause of that growth.",
       "Text 1 emphasizes flour production, whereas Text 2 emphasizes grain shipments.",
     ],
-    why: "Banerjee points to the rail line and distant grain markets; Ortega points to the flour mill and the jobs it created. The last wrong choice swaps the two emphases, and neither text says the town grew slowly or that the rail line was the only cause.",
+    why: "Banerjee points to the rail line and distant grain markets; Ortega points to the flour mill and the jobs it created. Attributing the mill to Text 1 reverses the explanations. Both writers accept that the town grew rapidly; their dispute concerns its cause.",
     d: "M",
   },
 ];
 
 /** Text Structure and Purpose. */
-export const PURPOSE_MORE: ReadingItem[] = [
+export const PURPOSE_MORE: (ReadingItem & { id?: string })[] = [
   {
     passage: "Many people assume that the loudest sounds in a forest come from its largest animals. Yet researchers who recorded a woodland at dawn found that the most intense sounds came from insects no longer than a thumbnail. These insects produce sound by vibrating a drum-like membrane on their abdomens, a method that is far more efficient than a mammal's vocal cords.",
     stem: "Which choice best describes the function of the second sentence in the text as a whole?",
@@ -219,7 +220,8 @@ export const PURPOSE_MORE: ReadingItem[] = [
     d: "M",
   },
   {
-    passage: "The following text is adapted from a short story written for ScholarSAT.\nWhen the ferry finally docked, Mireille did not hurry to the gangway as the other passengers did. She stayed where she was, her suitcase between her feet, and watched strangers embrace on the pier. For weeks she had rehearsed this arrival—what she would say, how she would stand—but now every sentence seemed to have left her. When a porter asked whether she needed help, she heard herself answer, a little too brightly, that she was only waiting for someone.",
+    id: "rd1c4bc91",
+    passage: "The following passage is from an original short story.\nWhen the ferry finally docked, Mireille did not hurry to the gangway as the other passengers did. She stayed where she was, her suitcase between her feet, and watched strangers embrace on the pier. For weeks she had rehearsed this arrival—what she would say, how she would stand—but now every sentence seemed to have left her. When a porter asked whether she needed help, she heard herself answer, a little too brightly, that she was only waiting for someone.",
     stem: "Which choice best states the main purpose of the text?",
     right: "To convey a character's nervousness by contrasting her careful preparation with her behavior on arrival.",
     wrong: [

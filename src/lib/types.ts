@@ -5,6 +5,9 @@ export type Table = { caption?: string; headers: string[]; rows: (string | numbe
 
 export interface Question {
   id: string;
+  collection?: "november-set" | "skill-workshop";
+  /** Parallel questions drawing on a common stimulus or solution method. */
+  family?: string;
   section: Section;
   domain: string;
   skill: string;
