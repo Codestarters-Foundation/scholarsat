@@ -1,29 +1,46 @@
-.study-tutor { overflow: hidden; border-radius: 12px; box-shadow: 0 2px 0 var(--surface-2); }
-.study-tutor > summary { min-height: 50px; border-bottom: 1px solid transparent; }
-.study-tutor[open] > summary { border-bottom-color: var(--line); }
-.study-tutor .tutor-body { padding: 16px; }
-.study-tutor .connection-label { display: block; margin: 0 0 8px; color: var(--ink-2); font-size: 13px; font-weight: 580; }
-.connection-pick { position: relative; display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 9px; padding: 11px; }
-.connection-pick > svg:first-child { width: 21px; height: 21px; color: var(--red); }
-.connection-pick > svg:last-of-type { width: 16px; height: 16px; }
-.connection-pick select { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
-.connection-pick:focus-within { outline:2px solid var(--red); outline-offset:3px; }
-.connection-pick strong { display:block; font-size:16px; color:var(--ink); font-weight:600; line-height:1.2; }
-.connection-pick small { display:block; margin-top:3px; font-size:13px; color:var(--ink-2); }
-.study-tutor .connection-note { color:var(--ink-2); line-height:1.5; margin:10px 0 12px; }
-.study-tutor .tutor-ask { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; min-height:44px; border-radius:8px; }
-.study-tutor .tutor-ask svg, .connection-link svg { width:16px; height:16px; }
-.study-tutor button.connection-link, .study-tutor a.connection-link { border:0; padding:8px 0; min-height:44px; display:inline-flex; align-items:center; gap:7px; color:var(--red); text-decoration:none; font-weight:550; }
-.study-tutor .connection-foot { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-top:8px; border-top:1px solid var(--line); }
-.study-tutor .connection-foot:empty { display:none; }
-.study-tutor .connection-key input { display:block; margin-top:5px; background:var(--bg); }
-.study-tutor .connection-answer { color:var(--ink); overflow-wrap:anywhere; }
+@font-face {
+  font-family: "Mona Sans";
+  src: url("/fonts/mona-sans-wdth.woff2") format("woff2");
+  font-weight: 200 900;
+  font-stretch: 75% 125%;
+  font-display: swap;
+}
+
+/* AI tutor panel: a clear card with a coloured top edge, matching the other cards in the app. */
+.tutor.study-tutor { overflow: hidden; margin-top: 18px; padding: 0; background: var(--bg); border: 1px solid var(--line); border-top: 4px solid var(--accent-fill); border-radius: 16px; box-shadow: var(--shadow-card); font-size: 15px; }
+.tutor.study-tutor > summary { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 12px 18px; font-size: 16px; font-weight: 500; color: var(--ink); cursor: pointer; list-style: none; }
+.tutor.study-tutor > summary::-webkit-details-marker { display: none; }
+.tutor.study-tutor > summary svg:first-child { width: 20px; height: 20px; color: var(--red); }
+.tutor.study-tutor > summary svg:last-child { width: 18px; height: 18px; margin-left: auto; color: var(--muted); transition: transform 160ms var(--ease-out); }
+.tutor.study-tutor[open] > summary svg:last-child { transform: rotate(180deg); }
+.tutor.study-tutor .tutor-body { display: grid; gap: 12px; padding: 0 18px 18px; }
+.tutor.study-tutor .tutor-body > * { margin: 0; }
+.tutor.study-tutor .connection-label { display: grid; gap: 6px; color: var(--muted); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+.connection-pick { position: relative; display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; text-transform: none; letter-spacing: 0; }
+.connection-pick > svg:first-child { width: 20px; height: 20px; color: var(--red); }
+.connection-pick > svg:last-of-type { width: 16px; height: 16px; color: var(--muted); }
+.connection-pick select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.connection-pick:focus-within { outline: 2px solid var(--red); outline-offset: 2px; }
+.connection-pick strong { display: block; font-size: 15px; font-weight: 500; color: var(--ink); line-height: 1.25; }
+.connection-pick small { display: block; margin-top: 2px; font-size: 13px; font-weight: 400; color: var(--muted); }
+.tutor.study-tutor .connection-note { color: var(--muted); font-size: 14px; line-height: 1.5; }
+.tutor.study-tutor .tutor-ask { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 46px; padding: 0 16px; border-radius: 12px; font-weight: 500; background: var(--accent-fill); color: #fff; border: 0; border-bottom: 3px solid var(--red-700); }
+.tutor.study-tutor .tutor-ask:disabled { opacity: .55; cursor: not-allowed; }
+.tutor.study-tutor .tutor-ask svg, .connection-link svg { width: 16px; height: 16px; }
+.tutor.study-tutor button.connection-link, .tutor.study-tutor a.connection-link { border: 0; padding: 8px 0; min-height: 44px; display: inline-flex; align-items: center; gap: 7px; color: var(--red); text-decoration: none; font-weight: 500; }
+.tutor.study-tutor .connection-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.tutor.study-tutor .connection-foot:empty { display: none; }
+.tutor.study-tutor .connection-key { display: grid; gap: 6px; font-size: 13px; color: var(--muted); }
+.tutor.study-tutor .connection-key input { width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--bg); color: var(--ink); font-size: 16px; }
+.tutor.study-tutor .connection-answer { color: var(--ink); line-height: 1.6; font-size: 15px; overflow-wrap: anywhere; }
+.tutor.study-tutor .connection-answer:not(:empty) { padding: 14px 16px; border-radius: 12px; background: var(--red-50); border: 1px solid var(--line); }
 @media (hover:hover) and (pointer:fine) {
-  .connection-pick:hover { border-color:var(--ink-2); }
-  .study-tutor button.connection-link:hover { text-decoration:underline; text-underline-offset:3px; }
+  .connection-pick:hover { border-color: var(--line-strong); }
+  .tutor.study-tutor > summary:hover { background: var(--surface); }
+  .tutor.study-tutor button.connection-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .tutor.study-tutor .tutor-ask:hover:enabled { filter: brightness(1.08); }
 }
 @media (prefers-reduced-motion:no-preference) {
-  html:not(.reduce-motion) .connection-answer:not(:empty), html:not(.reduce-motion) .connection-view { animation:connection-appear 160ms var(--ease-out) both; }
-  html:not(.reduce-motion) .connection-pick { transition:border-color 120ms var(--ease-out); }
+  html:not(.reduce-motion) .connection-answer:not(:empty), html:not(.reduce-motion) .connection-view { animation: connection-appear 160ms var(--ease-out) both; }
 }
-@keyframes connection-appear { from { opacity:0; transform:translateY(3px); } to { opacity:1; transform:none; } }
+@keyframes connection-appear { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
