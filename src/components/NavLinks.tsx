@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { IBook, ICards, IChart, IExam, IHome, ISparkle, IMenu, IRefresh, IX } from "./icons";
+import { useEffect, useRef, useState } from "react";
+import { IBook, ICards, IChart, IExam, IHome, ILink, ISparkle, IMenu, IRefresh, IX } from "./icons";
 import { Logo } from "./Logo";
 
 const LINKS = [
@@ -13,6 +13,7 @@ const LINKS = [
   { href: "/review", label: "Review", Icon: IRefresh },
   { href: "/diagnostics", label: "Diagnostics", Icon: IChart },
   { href: "/vocab", label: "Vocab", Icon: ICards },
+  { href: "/resources", label: "Resources", Icon: ILink },
 ];
 
 export function WorkspaceSkipLink() {
@@ -23,7 +24,7 @@ export function WorkspaceSkipLink() {
 export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const path = usePathname();
   return (
-    <ul className="workspace-index" style={{"--current": LINKS.findIndex(link => path === link.href || path.startsWith(link.href+"/"))} as CSSProperties}>
+    <ul className="workspace-index">
       {LINKS.map(({ href, label, Icon }) => {
         const active = path === href || path.startsWith(href + "/");
         return (
