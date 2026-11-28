@@ -1,6 +1,6 @@
 "use client";
 import "./practice.css";
-import { explainQuestionPrompt, questionHintPrompt } from "@/lib/ai-prompts";
+import { questionHintPrompt } from "@/lib/ai-prompts";
 import { Tutor } from "./Tutor";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -259,7 +259,6 @@ export function PracticePlayer({ items, signedIn, title, backHref = "/practice" 
                   <div className="mt-4">
                     <TeachButton qid={q.id} correct={result.correct} saved={result.saved} />
                   </div>
-                  <Tutor key={q.id} item={q.id} providerPrompt={explainQuestionPrompt(q, resp, result.answer, result.explanation, result.correct)} />
                   {!result.saved && (
                     <p className="mt-3 text-xs text-muted">
                       <Link href="/signup" className="font-medium text-red hover:underline">Create a free account</Link> to save progress and track weak spots.

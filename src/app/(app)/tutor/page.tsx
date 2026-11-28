@@ -1,24 +1,37 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BY_ID, toPublic } from "@/lib/bank";
+import { BY_ID, QUESTIONS, toPublic } from "@/lib/bank";
 import { GuidedQuestion } from "@/components/GuidedQuestion";
-import { IBook, ICalc } from "@/components/icons";
+import { PageTitle } from "@/components/ui";
+import { IBook, ICalc, IRefresh } from "@/components/icons";
 import "@/components/practice.css";
 
 export const metadata: Metadata = { title: "AI tutor" };
 
-export default async function TutorPage({ searchParams }: { searchParams: Promise<{ section?: string; connection?: string }> }) {
+const START = { rw: "r5f0e707a", math: "m56bc0dd7" } as const;
+
+export default async function TutorPage({ searchParams }: { searchParams: Promise<{ section?: string; q?: string; connection?: string }> }) {
   const params = await searchParams;
-  const math = params.section === "math";
-  const q = BY_ID.get(math ? "m56bc0dd7" : "r5f0e707a");
+  const section = params.section === "math" ? "math" : "rw";
+  const picked = params.q ? BY_ID.get(params.q) : undefined;
+  const q = picked && picked.section === section ? picked : BY_ID.get(START[section]);
   if (!q) throw new Error("The tutor practice question is missing.");
-  return <div className="tutor-workbook">
-    <link rel="preload" as="image" href="/landing/lunar/tutor-moon-480.webp" media="(max-width:680px)" />
-    <header className="practice-heading"><div><h1>AI tutor</h1><p>Try a question with a hint, then work through the answer.</p></div></header>
-    <nav className="subject-switch" aria-label="Tutor subject">
-      <Link href="/tutor" scroll={false} aria-current={!math ? "page" : undefined}><IBook />Reading and Writing</Link>
-      <Link href="/tutor?section=math" scroll={false} aria-current={math ? "page" : undefined}><ICalc />Math</Link>
-    </nav>
-    <GuidedQuestion key={q.id} q={toPublic(q)} planFirst={params.connection === "plan"} />
-  </div>;
+  // "Another question" jumps to a random multiple-choice question in the same subject.
+  const pool = QUESTIONS.filter((x) => x.section === section && x.type === "mcq" && x.id !== q.id);
+  const next = pool[Math.floor(Math.random() * pool.length)];
+  const nextHref = `/tutor?${new URLSearchParams({ section, q: next.id })}`;
+  return (
+    <div className="tutor-workbook animate-rise">
+      <PageTitle
+        title="AI tutor"
+        sub="Work a question, ask for a hint when you're stuck, then have it explained after you answer."
+        action={<Link href={nextHref} scroll={false} className="tutor-invite"><IRefresh />Another question</Link>}
+      />
+      <nav className="subject-switch" aria-label="Tutor subject">
+        <Link href="/tutor" scroll={false} aria-current={section === "rw" ? "page" : undefined}><IBook />Reading and Writing</Link>
+        <Link href="/tutor?section=math" scroll={false} aria-current={section === "math" ? "page" : undefined}><ICalc />Math</Link>
+      </nav>
+      <GuidedQuestion key={q.id} q={toPublic(q)} planFirst={params.connection === "plan"} />
+    </div>
+  );
 }

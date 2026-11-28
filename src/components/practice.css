@@ -1,7 +1,7 @@
 @import "./practice-type.css";
 
 .practice-heading { display:flex; justify-content:space-between; align-items:center; gap:18px; margin-bottom:26px; }
-.practice-heading h1 { font:560 clamp(34px,3.3vw,49px)/1.05 "Mona Sans",sans-serif; letter-spacing:-.04em; }
+.practice-heading h1 { font-size:30px; line-height:1.15; font-weight:500; letter-spacing:-.01em; }
 .practice-heading p, .skill-domain header p { margin-top:8px; color:var(--ink-2); }
 .tutor-invite, .topic-start, .skill-start { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; white-space:nowrap; font-weight:560; }
 .tutor-invite { color:var(--red); border:1px solid var(--line-strong); border-radius:8px; background:var(--bg); padding:0 13px; }
@@ -12,16 +12,16 @@
 .subject-switch a[aria-current]::after { content:""; position:absolute; inset:auto 0 -1px; height:3px; background:currentColor; }
 .subject-switch small { font:400 13px/1.3 var(--font-code); color:var(--ink-2); }
 .practice-spread { display:grid; grid-template-columns:minmax(190px,.75fr) minmax(0,2fr); gap:clamp(20px,3vw,48px); margin-top:24px; align-items:start; }
-.topic-index { padding:20px 16px; border:1px solid var(--line-strong); border-top:3px solid var(--accent-fill); border-radius:3px 3px 10px 10px; background:var(--bg); box-shadow:0 3px 0 var(--surface-2),0 4px 0 var(--line-strong); }
+.topic-index { padding:20px 16px; border:1px solid var(--line); border-radius:16px; background:var(--bg); box-shadow:var(--shadow-card); }
 .topic-index h2 { font-weight:620; font-size:18px; margin:0 7px 12px; }
 .topic-index a { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:12px 9px; min-height:46px; border-top:1px solid var(--line); line-height:1.35; }
 .topic-index a svg { opacity:0; }
 .topic-index a[aria-current] { background:var(--red-50); color:var(--red); font-weight:580; }
 .topic-index a[aria-current] svg, .topic-index .new-set svg { opacity:1; }
 .topic-index .new-set { font-size:14px; font-weight:550; color:var(--red); margin-top:8px; grid-column:1/-1; }
-.skill-domain { padding:clamp(18px,2.2vw,34px); border:1px solid var(--line-strong); border-radius:12px; background:var(--bg); }
+.skill-domain { padding:clamp(18px,2.2vw,28px); border:1px solid var(--line); border-radius:16px; background:var(--bg); }
 .skill-domain header, .skill-domain li { display:flex; align-items:center; justify-content:space-between; gap:14px; }
-.skill-domain h2 { font:565 clamp(24px,2.4vw,34px)/1.12 "Mona Sans",sans-serif; letter-spacing:-.035em; text-wrap:balance; }
+.skill-domain h2 { font-size:24px; line-height:1.2; font-weight:500; letter-spacing:-.01em; text-wrap:balance; }
 .skill-domain header p, .skill-domain small { font-size:14px; color:var(--ink-2); }
 .skill-domain header { padding-bottom:16px; border-bottom:1px solid var(--line-strong); }
 .topic-start, .skill-start { color:var(--red); font-size:14px; }
@@ -71,11 +71,9 @@
   .skill-start svg { display:none; }
   .practice-selection { gap:6px; padding:10px; flex-wrap:wrap; }
 }
-.practice-heading { position:relative; isolation:isolate; overflow:hidden; align-content:center; flex-direction:column; align-items:flex-start; justify-content:center; gap:10px; min-height:164px; padding:22px clamp(20px,3vw,40px); border-radius:12px; background:#171815; color:#fff; }
-.practice-heading::before { content:""; z-index:-1; position:absolute; inset:0 0 0 39%; background:linear-gradient(90deg,#171815,transparent 35%),url("/landing/lunar/taurus-littrow.webp") 61% 56% / cover no-repeat; }
-.practice-heading p { color:#f3f0e9; max-width:40ch; font-size:16px; text-wrap:pretty; }
-.practice-heading .tutor-invite { min-height:40px; border-color:#99978f; background:#22231f; color:#fff; font-size:14px; }
-.tutor-workbook .practice-heading::before { background:linear-gradient(90deg,#171815,transparent 45%),url("/landing/lunar/0301.webp") 64% 42% / auto 185% no-repeat; }
+.practice-heading { margin-bottom:22px; }
+.practice-heading p { color:var(--muted); max-width:60ch; font-size:15px; }
+.practice-heading .tutor-invite { min-height:40px; font-size:14px; }
 .guided-spread { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(250px,.85fr); align-items:start; gap:clamp(18px,2.2vw,34px); margin-top:22px; }
 .exercise-sheet { min-width:0; border:1px solid var(--line-strong); background:var(--bg); border-radius:10px; padding:clamp(18px,2.5vw,36px); }
 .exercise-sheet > header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--line-strong); }
@@ -92,17 +90,6 @@
   .mobile-tutor-link { display:inline-flex; align-items:center; gap:8px; min-height:44px; margin:-10px 0 4px; color:var(--red); font-weight:550; }
   .mobile-tutor-link svg { width:16px; height:16px; }
 }
-@media(max-width:680px) {
-  .practice-heading { min-height:145px; padding:18px; }
-  .practice-heading::before { inset-inline-start:35%; opacity:.42; }
-  .practice-heading p { max-width:32ch; }
-}
-.practice-player > div > header { background: #242622; border-color: #c63325; }
-.practice-player header p:first-child { font: 600 clamp(18px,2.2vw,27px)/1.1 "Mona Sans",sans-serif; }
-.practice-player section[aria-label="Passage"] .qtext, .practice-player section[aria-label="Question"] .qtext { font-family: "Mona Sans", system-ui, sans-serif; font-size: clamp(19px,1.6vw,25px); line-height: 1.35; }
-.practice-player fieldset { gap: 0; }
-.practice-player fieldset label { border-width: 0 0 1px; border-radius: 0; padding-inline: 8px; }
-.practice-player fieldset label:focus-within { outline: 2px solid var(--red); outline-offset: -2px; }
 
 .practice-controls { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; padding:17px 0 0; }
 .collection-switch { display:inline-flex; padding:3px; border:1px solid var(--line-strong); border-radius:10px; background:var(--surface); gap:2px; }
@@ -113,7 +100,7 @@
 .practice-controls + .practice-spread { margin-top:17px; }
 .topic-start { padding-inline:13px; min-height:42px; color:white; background:var(--accent-fill); border-radius:8px; }
 .topic-start:hover { text-decoration:none; }
-.skill-domain { border-radius:6px 12px 12px 6px; box-shadow:0 2px 0 var(--surface-2); }
+.skill-domain { border-radius:16px; box-shadow:var(--shadow-card,0 1px 2px #0001); }
 .skill-select { min-width:0; }
 .skill-select small { font-size:13px; }
 .question-pages { display:flex; align-items:center; justify-content:space-between; gap:6px; padding:6px 12px; border-top:1px solid var(--line); font-size:13px; font-variant-numeric:tabular-nums; }
@@ -137,10 +124,10 @@
   .collection-switch a { padding-inline:9px; }
 }
 .practice-header-actions { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
-.quick-practice { min-height:42px; display:inline-flex; align-items:center; gap:9px; padding:0 15px; background:#faf6ec; color:#242420; border-radius:8px; font-size:15px; font-weight:620; }
+.quick-practice { min-height:42px; display:inline-flex; align-items:center; gap:9px; padding:0 15px; background:var(--accent-fill); color:#fff; border-radius:8px; font-size:15px; font-weight:620; }
 .quick-practice svg,.exercise-hint-link svg { width:16px; height:16px; }
 .exercise-hint-link { display:inline-flex; align-items:center; gap:6px; min-height:44px; margin:-8px 0 5px; color:var(--red); font-size:14px; font-weight:570; }
-@media(hover:hover) and (pointer:fine){.exercise-hint-link:hover{text-decoration:underline;text-underline-offset:3px}.quick-practice:hover{background:white}}
+@media(hover:hover) and (pointer:fine){.exercise-hint-link:hover{text-decoration:underline;text-underline-offset:3px}.quick-practice:hover{filter:brightness(1.08)}}
 @media(prefers-reduced-motion:no-preference){html:not(.reduce-motion) .quick-practice{transition:transform 120ms var(--ease-out)}html:not(.reduce-motion) .quick-practice:active{transform:scale(.98)}}
 .compact-topic { display:none; }
 @media(max-width:680px){
@@ -150,5 +137,4 @@
   .compact-topic select { min-width:0; flex:1; min-height:42px; border:0; font-size:16px; font-weight:560; color:var(--ink); background:var(--bg); }
   .practice-header-actions { gap:7px; }
   .practice-header-actions .quick-practice,.practice-header-actions .tutor-invite { min-height:42px; font-size:14px; padding-inline:10px; }
-  .tutor-workbook .practice-heading::before { background-image:linear-gradient(90deg,#171815,transparent 45%),url("/landing/lunar/tutor-moon-480.webp"); }
 }
